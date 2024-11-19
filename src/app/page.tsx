@@ -19,7 +19,7 @@ const BLUR_FADE_DELAY = 0.04;
 
 export default function Page() {
   const [DATA, setData] = useState<PortfolioData>({} as PortfolioData)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState('');
@@ -34,7 +34,7 @@ export default function Page() {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setIsLoading(true)
     if (!file) {
       setUploadStatus('No file selected!');
       return;
@@ -68,11 +68,12 @@ export default function Page() {
         // });
       });
 
-      setUploadStatus('File uploaded successfully');
+      // setUploadStatus('File uploaded successfully');
       // setPdfText(response.data.pdfText);  // Set the extracted PDF text
       // console.log(response.data.pdfText)
     } catch (error) {
       setUploadStatus('Error uploading file');
+      setIsLoading(true)
       console.error(error);
     }
   };
@@ -115,7 +116,8 @@ export default function Page() {
 
   return (
     <>
-    {isLoading && (
+    {isLoading && (<RecordingLoader/>)}
+    {Object.keys(DATA).length == 0 &&(
     <div>
     <form onSubmit={handleSubmit}>
       <input type="file" accept="application/pdf" onChange={handleFileChange} />

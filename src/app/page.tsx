@@ -19,7 +19,60 @@ const BLUR_FADE_DELAY = 0.04;
 
 export default function Page() {
   const [DATA, setData] = useState<PortfolioData>({} as PortfolioData)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const [file, setFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState('');
+  const [pdfText, setPdfText] = useState('');
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!file) {
+      setUploadStatus('No file selected!');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('pdf', file);
+
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/pdf-data/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then((response) => {
+        console.log(response.data.content)
+        setData(response.data.content)
+        setIsLoading(false)
+        // toast({
+        //   title: "Success",
+        //   description: "Settings Saved.",
+        //   duration: 1000,
+        // });
+      })
+      .catch((error) => {
+        setIsLoading(false)
+        console.log(error);
+        // toast({
+        //   title: "Failed to update",
+        //   description: error.response.data.error,
+        //   duration: 1000,
+        // });
+      });
+
+      setUploadStatus('File uploaded successfully');
+      // setPdfText(response.data.pdfText);  // Set the extracted PDF text
+      // console.log(response.data.pdfText)
+    } catch (error) {
+      setUploadStatus('Error uploading file');
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,13 +107,25 @@ export default function Page() {
       }
     };
 
-    fetchData();
+    // fetchData();
   }, []);
 
   return (
     <>
     {isLoading && (
-      <RecordingLoader/>
+    <div>
+    <form onSubmit={handleSubmit}>
+      <input type="file" accept="application/pdf" onChange={handleFileChange} />
+      <button type="submit">Upload PDF</button>
+    </form>
+    <p>{uploadStatus}</p>
+    {pdfText && (
+      <div>
+        <h3>Extracted PDF Text:</h3>
+        <pre>{pdfText}</pre>
+      </div>
+    )}
+  </div>
     )}
     {!isLoading &&  DATA && Object.keys(DATA).length > 0 && (
     <main className="flex flex-col min-h-[100dvh] space-y-10">

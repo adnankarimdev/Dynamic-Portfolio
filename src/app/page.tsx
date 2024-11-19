@@ -106,7 +106,7 @@ export default function Page() {
     {Object.keys(DATA).length == 0 &&(
         <Card className="w-full max-w-md mx-auto">
         <CardHeader>
-          <CardTitle className="text-center">Upload Your Resume</CardTitle>
+          <CardTitle className="text-center"> Ready? 🚀</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <input

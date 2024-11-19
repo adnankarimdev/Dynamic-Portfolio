@@ -1,6 +1,6 @@
 "use client"
 import { HackathonCard } from "@/components/hackathon-card";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
 import { ProjectCard } from "@/components/project-card";
@@ -14,6 +14,11 @@ import Link from "next/link";
 import Markdown from "react-markdown";
 import { PortfolioData } from "@/components/types/types";
 import RecordingLoader from "@/components/Skeleton/RecordingLoader";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Upload } from 'lucide-react'
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -24,21 +29,20 @@ export default function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState('');
   const [pdfText, setPdfText] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
     if (selectedFile) {
       setFile(selectedFile);
+      handleSubmit(selectedFile);
     }
   };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+
+  const handleSubmit = async (file: File) => {
     setIsLoading(true)
-    if (!file) {
-      setUploadStatus('No file selected!');
-      return;
-    }
+    setUploadStatus('Uploading...');
 
     const formData = new FormData();
     formData.append('pdf', file);
@@ -48,33 +52,15 @@ export default function Page() {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      }).then((response) => {
-        console.log(response.data.content)
-        setData(response.data.content)
-        setIsLoading(false)
-        // toast({
-        //   title: "Success",
-        //   description: "Settings Saved.",
-        //   duration: 1000,
-        // });
-      })
-      .catch((error) => {
-        setIsLoading(false)
-        console.log(error);
-        // toast({
-        //   title: "Failed to update",
-        //   description: error.response.data.error,
-        //   duration: 1000,
-        // });
       });
-
-      // setUploadStatus('File uploaded successfully');
-      // setPdfText(response.data.pdfText);  // Set the extracted PDF text
-      // console.log(response.data.pdfText)
+      console.log(response.data.content)
+      setData(response.data.content)
+      setUploadStatus('PDF processed successfully!');
     } catch (error) {
-      setUploadStatus('Error uploading file');
-      setIsLoading(true)
+      setUploadStatus('Error processing PDF');
       console.error(error);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -118,19 +104,32 @@ export default function Page() {
     <>
     {isLoading && (<RecordingLoader/>)}
     {Object.keys(DATA).length == 0 &&(
-    <div>
-    <form onSubmit={handleSubmit}>
-      <input type="file" accept="application/pdf" onChange={handleFileChange} />
-      <button type="submit">Upload PDF</button>
-    </form>
-    <p>{uploadStatus}</p>
-    {pdfText && (
-      <div>
-        <h3>Extracted PDF Text:</h3>
-        <pre>{pdfText}</pre>
-      </div>
-    )}
-  </div>
+        <Card className="w-full max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle className="text-center">Upload Your Resume</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            className="hidden"
+            ref={fileInputRef}
+          />
+          <Button 
+            onClick={() => fileInputRef.current?.click()} 
+            className="w-full"
+          >
+            <Upload className="mr-2 h-4 w-4" /> Select PDF Resume
+          </Button>
+          
+          {uploadStatus && (
+            <Alert>
+              <AlertDescription>{uploadStatus}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
     )}
     {!isLoading &&  DATA && Object.keys(DATA).length > 0 && (
     <main className="flex flex-col min-h-[100dvh] space-y-10">

@@ -93,6 +93,7 @@ export const DATA = {
       video: ""
     }
   ],
+    //we'll probs want to make different keys; not hackathon perse. but all sorts of tech resumes   
   hackathons: [
     {
       title: "",

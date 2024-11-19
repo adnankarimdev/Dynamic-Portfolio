@@ -21,15 +21,18 @@ export default function Page() {
   const [DATA, setData] = useState<PortfolioData>({} as PortfolioData)
   const [isLoading, setIsLoading] = useState(true)
 
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState('');
   const [pdfText, setPdfText] = useState('');
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
 
-  const handleSubmit = async (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files ? e.target.files[0] : null;
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
+  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!file) {

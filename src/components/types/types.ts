@@ -78,6 +78,17 @@ interface SocialPlatform {
     win?: string;
     links: HackathonLink[];
   }
+
+  interface Papers {
+    title: string;
+    dates: string;
+    location: string;
+    description: string;
+    image: string;
+    mlh?: string;
+    win?: string;
+    links: HackathonLink[];
+  }
   
   export interface PortfolioData {
     name: string;
@@ -95,4 +106,5 @@ interface SocialPlatform {
     education: Education[];
     projects: Project[];
     hackathons: Hackathon[];
+    papers: Papers[];
   }

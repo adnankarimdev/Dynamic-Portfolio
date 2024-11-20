@@ -1,6 +1,8 @@
 "use client"
 import { HackathonCard } from "@/components/hackathon-card";
 import { useEffect, useState, useRef } from "react";
+import { PlusCircle, Check, X } from 'lucide-react'
+import { Input } from "@/components/ui/input"
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
 import {ProjectCard} from "@/components/project-card";
@@ -42,7 +44,7 @@ export default function Page() {
 
   const handleSubmit = async (file: File) => {
     setIsLoading(true)
-    setUploadStatus('Uploading...');
+    // setUploadStatus('Uploading...');
 
     const formData = new FormData();
     formData.append('pdf', file);
@@ -103,7 +105,7 @@ export default function Page() {
   return (
     <>
     {isLoading && (<RecordingLoader/>)}
-    {Object.keys(DATA).length == 0 &&(
+    {!isLoading && Object.keys(DATA).length == 0 && (
         <Card className="flex flex-col items-center justify-center min-h-screen">
         <CardHeader>
           <CardTitle className="text-center"> Ready? 🚀</CardTitle>
@@ -218,19 +220,40 @@ export default function Page() {
       </div>
     </section>
     <section id="skills">
-      <div className="flex min-h-0 flex-col gap-y-3">
-        <BlurFade delay={BLUR_FADE_DELAY * 9}>
-          <h2 className="text-xl font-bold">Skills</h2>
+  <div className="flex min-h-0 flex-col gap-y-3">
+    <BlurFade delay={BLUR_FADE_DELAY * 9}>
+      <h2 className="text-xl font-bold">Skills</h2>
+    </BlurFade>
+    <div className="flex flex-wrap gap-1">
+      {DATA.skills.map((skill, id) => (
+        <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
+          <Badge key={skill} className="group">
+            {skill}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() => {
+                setData(prevData => ({
+                  ...prevData,
+                  skills: prevData.skills.filter(s => s !== skill)
+                }));
+              }}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </Badge>
         </BlurFade>
-        <div className="flex flex-wrap gap-1">
-          {DATA.skills.map((skill, id) => (
-            <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
-              <Badge key={skill}>{skill}</Badge>
-            </BlurFade>
-          ))}
-        </div>
-      </div>
-    </section>
+      ))}
+      <EditableSkill onAddSkill={(newSkill) => {
+        setData(prevData => ({
+          ...prevData,
+          skills: [...prevData.skills, newSkill]
+        }));
+      }} />
+    </div>
+  </div>
+</section>
     <section id="projects">
       <div className="space-y-12 w-full py-12">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
@@ -285,7 +308,7 @@ export default function Page() {
               </h2>
               <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 During my time in university, I attended{" "}
-                {DATA.hackathons.length}+ hackathons. People from around the
+                + hackathons. People from around the
                 country would come together and build incredible things in 2-3
                 days. It was eye-opening to see the endless possibilities
                 brought to life by a group of motivated and passionate
@@ -296,21 +319,21 @@ export default function Page() {
         </BlurFade>
         <BlurFade delay={BLUR_FADE_DELAY * 14}>
           <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
-            {DATA.hackathons.map((project, id) => (
-              <BlurFade
-                key={project.title + project.dates}
-                delay={BLUR_FADE_DELAY * 15 + id * 0.05}
-              >
-                <HackathonCard
-                  title={project.title}
-                  description={project.description}
-                  location={project.location}
-                  dates={project.dates}
-                  image={project.image}
-                  links={project.links}
-                />
-              </BlurFade>
-            ))}
+          {(DATA.hackathons && DATA.hackathons.length > 0 ? DATA.hackathons : DATA.papers).map((project, id) => (
+  <BlurFade
+    key={project.title + project.dates}
+    delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+  >
+    <HackathonCard
+      title={project.title}
+      description={project.description}
+      location={project.location}
+      dates={project.dates}
+      image={project.image}
+      links={project.links}
+    />
+  </BlurFade>
+))}
           </ul>
         </BlurFade>
       </div>
@@ -346,3 +369,65 @@ export default function Page() {
     </>
   );
 }
+
+
+
+interface EditableSkillProps {
+  onAddSkill: (skill: string) => void;
+}
+
+const EditableSkill: React.FC<EditableSkillProps> = ({ onAddSkill }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newSkill, setNewSkill] = useState("");
+
+  const handleAddSkill = () => {
+    if (newSkill.trim()) {
+      onAddSkill(newSkill.trim());
+      setNewSkill("");
+    }
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div className="flex items-center gap-1">
+        <Input
+          type="text"
+          value={newSkill}
+          onChange={(e) => setNewSkill(e.target.value)}
+          className="h-6 w-24 text-xs"
+          placeholder="New skill"
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6"
+          onClick={handleAddSkill}
+        >
+          <Check className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6"
+          onClick={() => setIsEditing(false)}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className="h-6"
+      onClick={() => setIsEditing(true)}
+    >
+      <PlusCircle className="mr-1 h-3 w-3" />
+      Add Skill
+    </Button>
+  );
+};
+

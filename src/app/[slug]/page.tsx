@@ -28,9 +28,11 @@ const BLUR_FADE_DELAY = 0.04;
 
 export default function Page() {
   const [DATA, setData] = useState<PortfolioData>({} as PortfolioData)
+  const [readOnly, setReadOnly] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const {toast} = useToast()
   const router = useRouter();
+  const [userEmailToken, setUserEmailToken] = useState("")
 
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState('');
@@ -70,10 +72,35 @@ export default function Page() {
     }
   };
 
+  const handleSave = async () =>
+  {
+    axios
+    .post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/save-website-details/`,
+      {data: DATA, userToken:userEmailToken}
+    )
+    .then((response) => {
+      toast({
+        title: "Success",
+        description: "Website Saved.",
+        duration: 1000,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      toast({
+        title: "Failed to update",
+        description: error.response.data.error,
+        duration: 1000,
+      });
+    });
+  }
+
   useEffect(() => {
     const fetchData = async () => {
-      const email = sessionStorage.getItem("authToken");
-      if (!email) {
+    setIsLoading(true)
+      const emailToken = sessionStorage.getItem("authToken");
+      if (!emailToken) {
         toast({
           title: "Please sign in.",
           duration: 3000,
@@ -82,12 +109,20 @@ export default function Page() {
         console.error("Email not found in localStorage");
         return;
       }
+      else
+      {
+        setUserEmailToken(emailToken)
+        setIsLoading(false)
+      }
 
-      setIsLoading(true)
       try {
         axios
-        .post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/resume-creator/`, {resumeContent: dummyData}
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details/`,{
+            headers: {
+              Authorization: `Bearer ${emailToken}`,
+            },
+          }
         )
         .then((response) => {
           console.log(response.data.content)
@@ -114,7 +149,7 @@ export default function Page() {
       }
     };
 
-    // fetchData();
+    fetchData();
   }, []);
 
   return (
@@ -150,7 +185,11 @@ export default function Page() {
       </Card>
     )}
     {!isLoading &&  DATA && Object.keys(DATA).length > 0 && (
+
     <main className="flex flex-col min-h-[100dvh] space-y-10">
+    <Button className="absolute top-4 right-4 px-4 py-2 rounded" variant="ghost" onClick={handleSave}>
+{"Publish"}
+</Button>
     <section id="hero">
       <div className="mx-auto w-full max-w-2xl space-y-8">
         <div className="gap-2 flex justify-between">
@@ -206,6 +245,7 @@ export default function Page() {
               badges={work.badges}
               period={`${work.start} - ${work.end ?? "Present"}`}
               description={work.description}
+              readOnly={true}
             />
           </BlurFade>
         ))}
@@ -228,6 +268,7 @@ export default function Page() {
               altText={education.school}
               title={education.school}
               subtitle={education.degree}
+              readOnly={true}
               period={`${education.start} - ${education.end}`}
             />
           </BlurFade>

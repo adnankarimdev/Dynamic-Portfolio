@@ -22,6 +22,7 @@ interface ResumeCardProps {
   period: string
   description?: string
   onSave?: (updatedData: Partial<ResumeCardProps>) => void
+  readOnly: boolean
 }
 
 export const ResumeCard = ({
@@ -33,6 +34,7 @@ export const ResumeCard = ({
   badges: initialBadges,
   period: initialPeriod,
   description: initialDescription,
+  readOnly,
   onSave,
 }: ResumeCardProps) => {
   const [isEditing, setIsEditing] = useState(false)

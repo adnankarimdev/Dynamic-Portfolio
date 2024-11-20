@@ -5,7 +5,7 @@ import { PlusCircle, Check, X } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
-import { ProjectCard } from "@/components/project-card";
+import ProjectCard from "@/components/project-card";
 import { ResumeCard } from "@/components/resume-card";
 import axios from "axios"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

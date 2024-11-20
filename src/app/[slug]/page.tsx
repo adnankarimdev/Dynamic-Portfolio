@@ -7,7 +7,17 @@ import { Input } from "@/components/ui/input"
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
 import {ProjectCard} from "@/components/project-card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { ResumeCard } from "@/components/resume-card";
+import { PaperCard } from "@/components/paper-card";
+import { usePathname } from 'next/navigation'
 import axios from "axios"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { dummyData } from "../dummyData/dummydata";
@@ -23,15 +33,20 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Upload } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast";
+import { AwardsCard } from "@/components/award-card";
+import Navbar from "@/components/navbar";
 
 const BLUR_FADE_DELAY = 0.04;
 
 export default function Page() {
   const [DATA, setData] = useState<PortfolioData>({} as PortfolioData)
-  const [readOnly, setReadOnly] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [readOnly, setReadOnly] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
   const {toast} = useToast()
+  const pathname = usePathname()
+  console.log(pathname)
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false)
   const [userEmailToken, setUserEmailToken] = useState("")
 
   const [file, setFile] = useState<File | null>(null);
@@ -50,6 +65,7 @@ export default function Page() {
 
   const handleSubmit = async (file: File) => {
     setIsLoading(true)
+    setIsOpen(false)
     // setUploadStatus('Uploading...');
 
     const formData = new FormData();
@@ -99,30 +115,10 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
     setIsLoading(true)
-      const emailToken = sessionStorage.getItem("authToken");
-      if (!emailToken) {
-        toast({
-          title: "Please sign in.",
-          duration: 3000,
-        });
-        router.push("/login");
-        console.error("Email not found in localStorage");
-        return;
-      }
-      else
-      {
-        setUserEmailToken(emailToken)
-        setIsLoading(false)
-      }
-
       try {
         axios
         .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details/`,{
-            headers: {
-              Authorization: `Bearer ${emailToken}`,
-            },
-          }
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details-by-url/${pathname.slice(1)}/`
         )
         .then((response) => {
           console.log(response.data.content)
@@ -157,39 +153,22 @@ export default function Page() {
     {isLoading && (<RecordingLoader/>)}
     {!isLoading && Object.keys(DATA).length == 0 && (
         <Card className="flex flex-col items-center justify-center min-h-screen">
-        <CardHeader>
-          <CardTitle className="text-center"> Ready? 🚀</CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={handleFileChange}
-            className="hidden"
-            ref={fileInputRef}
-          />
-          <Button 
-            onClick={() => fileInputRef.current?.click()} 
-            variant="ghost"
-            className="w-full"
-          >
-            <Upload className="mr-2 h-4 w-4" /> {"Upload CV/Resume (.pdf, .docx)"}
-          </Button>
-          
-          {uploadStatus && (
-            <Alert>
-              <AlertDescription>{uploadStatus}</AlertDescription>
-            </Alert>
-          )}
+        {"This portfolio does not exist"}
         </CardContent>
       </Card>
     )}
     {!isLoading &&  DATA && Object.keys(DATA).length > 0 && (
 
     <main className="flex flex-col min-h-[100dvh] space-y-10">
-    <Button className="absolute top-4 right-4 px-4 py-2 rounded" variant="ghost" onClick={handleSave}>
+    {!readOnly && (
+      <Button className="absolute top-4 right-4 px-4 py-2 rounded" variant="ghost" onClick={handleSave}>
 {"Publish"}
 </Button>
+    )}
+{/* <Button className="absolute top-4 left-4 px-4 py-2 rounded" variant="ghost" onClick={() => setIsOpen(true)}>
+{"Start Over"}
+</Button> */}
     <section id="hero">
       <div className="mx-auto w-full max-w-2xl space-y-8">
         <div className="gap-2 flex justify-between">
@@ -245,7 +224,7 @@ export default function Page() {
               badges={work.badges}
               period={`${work.start} - ${work.end ?? "Present"}`}
               description={work.description}
-              readOnly={true}
+              readOnly={readOnly}
             />
           </BlurFade>
         ))}
@@ -268,7 +247,7 @@ export default function Page() {
               altText={education.school}
               title={education.school}
               subtitle={education.degree}
-              readOnly={true}
+              readOnly={readOnly}
               period={`${education.start} - ${education.end}`}
             />
           </BlurFade>
@@ -285,28 +264,34 @@ export default function Page() {
         <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
           <Badge key={skill} className="group">
             {skill}
+            {!readOnly && (
             <Button
-              variant="ghost"
-              size="icon"
-              className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={() => {
-                setData(prevData => ({
-                  ...prevData,
-                  skills: prevData.skills.filter(s => s !== skill)
-                }));
-              }}
-            >
-              <X className="h-3 w-3" />
-            </Button>
+            variant="ghost"
+            size="icon"
+            className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => {
+              setData(prevData => ({
+                ...prevData,
+                skills: prevData.skills.filter(s => s !== skill)
+              }));
+            }}
+          >
+            <X className="h-3 w-3" />
+          </Button>
+            )}
+
           </Badge>
         </BlurFade>
       ))}
+      {!readOnly && (
       <EditableSkill onAddSkill={(newSkill) => {
         setData(prevData => ({
           ...prevData,
           skills: [...prevData.skills, newSkill]
         }));
       }} />
+      )}
+
     </div>
   </div>
 </section>
@@ -351,49 +336,136 @@ export default function Page() {
         </div>
       </div>
     </section>
-    <section id="hackathons">
-      <div className="space-y-12 w-full py-12">
-        <BlurFade delay={BLUR_FADE_DELAY * 13}>
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                Hackathons
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                I like building things
-              </h2>
-              <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                During my time in university, I attended{" "}
-                + hackathons. People from around the
-                country would come together and build incredible things in 2-3
-                days. It was eye-opening to see the endless possibilities
-                brought to life by a group of motivated and passionate
-                individuals.
-              </p>
+    {DATA.papers && DATA.papers.length > 0 && (
+    <section id="papers">
+    <div className="space-y-12 w-full py-12">
+      <BlurFade delay={BLUR_FADE_DELAY * 13}>
+        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+          <div className="space-y-2">
+            <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+              Papers
             </div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Check out my latest work
+              </h2>
+            <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              {"I had the opportunity to contribute to several research publications."}
+            </p>
           </div>
-        </BlurFade>
-        <BlurFade delay={BLUR_FADE_DELAY * 14}>
-          <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
-          {(DATA.hackathons && DATA.hackathons.length > 0 ? DATA.hackathons : DATA.papers).map((project, id) => (
-  <BlurFade
-    key={project.title + project.dates}
-    delay={BLUR_FADE_DELAY * 15 + id * 0.05}
-  >
-    <HackathonCard
-      title={project.title}
-      description={project.description}
-      location={project.location}
-      dates={project.dates}
-      image={project.image}
-      links={project.links}
-    />
-  </BlurFade>
+        </div>
+      </BlurFade>
+      <BlurFade delay={BLUR_FADE_DELAY * 14}>
+        <ul className="mb-4 ml-4  ">
+        {DATA.papers.map((project, id) => (
+<BlurFade
+  key={project.title + project.publicationDate}
+  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+>
+<PaperCard
+  title={project.title}
+  coAuthors={project.coAuthors}
+  publicationDate={project.publicationDate}
+  conference={project.conference}
+  journal={project.journal}
+  doi={project.doi}
+  abstract={project.abstract}
+  link={project.link}
+  className="mb-2"
+/>
+</BlurFade>
 ))}
-          </ul>
-        </BlurFade>
-      </div>
-    </section>
+        </ul>
+      </BlurFade>
+    </div>
+  </section>
+    )}
+
+{DATA.awards && DATA.awards.length > 0 && (
+    <section id="awards">
+    <div className="space-y-12 w-full py-12">
+      <BlurFade delay={BLUR_FADE_DELAY * 13}>
+        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+          <div className="space-y-2">
+            <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+              Awards
+            </div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+              I've gotten some really cool awards too!
+            </h2>
+            <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+             {""}
+            </p>
+          </div>
+        </div>
+      </BlurFade>
+      <BlurFade delay={BLUR_FADE_DELAY * 14}>
+        <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
+        {DATA.awards .map((project, id) => (
+<BlurFade
+  key={project.title + project.dateAwarded}
+  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+>
+  <AwardsCard
+  title={project.title}
+  organization={project.organization}
+  dateAwarded={project.dateAwarded}
+  description={project.description}
+  image={project.image}
+  />
+</BlurFade>
+))}
+        </ul>
+      </BlurFade>
+    </div>
+  </section>
+    )}
+
+    {DATA.hackathons && DATA.hackathons.length > 0 && (
+    <section id="hackathons">
+    <div className="space-y-12 w-full py-12">
+      <BlurFade delay={BLUR_FADE_DELAY * 13}>
+        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+          <div className="space-y-2">
+            <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+              Hackathons
+            </div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+              I like building things
+            </h2>
+            <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              During my time in university, I attended{" "}
+              + hackathons. People from around the
+              country would come together and build incredible things in 2-3
+              days. It was eye-opening to see the endless possibilities
+              brought to life by a group of motivated and passionate
+              individuals.
+            </p>
+          </div>
+        </div>
+      </BlurFade>
+      <BlurFade delay={BLUR_FADE_DELAY * 14}>
+        <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
+        {DATA.hackathons .map((project, id) => (
+<BlurFade
+  key={project.title + project.dates}
+  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+>
+  <HackathonCard
+    title={project.title}
+    description={project.description}
+    location={project.location}
+    dates={project.dates}
+    image={project.image}
+    links={project.links}
+  />
+</BlurFade>
+))}
+        </ul>
+      </BlurFade>
+    </div>
+  </section>
+    )}
+
     <section id="contact">
       <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6 w-full py-12">
         <BlurFade delay={BLUR_FADE_DELAY * 16}>
@@ -419,9 +491,50 @@ export default function Page() {
         </BlurFade>
       </div>
     </section>
+    <div className="mb-2">
+   <Navbar />
+   </div>
   </main>
+  
     )}
-
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        {!isLoading &&  DATA && Object.keys(DATA).length > 0 && !readOnly && (
+          <Button className="absolute top-4 left-4 px-4 py-2 rounded" variant="ghost">Start Over</Button>
+        )}
+        
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Upload CV/Resume</DialogTitle>
+          <DialogDescription>
+            Upload your CV or resume in PDF or DOCX format.
+          </DialogDescription>
+        </DialogHeader>
+        <Card className="border-0 shadow-none">
+          <CardHeader>
+            <CardTitle className="text-center">Ready? 🚀</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <input
+              type="file"
+              accept="application/pdf,.docx"
+              onChange={handleFileChange}
+              className="hidden"
+              ref={fileInputRef}
+            />
+            <Button 
+              onClick={() => fileInputRef.current?.click()} 
+              variant="ghost"
+              className="w-full"
+            >
+              <Upload className="mr-2 h-4 w-4" /> Upload CV/Resume (.pdf, .docx)
+            </Button>
+            
+          </CardContent>
+        </Card>
+      </DialogContent>
+    </Dialog>
     </>
   );
 }

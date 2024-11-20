@@ -75,20 +75,23 @@ export const ResumeCard = ({
     <Card className="flex relative">
 <div className="flex justify-end">
   <div className="flex items-center space-x-4">
+    {!readOnly && (
     <Button
-      variant="ghost"
-      size="icon"
-      onClick={(e) => {
-        e.stopPropagation();
-        if (isEditing) {
-          handleSave();
-        } else {
-          setIsEditing(true);
-        }
-      }}
-    >
-      {isEditing ? <SaveIcon className="h-4 w-4" /> : <Edit2Icon className="h-4 w-4" />}
-    </Button>
+    variant="ghost"
+    size="icon"
+    onClick={(e) => {
+      e.stopPropagation();
+      if (isEditing) {
+        handleSave();
+      } else {
+        setIsEditing(true);
+      }
+    }}
+  >
+    {isEditing ? <SaveIcon className="h-4 w-4" /> : <Edit2Icon className="h-4 w-4" />}
+  </Button>
+    )}
+
   </div>
 </div>
       <div className="flex-none">

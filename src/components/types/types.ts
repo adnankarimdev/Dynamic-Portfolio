@@ -79,17 +79,29 @@ interface SocialPlatform {
     links: HackathonLink[];
   }
 
-  interface Papers {
+
+  interface Paper {
     title: string;
-    dates: string;
-    location: string;
-    description: string;
-    image: string;
-    mlh?: string;
-    win?: string;
-    links: HackathonLink[];
+    coAuthors: string[];
+    publicationDate: string;
+    conference?: string;
+    journal?: string;
+    doi?: string;
+    abstract: string;
+    link?: string;
+    className?: string;
   }
   
+
+interface Award {
+  title: string;
+  organization: string;
+  dateAwarded: string;
+  description: string;
+  image?: string;
+}
+
+
   export interface PortfolioData {
     name: string;
     initials: string;
@@ -106,5 +118,6 @@ interface SocialPlatform {
     education: Education[];
     projects: Project[];
     hackathons: Hackathon[];
-    papers: Papers[];
+    papers: Paper[];
+    awards: Award[];
   }

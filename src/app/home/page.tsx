@@ -42,13 +42,17 @@ const BLUR_FADE_DELAY = 0.04;
 export default function Page() {
   const [DATA, setData] = useState<PortfolioData>({} as PortfolioData)
   const [readOnly, setReadOnly] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const {toast} = useToast()
   const router = useRouter();
   const pathname = usePathname()
   console.log(pathname)
   const [isOpen, setIsOpen] = useState(false)
+  const [savedText, setSavedText] = useState("")
   const [userEmailToken, setUserEmailToken] = useState("")
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [text, setText] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState('');
@@ -144,21 +148,18 @@ export default function Page() {
         .then((response) => {
           console.log(response.data.content)
           setData(response.data.content)
+          const defaultName = "Hi, I'm " + response.data.content.name.split(" ")[0] + "👋"
+          setText(defaultName)
+          setSavedText(defaultName)
+          toast({
+            title: "Welcome Back!",
+            duration: 1000,
+          });
           setIsLoading(false)
-          // toast({
-          //   title: "Success",
-          //   description: "Settings Saved.",
-          //   duration: 1000,
-          // });
         })
         .catch((error) => {
           setIsLoading(false)
           console.log(error);
-          // toast({
-          //   title: "Failed to update",
-          //   description: error.response.data.error,
-          //   duration: 1000,
-          // });
         });
 
       } catch (err) {
@@ -169,10 +170,50 @@ export default function Page() {
     fetchData();
   }, []);
 
+
+  useEffect(() => {
+    if (isEditingName && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [isEditingName])
+
+  const handleDoubleClick = () => {
+    setIsEditingName(true)
+  }
+
+  const handleSaveName = () => {
+    setSavedText(text)
+    setIsEditingName(false)
+  }
+
+  const handleCancel = () => {
+    setIsEditingName(false)
+  }
+
+
+
+  if (isEditingName) {
+    return (
+      <div className="flex items-center space-x-2">
+        <Input
+          ref={inputRef}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <Button size="icon" onClick={handleSaveName}>
+          <Check className="h-4 w-4" />
+        </Button>
+        <Button size="icon" variant="outline" onClick={handleCancel}>
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+    )
+  }
+
   return (
     <>
     {isLoading && (<RecordingLoader/>)}
-    {!isLoading && Object.keys(DATA).length == 0 && (
+    {!isLoading &&   DATA && Object.keys(DATA).length == 0 && (
         <Card className="flex flex-col items-center justify-center min-h-screen">
         <CardHeader>
           <CardTitle className="text-center"> Ready? 🚀</CardTitle>
@@ -207,19 +248,18 @@ export default function Page() {
     <Button className="absolute top-4 right-4 px-4 py-2 rounded" variant="ghost" onClick={handleSave}>
 {"Publish"}
 </Button>
-{/* <Button className="absolute top-4 left-4 px-4 py-2 rounded" variant="ghost" onClick={() => setIsOpen(true)}>
-{"Start Over"}
-</Button> */}
     <section id="hero">
       <div className="mx-auto w-full max-w-2xl space-y-8">
         <div className="gap-2 flex justify-between">
           <div className="flex-col flex flex-1 space-y-1.5">
+          <div onDoubleClick={handleDoubleClick}>
             <BlurFadeText
               delay={BLUR_FADE_DELAY}
               className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
               yOffset={8}
-              text={`Hi, I'm ${DATA.name.split(" ")[0]} 👋`}
+              text={savedText}
             />
+            </div>
             <BlurFadeText
               className="max-w-[600px] md:text-xl"
               delay={BLUR_FADE_DELAY}

@@ -30,7 +30,6 @@ import { strict } from 'assert';
 import { Label } from '../label';
 import VoiceGridVisualization from './VoiceGridVisualization';
 import { Switch } from '../switch';
-import { PortfolioData } from '@/components/types/types';
 
 /**
  * Type for result from get_weather() function call
@@ -59,11 +58,7 @@ interface RealtimeEvent {
   event: { [key: string]: any };
 }
 
-interface Props {
-  DATA?: PortfolioData
-}
-
-export function ConsolePage(DATA: Props) {
+export function ConsolePage() {
   /**
    * Ask user for API Key
    * If we're using the local relay server, we don't need this
@@ -206,13 +201,13 @@ export function ConsolePage(DATA: Props) {
 
     // Connect to realtime API
     await client.connect();
-    client.sendUserMessageContent([
-      {
-        type: `input_text`,
-        text: `Hi`,
-        // text: `For testing purposes, I want you to list ten car brands. Number each item, e.g. "one (or whatever number you are one): the item name".`
-      },
-    ]);
+    // client.sendUserMessageContent([
+    //   {
+    //     type: `input_text`,
+    //     text: ``,
+    //     // text: `For testing purposes, I want you to list ten car brands. Number each item, e.g. "one (or whatever number you are one): the item name".`
+    //   },
+    // ]);
 
     if (client.getTurnDetectionType() === 'server_vad') {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
@@ -445,13 +440,11 @@ export function ConsolePage(DATA: Props) {
     // Get refs
     const wavStreamPlayer = wavStreamPlayerRef.current;
     const client = clientRef.current;
-    console.log(DATA)
-    const newInstructions = instructions + JSON.stringify(DATA)
 
     // Set instructions
-    client.updateSession({ instructions: newInstructions});
+    client.updateSession({ instructions: instructions });
     // Set transcription, otherwise we don't get user transcriptions back
-    client.updateSession({ voice: 'ash' });
+    client.updateSession({ voice: 'shimmer' });
     client.updateSession({ input_audio_transcription: { model: 'whisper-1' } });
 
     // Add tools
@@ -604,62 +597,119 @@ export function ConsolePage(DATA: Props) {
    * Render the application
    */
   return (
-<div className="grid gap-4 items-center justify-center">
-<div className="p-4 overflow-auto flex flex-col items-center">
-    <div className="content-top mb-4">
-      <div className="content-title flex items-center justify-center">
-        <Switch
-          checked={isVAD}
-          onCheckedChange={handleToggle}
-          id="vad-mode"
-        />
-        <Label htmlFor="vad-mode" className="ml-2">
-          Continuous
-        </Label>
-      </div>
-      <div className="content-api-key mt-2">
-        {!LOCAL_RELAY_SERVER_URL && (
-          <Button onClick={() => resetAPIKey()}>Change Key</Button>
-        )}
-      </div>
-    </div>
-    <div className="content-main">
-      <div className="content-logs">
-        <div className="content-block events mb-4">
-          <div className="visualization">
-          <div className="grid grid-cols-2 gap-8 justify-center items-center">
-              {/* <div className="visualization-entry">
-                <h2 className="text-center text-white mb-2">Client</h2>
-                <VoiceGridVisualization type="client" frequencyData={clientFrequencies} canvasRef={clientCanvasRef}/>
-              </div> */}
-              <div className="visualization-entry">
-                <h2 className="text-center text-white mb-2">Server</h2>
-                <VoiceGridVisualization type="server" frequencyData={serverFrequencies} canvasRef={serverCanvasRef}/>
+    <div className="grid grid-cols-[1fr_300px] gap-4 h-screen">
+      <div className="p-4 overflow-auto">
+        <div className="content-top mb-4">
+          <div className="content-title flex items-center">
+            <Switch
+              checked={isVAD}
+              onCheckedChange={handleToggle}
+              id="vad-mode"
+            />
+            <Label htmlFor="vad-mode" className="ml-2">
+              Continuous
+            </Label>
+          </div>
+          <div className="content-api-key mt-2">
+            {!LOCAL_RELAY_SERVER_URL && (
+              <Button onClick={() => resetAPIKey()}>Change Key</Button>
+            )}
+          </div>
+        </div>
+        <div className="content-main">
+          <div className="content-logs">
+            <div className="content-block events mb-4">
+              <div className="visualization">
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="visualization-entry">
+                    <h2 className="text-center text-white mb-2">Client</h2>
+                    <VoiceGridVisualization type="client" frequencyData={clientFrequencies} canvasRef={clientCanvasRef}/>
+                  </div>
+                  <div className="visualization-entry">
+                    <h2 className="text-center text-white mb-2">Server</h2>
+                    <VoiceGridVisualization type="server" frequencyData={serverFrequencies} canvasRef={serverCanvasRef}/>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+          <div className="content-actions flex justify-center gap-4">
+            {isConnected && canPushToTalk && (
+              <Button
+                disabled={!isConnected || !canPushToTalk}
+                onMouseDown={startRecording}
+                onMouseUp={stopRecording}
+                className='mt-10'
+              >
+                {isRecording ? 'Release to send' : 'Push to talk'}
+              </Button>
+            )}
+            <Button
+              onClick={isConnected ? disconnectConversation : connectConversation}
+              className='mt-10'
+            >
+              {isConnected ? 'Disconnect' : 'Connect'}
+            </Button>
+          </div>
         </div>
       </div>
-      <div className="content-actions flex justify-center gap-4">
-        {isConnected && canPushToTalk && (
-          <Button
-            disabled={!isConnected || !canPushToTalk}
-            onMouseDown={startRecording}
-            onMouseUp={stopRecording}
-            className='mt-10'
-          >
-            {isRecording ? 'Release to send' : 'Push to talk'}
-          </Button>
-        )}
-        <Button
-          onClick={isConnected ? disconnectConversation : connectConversation}
-          className='mt-10'
-        >
-          {isConnected ? 'Disconnect' : 'Connect'}
-        </Button>
+      <div className="border p-4 overflow-auto">
+        <div className="content-block conversation">
+          <div className="content-block-title font-bold mb-2">Conversation</div>
+          <div className="content-block-body" data-conversation-content>
+            {!items.length && `Awaiting connection...`}
+            {items.map((conversationItem) => (
+              <div key={conversationItem.id} className="conversation-item mb-4 bg-white p-2 rounded shadow">
+                <div className={`speaker ${conversationItem.role || ''} flex justify-between items-center mb-1`}>
+                  <div className="font-semibold">
+                    {(conversationItem.role || conversationItem.type).replaceAll('_', ' ')}
+                  </div>
+                  <button
+                    className="close text-red-500 hover:text-red-700"
+                    onClick={() => deleteConversationItem(conversationItem.id)}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                <div className={`speaker-content`}>
+                  {conversationItem.type === 'function_call_output' && (
+                    <div>{conversationItem.formatted.output}</div>
+                  )}
+                  {!!conversationItem.formatted.tool && (
+                    <div>
+                      {conversationItem.formatted.tool.name}(
+                      {conversationItem.formatted.tool.arguments})
+                    </div>
+                  )}
+                  {!conversationItem.formatted.tool && conversationItem.role === 'user' && (
+                    <div>
+                      {conversationItem.formatted.transcript ||
+                        (conversationItem.formatted.audio?.length
+                          ? '(awaiting transcript)'
+                          : conversationItem.formatted.text ||
+                            '(item sent)')}
+                    </div>
+                  )}
+                  {!conversationItem.formatted.tool && conversationItem.role === 'assistant' && (
+                    <div>
+                      {conversationItem.formatted.transcript ||
+                        conversationItem.formatted.text ||
+                        '(truncated)'}
+                    </div>
+                  )}
+                  {conversationItem.formatted.file && (
+                    <audio
+                      src={conversationItem.formatted.file.url}
+                      controls
+                      className="mt-2 w-full"
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
   );
 }

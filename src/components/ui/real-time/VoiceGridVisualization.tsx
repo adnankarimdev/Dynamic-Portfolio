@@ -83,8 +83,8 @@ const VoiceGridVisualization = forwardRef<HTMLCanvasElement, {
   return (
     <canvas 
       ref={canvasRef} 
-      className="w-full h-full"
-      style={{ aspectRatio: '1/1' }}
+      className="flex justify-center items-center"
+      style={{ width: '300px', height: '300px', aspectRatio: '1/1' }}
     />
   );
 });

@@ -4,6 +4,15 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import AnimatedLayout from '../Animations/AnimatedLayout'
+import { Space_Mono } from 'next/font/google';
+import BoxReveal from '../box-reveal'
+import LetterPullup from '../letter-pullup'
+
+// Load Space Mono font
+const spaceMono = Space_Mono({
+    subsets: ['latin'], // Choose the subsets you need
+    weight: ['400'], // Specify weights (normal, bold, etc.)
+  });
 
 interface Color {
   name: string
@@ -55,15 +64,18 @@ export default function ColorPickerCard({cardData}:ColorCardProps) {
 
   return (
     <AnimatedLayout>
-    <Card className="w-full p-6 transition-colors duration-300" style={{ backgroundColor: cardData.color}}>
+    <Card className={`w-full p-20 transition-colors duration-300 ${spaceMono.className}`} style={{ backgroundColor: cardData.color}}>
       <CardHeader>
-        <CardTitle className={`text-3xl mb-4 ${isDarkColor ? 'text-white' : 'text-black'}`}>
-         {cardData.title}
+        <CardTitle className={`text-xl mb-4 ${cardData.textColor}`}>
+         
+         <LetterPullup words={cardData.title} delay={0.05} className={`text-sm ${cardData.textColor}`}/>
         </CardTitle>
       </CardHeader>
+      <BoxReveal boxColor={"#5046e6"} duration={0.5}>
       <CardContent>
         {cardData.summary}
       </CardContent>
+      </BoxReveal>
     </Card>
     </AnimatedLayout>
   )

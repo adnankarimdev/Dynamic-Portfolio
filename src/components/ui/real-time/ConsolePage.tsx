@@ -35,6 +35,9 @@ import { Separator } from '../separator';
 import ColorPickerCard from './ColorPickerCard';
 import AnimatedLayout from '@/components/animations/AnimatedLayout';
 import { RainbowButton } from '../rainbow-button';
+import { AnimatedList } from '../animated-list';
+import { ScrollArea } from '../scroll-area';
+import Marquee from '../marquee';
 
 /**
  * Type for result from get_weather() function call
@@ -84,6 +87,8 @@ export function ConsolePage(DATA: Props) {
   const { toast } = useToast();
   const [serverFrequencies, setServerFrequencies] = useState<any>(new Float32Array([0]))
   const [cardData, setCardData] = useState<CardData>()
+  const [summaryOfCards, setSummaryOfCards] = useState<CardData[]>([])
+  const [showSummary, setShowSummary] = useState(false);
 
 
   const handleToggle = () => {
@@ -206,6 +211,8 @@ export function ConsolePage(DATA: Props) {
     // Set state variables
     startTimeRef.current = new Date().toISOString();
     setIsConnected(true);
+    setSummaryOfCards([])
+    setShowSummary(false)
     setRealtimeEvents([]);
     setItems(client.conversation.getItems());
 
@@ -234,7 +241,9 @@ export function ConsolePage(DATA: Props) {
    * Disconnect and reset conversation state
    */
   const disconnectConversation = useCallback(async () => {
+    setCardData(undefined)
     setIsConnected(false);
+    setShowSummary(true)
     setRealtimeEvents([]);
     setItems([]);
     setMemoryKv({});
@@ -527,6 +536,12 @@ export function ConsolePage(DATA: Props) {
           color: randomColor.hex,
           textColor: calculateTextColor(randomColor.hex),
         });
+        setSummaryOfCards((prevItems) => [...prevItems, {
+          title,
+          summary,
+          color: randomColor.hex,
+          textColor: calculateTextColor(randomColor.hex),
+        }])
     
         return {
           ok: true,
@@ -685,11 +700,21 @@ export function ConsolePage(DATA: Props) {
           </AnimatedLayout>
         </div>
       )}
-      {!cardData && (
+      {!cardData && !showSummary && (
         <>
         <p>Push to start talking 😇</p>
         {/* <img src="/swirlyarrow.png" alt="My Image" /> */}
         </>
+      )}
+      {showSummary && (
+       
+       
+       <Marquee pauseOnHover vertical className="[--duration:20s] ">
+              {summaryOfCards.map((item, idx) => (
+                <ColorPickerCard cardData={item} key={idx}/>
+              ))}
+
+</Marquee>
       )}
 </div>
 </div>

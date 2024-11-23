@@ -12,6 +12,7 @@ import {
 import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
 import { LogOut } from "lucide-react";
+import { PortfolioData } from "./types/types";
 import Link from "next/link";
 
 export default function Navbar() {

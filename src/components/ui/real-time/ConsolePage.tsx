@@ -686,7 +686,10 @@ export function ConsolePage(DATA: Props) {
         </div>
       )}
       {!cardData && (
-        <p>Start talking 😇</p>
+        <>
+        <p>Push to start talking 😇</p>
+        {/* <img src="/swirlyarrow.png" alt="My Image" /> */}
+        </>
       )}
 </div>
 </div>

@@ -63,25 +63,6 @@ export default function ColorPickerCard({cardData}:ColorCardProps) {
       </CardHeader>
       <CardContent>
         {cardData.summary}
-        {/* <Select onValueChange={handleColorChange} defaultValue={selectedColor.name}>
-          <SelectTrigger className={`w-full text-lg p-4 ${isDarkColor ? 'text-white bg-gray-800' : 'text-black bg-white'}`}>
-            <SelectValue placeholder="Select a color" />
-          </SelectTrigger>
-          <SelectContent>
-            {colors.map((color) => (
-              <SelectItem key={color.name} value={color.name} className="text-lg p-3">
-                <div className="flex items-center">
-                  <div 
-                    className="w-6 h-6 rounded-full mr-3" 
-                    style={{ backgroundColor: color.hex }}
-                    aria-hidden="true"
-                  />
-                  {color.name}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select> */}
       </CardContent>
     </Card>
     </AnimatedLayout>

@@ -34,6 +34,7 @@ import { PortfolioData } from '@/components/types/types';
 import { Separator } from '../separator';
 import ColorPickerCard from './ColorPickerCard';
 import AnimatedLayout from '@/components/animations/AnimatedLayout';
+import { RainbowButton } from '../rainbow-button';
 
 /**
  * Type for result from get_weather() function call
@@ -82,7 +83,7 @@ export function ConsolePage(DATA: Props) {
   const router = useRouter();
   const { toast } = useToast();
   const [serverFrequencies, setServerFrequencies] = useState<any>(new Float32Array([0]))
-  const [cardData, setCardData] = useState<CardData>({title:"", summary:"", color:'#FFEDEB', textColor:"white"})
+  const [cardData, setCardData] = useState<CardData>()
 
 
   const handleToggle = () => {
@@ -216,13 +217,13 @@ export function ConsolePage(DATA: Props) {
 
     // Connect to realtime API
     await client.connect();
-    // client.sendUserMessageContent([
-    //   {
-    //     type: `input_text`,
-    //     text: `Hi`,
-    //     // text: `For testing purposes, I want you to list ten car brands. Number each item, e.g. "one (or whatever number you are one): the item name".`
-    //   },
-    // ]);
+    client.sendUserMessageContent([
+      {
+        type: `input_text`,
+        text: `Hi`,
+        // text: `For testing purposes, I want you to list ten car brands. Number each item, e.g. "one (or whatever number you are one): the item name".`
+      },
+    ]);
 
     if (client.getTurnDetectionType() === 'server_vad') {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
@@ -640,26 +641,26 @@ export function ConsolePage(DATA: Props) {
       {/* Buttons */}
       <div className="flex flex-col items-center gap-4 w-full">
         {isConnected && canPushToTalk && (
-          <Button
+          <RainbowButton
             disabled={!isConnected || !canPushToTalk}
             onMouseDown={startRecording}
             onMouseUp={stopRecording}
-            className="w-full"
+            className="w-1/2"
           >
             {isRecording ? "Release to send" : "Push to talk"}
-          </Button>
+          </RainbowButton>
         )}
-        <Button
+        <RainbowButton
           onClick={isConnected ? disconnectConversation : connectConversation}
-          className="w-full"
+          className="w-1/2"
         >
-          {isConnected ? "Disconnect" : "Connect"}
-        </Button>
+          {isConnected ? "Disconnect" : "Let's talk"}
+        </RainbowButton>
 
         {/* API Key Button */}
-        {!LOCAL_RELAY_SERVER_URL && (
+        {/* {!LOCAL_RELAY_SERVER_URL && (
           <Button onClick={() => resetAPIKey()} className="w-full">Change Key</Button>
-        )}
+        )} */}
 
         {/* Switch */}
         <div className="flex items-center justify-center gap-2 mt-4 w-full">
@@ -677,14 +678,14 @@ export function ConsolePage(DATA: Props) {
 
   {/* Right Side */}
   <div className="w-1/2 p-8 flex items-center justify-center">
-      {cardData.title != "" && (
+      {cardData && (
           <div className="w-full">
           <AnimatedLayout>
           <ColorPickerCard cardData={cardData}/>
           </AnimatedLayout>
         </div>
       )}
-      {cardData.title == "" && (
+      {!cardData && (
         <p>Start talking 😇</p>
       )}
 </div>

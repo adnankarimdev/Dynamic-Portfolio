@@ -250,22 +250,6 @@ export default function Page() {
     <Button className="absolute top-4 right-4 px-4 py-2 rounded" variant="ghost" onClick={handleSave}>
 {"Publish"}
 </Button>
-
-<Dialog open={openRealTime} onOpenChange={setOpenRealTime}>
-      <DialogTrigger asChild>
-        {!isLoading &&  DATA && Object.keys(DATA).length > 0 && (
-          <Button className="absolute top-4 left-4 px-4 py-2 rounded" variant="ghost">Talk</Button>
-        )}
-        
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[90vw] max-h-[90vh] flex flex-col items-center justify-center overflow-hidden">
-        <DialogHeader>
-          <DialogTitle>What do you want to know?</DialogTitle>
-        </DialogHeader>
-        <ConsolePage DATA={DATA}/>
-      </DialogContent>
-    </Dialog>
-
     <section id="hero">
       <div className="mx-auto w-full max-w-2xl space-y-8">
         <div className="gap-2 flex justify-between">

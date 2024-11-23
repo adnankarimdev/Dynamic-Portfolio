@@ -677,11 +677,16 @@ export function ConsolePage(DATA: Props) {
 
   {/* Right Side */}
   <div className="w-1/2 p-8 flex items-center justify-center">
-  <div className="w-full">
-    <AnimatedLayout>
-    <ColorPickerCard cardData={cardData}/>
-    </AnimatedLayout>
-  </div>
+      {cardData.title != "" && (
+          <div className="w-full">
+          <AnimatedLayout>
+          <ColorPickerCard cardData={cardData}/>
+          </AnimatedLayout>
+        </div>
+      )}
+      {cardData.title == "" && (
+        <p>Start talking 😇</p>
+      )}
 </div>
 </div>
   );

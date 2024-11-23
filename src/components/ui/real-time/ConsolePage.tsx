@@ -665,7 +665,7 @@ export function ConsolePage(DATA: Props) {
         {/* Switch */}
         <div className="flex items-center justify-center gap-2 mt-4 w-full">
           <Switch checked={isVAD} onCheckedChange={handleToggle} id="vad-mode" />
-          <Label htmlFor="vad-mode">Continuous</Label>
+          <Label htmlFor="vad-mode">Open Mic</Label>
         </div>
       </div>
     </div>

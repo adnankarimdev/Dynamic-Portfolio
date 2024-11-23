@@ -31,6 +31,9 @@ import { Label } from '../label';
 import VoiceGridVisualization from './VoiceGridVisualization';
 import { Switch } from '../switch';
 import { PortfolioData } from '@/components/types/types';
+import { Separator } from '../separator';
+import ColorPickerCard from './ColorPickerCard';
+import AnimatedLayout from '@/components/animations/AnimatedLayout';
 
 /**
  * Type for result from get_weather() function call
@@ -63,6 +66,12 @@ interface Props {
   DATA?: PortfolioData
 }
 
+interface CardData {
+  title: string;
+  summary: string;
+  color: string;
+  textColor: string;
+}
 export function ConsolePage(DATA: Props) {
   /**
    * Ask user for API Key
@@ -73,6 +82,7 @@ export function ConsolePage(DATA: Props) {
   const router = useRouter();
   const { toast } = useToast();
   const [serverFrequencies, setServerFrequencies] = useState<any>(new Float32Array([0]))
+  const [cardData, setCardData] = useState<CardData>({title:"", summary:"", color:'#FFEDEB', textColor:"white"})
 
 
   const handleToggle = () => {
@@ -206,13 +216,13 @@ export function ConsolePage(DATA: Props) {
 
     // Connect to realtime API
     await client.connect();
-    client.sendUserMessageContent([
-      {
-        type: `input_text`,
-        text: `Hi`,
-        // text: `For testing purposes, I want you to list ten car brands. Number each item, e.g. "one (or whatever number you are one): the item name".`
-      },
-    ]);
+    // client.sendUserMessageContent([
+    //   {
+    //     type: `input_text`,
+    //     text: `Hi`,
+    //     // text: `For testing purposes, I want you to list ten car brands. Number each item, e.g. "one (or whatever number you are one): the item name".`
+    //   },
+    // ]);
 
     if (client.getTurnDetectionType() === 'server_vad') {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
@@ -446,7 +456,9 @@ export function ConsolePage(DATA: Props) {
     const wavStreamPlayer = wavStreamPlayerRef.current;
     const client = clientRef.current;
     console.log(DATA)
+    console.log(JSON.stringify(DATA))
     const newInstructions = instructions + JSON.stringify(DATA)
+    console.log(newInstructions)
 
     // Set instructions
     client.updateSession({ instructions: newInstructions});
@@ -455,6 +467,78 @@ export function ConsolePage(DATA: Props) {
     client.updateSession({ input_audio_transcription: { model: 'whisper-1' } });
 
     // Add tools
+    client.addTool(
+      {
+        name: 'set_card_data',
+        description:
+          'Populates the cardData object with a title, summary, a random color, and an appropriate text color based on contrast.',
+        parameters: {
+          type: 'object',
+          properties: {
+            title: {
+              type: 'string',
+              description: 'The title of the card.',
+            },
+            summary: {
+              type: 'string',
+              description: 'A brief summary to include in the card.',
+            },
+          },
+          required: ['title', 'summary'],
+        },
+      },
+      async ({ title, summary }: { [key: string]: any }) => {
+        const colors = [
+          { name: "Blush", hex: "#FFEDEB" },
+          { name: "Lilac", hex: "#FFD7FF" },
+          { name: "Dark Lilac", hex: "#FF45FF" },
+          { name: "Lemon", hex: "#FFFF8F" },
+          { name: "Mint", hex: "#D9FFD8" },
+          { name: "Seafoam", hex: "#A6FFA3" },
+          { name: "Sky", hex: "#E5F1FF" },
+          { name: "Celeste", hex: "#CAFFFF" },
+          { name: "Olive", hex: "#6D6837" },
+          { name: "Charcoal", hex: "#393939" },
+          { name: "Maroon", hex: "#512D0D" },
+          { name: "Turquoise", hex: "#005454" },
+          { name: "Terracotta", hex: "#C45600" },
+          { name: "Indigo", hex: "#28044A" },
+          { name: "Forest", hex: "#193918" },
+          { name: "Kelly", hex: "#2D712A" },
+        ];
+    
+        // Helper to determine the best text color based on background brightness
+        const calculateTextColor = (hex: string): string => {
+          const r = parseInt(hex.slice(1, 3), 16);
+          const g = parseInt(hex.slice(3, 5), 16);
+          const b = parseInt(hex.slice(5, 7), 16);
+          const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+          return brightness > 125 ? "black" : "white";
+        };
+    
+        // Choose a random color
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    
+        // Populate cardData with the provided title, summary, and calculated colors
+        setCardData({
+          title,
+          summary,
+          color: randomColor.hex,
+          textColor: calculateTextColor(randomColor.hex),
+        });
+    
+        return {
+          ok: true,
+          cardData: {
+            title,
+            summary,
+            color: randomColor.hex,
+            textColor: calculateTextColor(randomColor.hex),
+          },
+        };
+      }
+    );
+
     client.addTool(
       {
         name: 'set_memory',
@@ -484,76 +568,6 @@ export function ConsolePage(DATA: Props) {
         return { ok: true };
       }
     );
-    client.addTool(
-      {
-        name: 'collect_user_info',
-        description:
-          'Collects personal information including name, email, and birthday from a form submission.',
-        parameters: {
-          type: 'object',
-          strict:true,
-          properties: {
-            name: {
-              type: 'string',
-              description: 'Full name of the user.',
-            },
-            email: {
-              type: 'string',
-              description: 'Email address of the user.',
-            },
-            birthday: {
-              type: 'string',
-              format: 'date',
-              description: 'Birthday of the user in YYYY-MM-DD format.',
-            },
-          },
-          required: ['name', 'email', 'birthday'],
-        },
-      },
-      async ({ name, email, birthday }: { [key: string]: any }) => {
-        // Validate the input fields
-        if (!name || !email || !birthday) {
-          throw new Error('All fields (name, email, birthday) are required.');
-        }
-    
-        // Basic validation example
-        if (!/^\S+@\S+\.\S+$/.test(email)) {
-          throw new Error('Invalid email format.');
-        }
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday)) {
-          throw new Error('Invalid birthday format. Use YYYY-MM-DD.');
-        }
-    
-        // Simulate saving data or performing an operation
-        const userInfo = {
-          name,
-          email,
-          birthday,
-        };
-    
-        console.log('User information collected:', userInfo);
-    
-        // You can replace this with a database save or API call
-        return {
-          message: 'User information collected successfully.',
-          data: userInfo,
-        };
-      }
-    );
-    client.addTool(
-      {
-        name: 'move_to_dashboard',
-        description: 'Redirects the user to the dashboard page.',
-        parameters: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      async () => {
-        // Redirects to the dashboard
-        router.push("/login");
-      }
-    ); 
     // handle realtime events from client + server for event logging
     client.on('realtime.event', (realtimeEvent: RealtimeEvent) => {
       setRealtimeEvents((realtimeEvents) => {
@@ -604,62 +618,71 @@ export function ConsolePage(DATA: Props) {
    * Render the application
    */
   return (
-<div className="grid gap-4 items-center justify-center">
-<div className="p-4 overflow-auto flex flex-col items-center">
-    <div className="content-top mb-4">
-      <div className="content-title flex items-center justify-center">
-        <Switch
-          checked={isVAD}
-          onCheckedChange={handleToggle}
-          id="vad-mode"
-        />
-        <Label htmlFor="vad-mode" className="ml-2">
-          Continuous
-        </Label>
-      </div>
-      <div className="content-api-key mt-2">
-        {!LOCAL_RELAY_SERVER_URL && (
-          <Button onClick={() => resetAPIKey()}>Change Key</Button>
-        )}
-      </div>
-    </div>
-    <div className="content-main">
-      <div className="content-logs">
-        <div className="content-block events mb-4">
-          <div className="visualization">
-          <div className="grid grid-cols-2 gap-8 justify-center items-center">
-              {/* <div className="visualization-entry">
-                <h2 className="text-center text-white mb-2">Client</h2>
-                <VoiceGridVisualization type="client" frequencyData={clientFrequencies} canvasRef={clientCanvasRef}/>
-              </div> */}
-              <div className="visualization-entry">
-                <h2 className="text-center text-white mb-2">Server</h2>
-                <VoiceGridVisualization type="server" frequencyData={serverFrequencies} canvasRef={serverCanvasRef}/>
-              </div>
+<div className="flex h-screen w-screen">
+  {/* Left Side */}
+  <div className="w-1/2 p-8 flex flex-col items-center justify-center">
+    <div className="w-full max-w-md flex flex-col items-center">
+      <div className="mb-8 w-full">
+        <div className="visualization">
+          <div className="grid justify-center items-center">
+            <div className="visualization-entry">
+              <h2 className="text-center text-white mb-2">Server</h2>
+              <VoiceGridVisualization
+                type="server"
+                frequencyData={serverFrequencies}
+                canvasRef={serverCanvasRef}
+              />
             </div>
           </div>
         </div>
       </div>
-      <div className="content-actions flex justify-center gap-4">
+
+      {/* Buttons */}
+      <div className="flex flex-col items-center gap-4 w-full">
         {isConnected && canPushToTalk && (
           <Button
             disabled={!isConnected || !canPushToTalk}
             onMouseDown={startRecording}
             onMouseUp={stopRecording}
-            className='mt-10'
+            className="w-full"
           >
-            {isRecording ? 'Release to send' : 'Push to talk'}
+            {isRecording ? "Release to send" : "Push to talk"}
           </Button>
         )}
         <Button
           onClick={isConnected ? disconnectConversation : connectConversation}
-          className='mt-10'
+          className="w-full"
         >
-          {isConnected ? 'Disconnect' : 'Connect'}
+          {isConnected ? "Disconnect" : "Connect"}
         </Button>
+
+        {/* API Key Button */}
+        {!LOCAL_RELAY_SERVER_URL && (
+          <Button onClick={() => resetAPIKey()} className="w-full">Change Key</Button>
+        )}
+
+        {/* Switch */}
+        <div className="flex items-center justify-center gap-2 mt-4 w-full">
+          <Switch checked={isVAD} onCheckedChange={handleToggle} id="vad-mode" />
+          <Label htmlFor="vad-mode">Continuous</Label>
+        </div>
       </div>
     </div>
   </div>
+
+  {/* Separator */}
+  <div className="flex items-center px-4">
+    <Separator orientation="vertical" className="h-full" />
+  </div>
+
+  {/* Right Side */}
+  <div className="w-1/2 p-8 flex items-center justify-center">
+  <div className="w-full">
+    <AnimatedLayout>
+    <ColorPickerCard cardData={cardData}/>
+    </AnimatedLayout>
+  </div>
+</div>
 </div>
   );
 }

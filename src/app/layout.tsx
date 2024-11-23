@@ -10,7 +10,7 @@ const staatliches = Staatliches({
 });
 
 export const metadata: Metadata = {
-  title: "Vero",
+  title: "Dynamic Portfolio",
   description: "Instant Insights.",
 };
 

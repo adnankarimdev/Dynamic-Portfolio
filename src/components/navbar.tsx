@@ -22,7 +22,8 @@ export default function Navbar() {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userEmail");
     sessionStorage.removeItem("authToken")
-    router.push("/login");
+    // router.push("/login");
+    window.location.href = "/login"
   };
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 mx-auto mb-4 flex origin-bottom h-full max-h-14">
@@ -72,7 +73,28 @@ export default function Navbar() {
             </DockIcon>
           ))}
         <Separator orientation="vertical" className="h-full py-2" />
-        <LogOut size={12} className="ml-2" onClick={handleLogout}/>
+        <DockIcon key={"logout"}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent the default behavior of the link
+                      handleLogout(); // Call your custom function instead
+                    }}
+                    className={cn(
+                      buttonVariants({ variant: "ghost", size: "icon" }),
+                      "size-12"
+                    )}
+                  >
+                    <LogOut className="size-4" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{"Logout"}</p>
+                </TooltipContent>
+              </Tooltip>
+            </DockIcon>
         <DockIcon>
           <Tooltip>
             <TooltipTrigger asChild>

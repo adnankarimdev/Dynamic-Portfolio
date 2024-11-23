@@ -1,6 +1,6 @@
 "use client";
 
-import AuthPage from "@/components/ui/login/AuthPage";
+import AuthPage from "@/components/ui/AuthPage";
 import AnimatedLayout from "@/components/animations/AnimatedLayout";
 import { useRouter } from "next/navigation";
 import { ConsolePage } from "@/components/ui/real-time/ConsolePage";
@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { PortfolioData } from "@/components/types/types";
+import Navbar from "@/components/navbar";
 
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
@@ -68,6 +69,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-center min-h-screen">
           {!isLoading && (<ConsolePage DATA={DATA}/>)}
         </div>
+        <Navbar />
       </div>
     </AnimatedLayout>
   );

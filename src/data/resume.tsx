@@ -26,7 +26,7 @@ export const DATA = {
     "C++",
   ],
   navbar: [
-    { href: "/", icon: HomeIcon, label: "Home" },
+    { href: "/home", icon: HomeIcon, label: "Home" },
     { href: "/blog", icon: NotebookIcon, label: "Blog" },
   ],
   contact: {

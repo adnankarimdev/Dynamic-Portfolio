@@ -194,7 +194,11 @@ export default function Page() {
 
   const changeToRealTime = () =>
   {
-    router.push("/realtime")
+    // I have no clue why router.push isnt working.
+    // I always have to manualy refresh the page. for now, this is a workaround
+    // router.refresh()
+    // router.push("/realtime")
+    window.location.href = "/realtime"
   }
 
 

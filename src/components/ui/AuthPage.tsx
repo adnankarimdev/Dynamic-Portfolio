@@ -106,7 +106,7 @@ export default function AuthPage() {
       });
   };
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[350px] ">
       <CardHeader>
         <CardTitle>Authentication</CardTitle>
         <CardDescription>Sign up or log in to your account</CardDescription>

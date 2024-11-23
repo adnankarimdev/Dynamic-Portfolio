@@ -318,16 +318,6 @@ export function ConsolePage(DATA: Props) {
    * Auto-scroll the event logs
    */
   useEffect(() => {
-    const email = sessionStorage.getItem("authToken");
-    if (!email) {
-      toast({
-        title: "Please sign in.",
-        duration: 3000,
-      });
-      router.push("/login");
-      console.error("Email not found in localStorage");
-      return;
-    }
     if (eventsScrollRef.current) {
       const eventsEl = eventsScrollRef.current;
       const scrollHeight = eventsEl.scrollHeight;
@@ -354,6 +344,16 @@ export function ConsolePage(DATA: Props) {
 
 
   useEffect(() => {
+    const email = sessionStorage.getItem("authToken");
+    if (!email) {
+      toast({
+        title: "Please sign in.",
+        duration: 3000,
+      });
+      router.push("/login");
+      console.error("Email not found in localStorage");
+      return;
+    }
     let isLoaded = true;
   
     const wavRecorder = wavRecorderRef.current;

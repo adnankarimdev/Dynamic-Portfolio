@@ -48,11 +48,6 @@ export default function Dashboard() {
   
         console.log("MY data", response.data.content);
         setData(response.data.content);
-  
-        toast({
-          title: "Welcome Back!",
-          duration: 1000,
-        });
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

@@ -153,10 +153,6 @@ export default function Page() {
           const defaultName = "Hi, I'm " + response.data.content.name.split(" ")[0] + "👋"
           setText(defaultName)
           setSavedText(defaultName)
-          toast({
-            title: "Welcome Back!",
-            duration: 1000,
-          });
           setIsLoading(false)
         })
         .catch((error) => {

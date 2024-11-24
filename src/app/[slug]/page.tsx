@@ -497,44 +497,6 @@ export default function Page() {
   </main>
   
     )}
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {!isLoading &&  DATA && Object.keys(DATA).length > 0 && !readOnly && (
-          <Button className="absolute top-4 left-4 px-4 py-2 rounded" variant="ghost">Start Over</Button>
-        )}
-        
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Upload CV/Resume</DialogTitle>
-          <DialogDescription>
-            Upload your CV or resume in PDF or DOCX format.
-          </DialogDescription>
-        </DialogHeader>
-        <Card className="border-0 shadow-none">
-          <CardHeader>
-            <CardTitle className="text-center">Ready? 🚀</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <input
-              type="file"
-              accept="application/pdf,.docx"
-              onChange={handleFileChange}
-              className="hidden"
-              ref={fileInputRef}
-            />
-            <Button 
-              onClick={() => fileInputRef.current?.click()} 
-              variant="ghost"
-              className="w-full"
-            >
-              <Upload className="mr-2 h-4 w-4" /> Upload CV/Resume (.pdf, .docx)
-            </Button>
-            
-          </CardContent>
-        </Card>
-      </DialogContent>
-    </Dialog>
     </>
   );
 }

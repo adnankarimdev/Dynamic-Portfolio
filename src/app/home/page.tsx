@@ -106,7 +106,7 @@ export default function Page() {
       toast({
         title: "Portfolio Saved.",
         action: <ToastAction altText="Try again" onClick={() => {window.open(response.data.url, "_blank")}}>Open Portfolio</ToastAction>,
-        duration: 1000,
+        duration: 3000,
       });
     })
     .catch((error) => {
@@ -120,8 +120,9 @@ export default function Page() {
   }
 
   useEffect(() => {
+    setIsLoading(true);
+  
     const fetchData = async () => {
-    setIsLoading(true)
       const emailToken = sessionStorage.getItem("authToken");
       if (!emailToken) {
         toast({
@@ -130,41 +131,34 @@ export default function Page() {
         });
         router.push("/login");
         console.error("Email not found in localStorage");
+        setIsLoading(false);  // You should set isLoading false here as well
         return;
+      } else {
+        setUserEmailToken(emailToken);
       }
-      else
-      {
-        setUserEmailToken(emailToken)
-        setIsLoading(false)
-      }
-
+  
       try {
-        axios
-        .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details/`,{
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details/`,
+          {
             headers: {
               Authorization: `Bearer ${emailToken}`,
             },
           }
-        )
-        .then((response) => {
-          console.log(response.data.content)
-          setData(response.data.content)
-          const defaultName = "Hi, I'm " + response.data.content.name.split(" ")[0] + "👋"
-          setText(defaultName)
-          setSavedText(defaultName)
-          setIsLoading(false)
-        })
-        .catch((error) => {
-          setIsLoading(false)
-          console.log(error);
-        });
-
-      } catch (err) {
-        console.error(err);
+        );
+  
+        console.log(response.data.content);
+        setData(response.data.content);
+        const defaultName = "Hi, I'm " + response.data.content.name.split(" ")[0] + "👋";
+        setText(defaultName);
+        setSavedText(defaultName);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
-
+  
     fetchData();
   }, []);
 
@@ -220,7 +214,7 @@ export default function Page() {
   return (
     <>
     {isLoading && (<RecordingLoader/>)}
-    {!isLoading &&   DATA && Object.keys(DATA).length == 0 && (
+    {!isLoading && DATA && Object.keys(DATA).length == 0 && (
         <Card className="flex flex-col items-center justify-center min-h-screen">
         <CardHeader>
           <CardTitle className="text-center"> Ready? 🚀</CardTitle>
@@ -590,7 +584,7 @@ export default function Page() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {!isLoading &&  DATA && Object.keys(DATA).length > 0 && (
-          <Button className="absolute top-4 left-4 px-4 py-2 rounded" variant="ghost">Start Over</Button>
+          <Button className="absolute top-4 left-4 px-4 py-2 rounded" variant="ghost">Upload New CV/Resume</Button>
         )}
         
       </DialogTrigger>

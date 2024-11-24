@@ -8,6 +8,7 @@ import { Inter as FontSans } from "next/font/google";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar";
 import "../globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -70,6 +71,7 @@ export default function RootLayout({
               <main className="flex-grow max-w-2xl mx-auto w-full py-12 sm:py-24">
                 {children}
               </main>
+              <Toaster />
             </div>
           </TooltipProvider>
         </ThemeProvider>

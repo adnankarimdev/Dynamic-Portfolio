@@ -56,10 +56,8 @@ export default function AuthPage() {
         password: password,
       })
       .then((response) => {
-        localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("userEmail", email);
-        localStorage.setItem("accountType", response.data.account_type);
-        sessionStorage.setItem("authToken", response.data.token);
+        sessionStorage.setItem("authToken", response.data.user.id);
         toast({
           title: "Successfully Logged In",
           description: "Welcome back 👋",
@@ -77,10 +75,19 @@ export default function AuthPage() {
         });
       });
   };
+
   const handleSignUp = () => {
-    // TODO: add valdiation steps here
-    // For now, we'll save the number of locations as 1.
-    // Eventually, we'll need to set up the backend to select the number of locations based on pricing.
+    // Basic validation for email and password
+    if (!email || !password) {
+      toast({
+        title: "Error",
+        description: "Please provide both email and password.",
+        duration: 1000,
+      });
+      return;
+    }
+  
+    // Make the signup request to the Django backend
     axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/sign-up/`, {
         email: email,
@@ -88,25 +95,30 @@ export default function AuthPage() {
       })
       .then((response) => {
         toast({
-          title: "User Created",
-          description: "Welcome 🥳",
+          title: "Account Created",
+          description: "Welcome to our app! 🎉",
           duration: 1000,
         });
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("accountType", accountType);
-        sessionStorage.setItem("authToken", response.data.token);
+  
+        // Store the auth token (if returned)
+        sessionStorage.setItem("authToken", response.data.user.id);
+        
+        // Navigate to home or onboarding page
         setTimeout(() => {
-            router.push("/home")
+          router.push("/home");
         }, 2000);
       })
       .catch((error) => {
+        console.error(error); // Log the error for debugging
         toast({
-          title: "Failed to sign up.",
-          description: "It's not you, it's us. Please try again.",
+          title: "Signup Failed",
+          description:
+            error.response?.data?.message || "Something went wrong. Please try again.",
           duration: 1000,
         });
       });
   };
+
   return (
     <Card className="w-[350px] ">
       <CardHeader>

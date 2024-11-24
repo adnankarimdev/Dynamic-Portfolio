@@ -2,7 +2,7 @@
 import { HackathonCard } from "@/components/hackathon-card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { PlusCircle, Check, X } from 'lucide-react'
+import { PlusCircle, Check, X, Loader2 } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
@@ -60,6 +60,7 @@ export default function Page() {
   const [pdfText, setPdfText] = useState('');
   const [openRealTime, setOpenRealTime] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isSaving, setIsSaving] = useState(false)
 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +98,7 @@ export default function Page() {
 
   const handleSave = async () =>
   {
+    setIsSaving(true)
     axios
     .post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/save-website-details/`,
@@ -105,17 +107,19 @@ export default function Page() {
     .then((response) => {
       toast({
         title: "Portfolio Saved.",
-        action: <ToastAction altText="Try again" onClick={() => {window.open(response.data.url, "_blank")}}>Open Portfolio</ToastAction>,
+        action: <ToastAction altText="Success" onClick={() => {window.open(response.data.url, "_blank")}}>Open Portfolio</ToastAction>,
         duration: 3000,
       });
+      setIsSaving(false)
     })
     .catch((error) => {
       console.log(error);
       toast({
         title: "Failed to update",
         description: error.response.data.error,
-        duration: 1000,
+        duration: 3000,
       });
+      setIsSaving(false)
     });
   }
 
@@ -187,8 +191,8 @@ export default function Page() {
     // I have no clue why router.push isnt working.
     // I always have to manualy refresh the page. for now, this is a workaround
     // router.refresh()
-    // router.push("/realtime")
-    window.location.href = "/realtime"
+    router.push("/realtime") 
+    // window.location.href = "/realtime"
   }
 
 
@@ -247,7 +251,7 @@ export default function Page() {
 
     <main className="flex flex-col min-h-[100dvh] space-y-10">
     <Button className="absolute top-4 right-4 px-4 py-2 rounded" variant="ghost" onClick={handleSave}>
-{"Publish"}
+{isSaving ?  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Publish"}
 </Button>
     <section id="hero">
       <div className="mx-auto w-full max-w-2xl space-y-8">

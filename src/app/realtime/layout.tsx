@@ -73,22 +73,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-<html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          dmSans.className
-        )}
-      >
         <ThemeProvider attribute="class" defaultTheme="light">
           <TooltipProvider delayDuration={0}>
               {/* <Navbar /> */}
-              <main>
+              <main         className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          dmSans.className
+        )}>
                 {children}
               </main>
           </TooltipProvider>
         </ThemeProvider>
-      </body>
-    </html>
   );
 }

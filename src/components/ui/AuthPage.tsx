@@ -96,7 +96,7 @@ export default function AuthPage() {
       .then((response) => {
         toast({
           title: "Account Created",
-          description: "Welcome to our app! 🎉",
+          description: "Welcome! 🎉",
           duration: 1000,
         });
   

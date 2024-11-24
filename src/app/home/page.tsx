@@ -586,7 +586,6 @@ export default function Page() {
   </main>
   
     )}
-    <Button className="absolute top-4 left-[45%] px-4 py-2 rounded" variant="ghost" onClick={changeToRealTime}>Talk with my portfolio</Button>
     
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>

@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Inter as FontSans, Staatliches } from "next/font/google";
+import { Inter as FontSans, Staatliches, Space_Mono, DM_Sans } from "next/font/google";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar";
 import "../globals.css";
@@ -13,6 +13,18 @@ const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'], // Choose the subsets you need
+  weight: ['400'], // Specify weights (normal, bold, etc.)
+});
+
+
+const dmSans = DM_Sans({
+  subsets: ['latin'], // Choose the subsets you need
+  weight: ['400'], // Specify weights (normal, bold, etc.)
+});
+
 
 const staatliches = Staatliches({
   weight: "400",
@@ -65,7 +77,7 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          staatliches.className
+          dmSans.className
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="light">

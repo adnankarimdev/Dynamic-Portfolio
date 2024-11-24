@@ -62,7 +62,7 @@ export default function AuthPage() {
         sessionStorage.setItem("authToken", response.data.token);
         toast({
           title: "Successfully Logged In",
-          description: "Welcome to Vero.",
+          description: "Welcome back 👋",
           duration: 1000,
         });
         setTimeout(() => {
@@ -89,7 +89,7 @@ export default function AuthPage() {
       .then((response) => {
         toast({
           title: "User Created",
-          description: "Welcome to Vero.",
+          description: "Welcome 🥳",
           duration: 1000,
         });
         localStorage.setItem("userEmail", email);

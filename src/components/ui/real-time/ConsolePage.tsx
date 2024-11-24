@@ -642,7 +642,6 @@ export function ConsolePage(DATA: Props) {
         <div className="visualization">
           <div className="grid justify-center items-center">
             <div className="visualization-entry">
-              <h2 className="text-center text-white mb-2">Server</h2>
               <VoiceGridVisualization
                 type="server"
                 frequencyData={serverFrequencies}

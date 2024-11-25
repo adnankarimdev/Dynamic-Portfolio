@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardHeader } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
-import { ChevronRightIcon, Edit2Icon, SaveIcon } from 'lucide-react'
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { ChevronRightIcon, Edit2Icon, SaveIcon } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ResumeCardProps {
-  logoUrl: string
-  altText: string
-  title: string
-  subtitle?: string
-  href?: string
-  badges?: readonly string[]
-  period: string
-  description?: string
-  onSave?: (updatedData: Partial<ResumeCardProps>) => void
-  readOnly: boolean
+  logoUrl: string;
+  altText: string;
+  title: string;
+  subtitle?: string;
+  href?: string;
+  badges?: readonly string[];
+  period: string;
+  description?: string;
+  onSave?: (updatedData: Partial<ResumeCardProps>) => void;
+  readOnly: boolean;
 }
 
 export const ResumeCard = ({
@@ -37,19 +37,19 @@ export const ResumeCard = ({
   readOnly,
   onSave,
 }: ResumeCardProps) => {
-  const [isEditing, setIsEditing] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [logoUrl, setLogoUrl] = useState(initialLogoUrl)
-  const [altText, setAltText] = useState(initialAltText)
-  const [title, setTitle] = useState(initialTitle)
-  const [subtitle, setSubtitle] = useState(initialSubtitle || '')
-  const [href, setHref] = useState(initialHref || '')
-  const [badges, setBadges] = useState(initialBadges?.join(', ') || '')
-  const [period, setPeriod] = useState(initialPeriod)
-  const [description, setDescription] = useState(initialDescription || '')
+  const [isEditing, setIsEditing] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(initialLogoUrl);
+  const [altText, setAltText] = useState(initialAltText);
+  const [title, setTitle] = useState(initialTitle);
+  const [subtitle, setSubtitle] = useState(initialSubtitle || "");
+  const [href, setHref] = useState(initialHref || "");
+  const [badges, setBadges] = useState(initialBadges?.join(", ") || "");
+  const [period, setPeriod] = useState(initialPeriod);
+  const [description, setDescription] = useState(initialDescription || "");
 
   const handleSave = () => {
-    setIsEditing(false)
+    setIsEditing(false);
     if (onSave) {
       onSave({
         logoUrl,
@@ -57,43 +57,46 @@ export const ResumeCard = ({
         title,
         subtitle: subtitle || undefined,
         href: href || undefined,
-        badges: badges.split(',').map(badge => badge.trim()),
+        badges: badges.split(",").map((badge) => badge.trim()),
         period,
         description: description || undefined,
-      })
+      });
     }
-  }
+  };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (description && !isEditing) {
-      e.preventDefault()
-      setIsExpanded(!isExpanded)
+      e.preventDefault();
+      setIsExpanded(!isExpanded);
     }
-  }
+  };
 
   return (
     <Card className="flex relative">
-<div className="flex justify-end">
-  <div className="flex items-center space-x-4">
-    {!readOnly && (
-    <Button
-    variant="ghost"
-    size="icon"
-    onClick={(e) => {
-      e.stopPropagation();
-      if (isEditing) {
-        handleSave();
-      } else {
-        setIsEditing(true);
-      }
-    }}
-  >
-    {isEditing ? <SaveIcon className="h-4 w-4" /> : <Edit2Icon className="h-4 w-4" />}
-  </Button>
-    )}
-
-  </div>
-</div>
+      <div className="flex justify-end">
+        <div className="flex items-center space-x-4">
+          {!readOnly && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isEditing) {
+                  handleSave();
+                } else {
+                  setIsEditing(true);
+                }
+              }}
+            >
+              {isEditing ? (
+                <SaveIcon className="h-4 w-4" />
+              ) : (
+                <Edit2Icon className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+        </div>
+      </div>
       <div className="flex-none">
         <Avatar className="border size-12 m-auto bg-muted-background dark:bg-foreground">
           {isEditing ? (
@@ -105,12 +108,19 @@ export const ResumeCard = ({
               placeholder="Logo URL"
             />
           ) : (
-            <AvatarImage src={logoUrl} alt={altText} className="object-contain" />
+            <AvatarImage
+              src={logoUrl}
+              alt={altText}
+              className="object-contain"
+            />
           )}
           <AvatarFallback>{altText[0]}</AvatarFallback>
         </Avatar>
       </div>
-      <div className="flex-grow ml-4 items-center flex-col group" onClick={handleClick}>
+      <div
+        className="flex-grow ml-4 items-center flex-col group"
+        onClick={handleClick}
+      >
         <CardHeader>
           <div className="flex items-center justify-between gap-x-2 text-base">
             <h3 className="inline-flex items-center justify-center font-semibold leading-none text-xs sm:text-sm">
@@ -126,8 +136,12 @@ export const ResumeCard = ({
               )}
               {!isEditing && badges && (
                 <span className="inline-flex gap-x-1 ml-2">
-                  {badges.split(',').map((badge, index) => (
-                    <Badge variant="secondary" className="align-middle text-xs" key={index}>
+                  {badges.split(",").map((badge, index) => (
+                    <Badge
+                      variant="secondary"
+                      className="align-middle text-xs"
+                      key={index}
+                    >
                       {badge.trim()}
                     </Badge>
                   ))}
@@ -137,7 +151,7 @@ export const ResumeCard = ({
                 <ChevronRightIcon
                   className={cn(
                     "size-4 translate-x-0 transform opacity-0 transition-all duration-300 ease-out group-hover:translate-x-1 group-hover:opacity-100",
-                    isExpanded ? "rotate-90" : "rotate-0"
+                    isExpanded ? "rotate-90" : "rotate-0",
                   )}
                 />
               )}
@@ -205,5 +219,5 @@ export const ResumeCard = ({
         )}
       </div>
     </Card>
-  )
-}
+  );
+};

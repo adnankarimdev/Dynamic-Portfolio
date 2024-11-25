@@ -53,7 +53,7 @@ export function AppSidebar() {
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userEmail");
-    sessionStorage.removeItem("authToken")
+    sessionStorage.removeItem("authToken");
     router.push("/login");
   };
 
@@ -61,8 +61,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <div className="mb-2">
-          </div>
+          <div className="mb-2"></div>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map(
@@ -72,7 +71,7 @@ export function AppSidebar() {
                       variant="ghost"
                       className={cn(
                         "w-full justify-start px-2",
-                        "hover:bg-accent hover:text-accent-foreground"
+                        "hover:bg-accent hover:text-accent-foreground",
                       )}
                       asChild
                     >
@@ -95,7 +94,7 @@ export function AppSidebar() {
                         </Link>
                       )}
                     </Button>
-                  )
+                  ),
               )}
             </SidebarMenu>
           </SidebarGroupContent>

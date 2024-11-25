@@ -9,15 +9,14 @@ const staatliches = Staatliches({
   subsets: ["latin"],
 });
 
-
 const dmSans = DM_Sans({
-  subsets: ['latin'], // Choose the subsets you need
-  weight: ['400'], // Specify weights (normal, bold, etc.)
+  subsets: ["latin"], // Choose the subsets you need
+  weight: ["400"], // Specify weights (normal, bold, etc.)
 });
 
 const spaceMono = Space_Mono({
-  subsets: ['latin'], // Choose the subsets you need
-  weight: ['400'], // Specify weights (normal, bold, etc.)
+  subsets: ["latin"], // Choose the subsets you need
+  weight: ["400"], // Specify weights (normal, bold, etc.)
 });
 
 export const metadata: Metadata = {

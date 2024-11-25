@@ -37,7 +37,7 @@ export function PaperCard({
     <Card
       className={cn(
         "flex flex-col overflow-hidden border hover:shadow-lg transition-all duration-300 ease-out h-full",
-        className
+        className,
       )}
     >
       <CardHeader className="px-4 py-3">

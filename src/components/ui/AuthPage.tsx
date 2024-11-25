@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ export default function AuthPage() {
           duration: 1000,
         });
         setTimeout(() => {
-        router.push("/home")
+          router.push("/home");
         }, 2000);
       })
       .catch((error) => {
@@ -86,7 +86,7 @@ export default function AuthPage() {
       });
       return;
     }
-  
+
     // Make the signup request to the Django backend
     axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/sign-up/`, {
@@ -99,10 +99,10 @@ export default function AuthPage() {
           description: "Welcome! 🎉",
           duration: 1000,
         });
-  
+
         // Store the auth token (if returned)
         sessionStorage.setItem("authToken", response.data.user.id);
-        
+
         // Navigate to home or onboarding page
         setTimeout(() => {
           router.push("/home");
@@ -113,7 +113,8 @@ export default function AuthPage() {
         toast({
           title: "Signup Failed",
           description:
-            error.response?.data?.message || "Something went wrong. Please try again.",
+            error.response?.data?.message ||
+            "Something went wrong. Please try again.",
           duration: 1000,
         });
       });

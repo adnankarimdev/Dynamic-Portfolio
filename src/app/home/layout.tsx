@@ -5,7 +5,7 @@ import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import "../globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -57,19 +57,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <TooltipProvider delayDuration={0}>
-            <div className="flex flex-col min-h-screen">
-              {/* <Navbar /> */}
-              <main               className={cn(
-          "min-h-screen bg-background font-sans antialiased max-w-2xl mx-auto py-12 sm:py-24 px-6",
-          fontSans.variable
-        )}>
-                {children}
-              </main>
-              <Toaster />
-            </div>
-          </TooltipProvider>
-        </ThemeProvider>
+    <ThemeProvider attribute="class" defaultTheme="light">
+      <TooltipProvider delayDuration={0}>
+        <div className="flex flex-col min-h-screen">
+          {/* <Navbar /> */}
+          <main
+            className={cn(
+              "min-h-screen bg-background font-sans antialiased max-w-2xl mx-auto py-12 sm:py-24 px-6",
+              fontSans.variable,
+            )}
+          >
+            {children}
+          </main>
+          <Toaster />
+        </div>
+      </TooltipProvider>
+    </ThemeProvider>
   );
 }

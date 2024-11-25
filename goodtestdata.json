@@ -1,0 +1,342 @@
+{
+    "name": "Hi, I'm Claud 👋",
+    "initials": "CDP",
+    "url": "www.posquit0.com",
+    "location": "Seoul, Republic of Korea",
+    "locationLink": "",
+    "description": "A passionate Site Reliability Engineer and Software Architect with extensive experience in cloud infrastructure, DevOps practices, and robust software development.",
+    "summary": "Driven Site Reliability Engineer and Software Architect with over 8 years of experience in building and managing large-scale and resilient cloud infrastructure across multiple industries. Adept in optimizing AWS resources for cost efficiency while ensuring high availability and security compliance. Proven expertise in CI/CD automation, microservices architecture, and container orchestration through Kubernetes. A strong advocate for using best practices in infrastructure as code, with a focus on operational efficiency and collaboration with cross-functional teams.",
+    "avatarUrl": "",
+    "skills": [
+      "DevOps",
+      "AWS",
+      "Docker",
+      "Kubernetes",
+      "Rancher",
+      "Vagrant",
+      "Packer",
+      "Terraform",
+      "Jenkins",
+      "CircleCI",
+      "Koa",
+      "Express",
+      "Django",
+      "REST API",
+      "Hugo",
+      "Redux",
+      "React",
+      "HTML5",
+      "LESS",
+      "SASS",
+      "Node.js",
+      "Python",
+      "JAVA",
+      "OCaml",
+      "LaTeX"
+    ],
+    "navbar": [
+      { "href": "/", "icon": "HomeIcon", "label": "Home" },
+      { "href": "/blog", "icon": "NotebookIcon", "label": "Blog" }
+    ],
+    "contact": {
+      "email": "posquit0.bj@gmail.com",
+      "tel": "+82 10-9030-1843",
+      "social": {
+        "GitHub": {
+          "name": "GitHub",
+          "url": "https://github.com/posquit0",
+          "icon": "Icons.github",
+          "navbar": true
+        },
+        "LinkedIn": {
+          "name": "LinkedIn",
+          "url": "https://www.linkedin.com/in/posquit0",
+          "icon": "Icons.linkedin",
+          "navbar": true
+        },
+        "X": {
+          "name": "X",
+          "url": "https://twitter.com/posquit0",
+          "icon": "Icons.x",
+          "navbar": true
+        },
+        "Youtube": {
+          "name": "Youtube",
+          "url": "https://www.youtube.com/channel/posquit0",
+          "icon": "Icons.youtube",
+          "navbar": true
+        },
+        "email": {
+          "name": "Send Email",
+          "url": "mailto:posquit0.bj@gmail.com",
+          "icon": "Icons.email",
+          "navbar": false
+        }
+      }
+    },
+    "work": [
+      {
+        "company": "Danggeun Pay Inc. (KarrotPay)",
+        "href": "",
+        "badges": [],
+        "location": "Seoul, S.Korea",
+        "title": "Founding Member & Site Reliability Engineer & Infrastructure Team Lead",
+        "logoUrl": "https://logo.clearbit.com/danggeunpay.com",
+        "start": "Mar. 2021",
+        "end": "Present",
+        "description": "Designed and provisioned the entire infrastructure on the AWS cloud to meet security compliance and acquire a business license for financial services in Korea."
+      },
+      {
+        "company": "Danggeun Market Inc.",
+        "href": "",
+        "badges": [],
+        "location": "Seoul, S.Korea",
+        "title": "Site Reliability Engineer",
+        "logoUrl": "https://logo.clearbit.com/danggeun.com",
+        "start": "Feb. 2021",
+        "end": "Mar. 2021",
+        "description": ""
+      },
+      {
+        "company": "Kasa",
+        "href": "",
+        "badges": [],
+        "location": "Seoul, S.Korea",
+        "title": "Founding Member & Director of Infrastructure Division",
+        "logoUrl": "https://logo.clearbit.com/kasa.com",
+        "start": "Jun. 2018",
+        "end": "Jan. 2021",
+        "description": "Managed complex network configurations on AWS and designed an on-boarding process to guide new engineers."
+      },
+      {
+        "company": "Omnious. Co., Ltd.",
+        "href": "",
+        "badges": [],
+        "location": "Seoul, S.Korea",
+        "title": "Software Architect",
+        "logoUrl": "https://logo.clearbit.com/omnious.co.kr",
+        "start": "Jun. 2017",
+        "end": "May 2018",
+        "description": "Built fully automated CI/CD pipelines and designed service architecture for a Machine Learning based product."
+      },
+      {
+        "company": "PLAT Corp.",
+        "href": "",
+        "badges": [],
+        "location": "Seoul, S.Korea",
+        "title": "Co-Founder & Software Engineer",
+        "logoUrl": "https://logo.clearbit.com/plat.co.kr",
+        "start": "Jan. 2016",
+        "end": "Jun. 2017",
+        "description": "Implemented RESTful API server for a car rental booking application."
+      },
+      {
+        "company": "R.O.K Cyber Command, MND",
+        "href": "",
+        "badges": [],
+        "location": "Seoul, S.Korea",
+        "title": "Software Engineer & Security Researcher",
+        "logoUrl": "",
+        "start": "Aug. 2014",
+        "end": "Apr. 2016",
+        "description": "Lead engineer on an agent-less backtracking system."
+      },
+      {
+        "company": "NEXON",
+        "href": "",
+        "badges": [],
+        "location": "Seoul, S.Korea & LA, U.S.A",
+        "title": "Game Developer Intern",
+        "logoUrl": "https://logo.clearbit.com/nexon.com",
+        "start": "Jan. 2013",
+        "end": "Feb. 2013",
+        "description": "Developed an action puzzle game."
+      }
+    ],
+    "education": [
+      {
+        "school": "POSTECH (Pohang University of Science and Technology)",
+        "href": "",
+        "degree": "B.S. in Computer Science and Engineering",
+        "logoUrl": "https://logo.clearbit.com/postech.ac.kr",
+        "start": "Mar. 2010",
+        "end": "Aug. 2017"
+      }
+    ],
+    "projects": [],
+    "hackathons": [],
+    "papers": [],
+    "certifications": [
+      {
+        "title": "AWS Certified Advanced Networking - Specialty",
+        "issuingOrganization": "Amazon Web Services (AWS)",
+        "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
+        "dateIssued": "2023",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "AWS Certified Developer – Associate",
+        "issuingOrganization": "Amazon Web Services (AWS)",
+        "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
+        "dateIssued": "2023",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "AWS Certified Cloud Practitioner",
+        "issuingOrganization": "Amazon Web Services (AWS)",
+        "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
+        "dateIssued": "2023",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "AWS Certified Security - Specialty",
+        "issuingOrganization": "Amazon Web Services (AWS)",
+        "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
+        "dateIssued": "2022",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "AWS Certified Solutions Architect – Professional",
+        "issuingOrganization": "Amazon Web Services (AWS)",
+        "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
+        "dateIssued": "2022",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "AWS Certified Solutions Architect – Associate",
+        "issuingOrganization": "Amazon Web Services (AWS)",
+        "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
+        "dateIssued": "2019",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "AWS Certified SysOps Administrator – Associate",
+        "issuingOrganization": "Amazon Web Services (AWS)",
+        "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
+        "dateIssued": "2021",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "Certified Kubernetes Application Developer (CKAD)",
+        "issuingOrganization": "The Linux Foundation",
+        "logoUrl": "https://logo.clearbit.com/linuxfoundation.org",
+        "dateIssued": "2020",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "HashiCorp Certified: Consul Associate (002)",
+        "issuingOrganization": "HashiCorp",
+        "logoUrl": "https://logo.clearbit.com/hashicorp.com",
+        "dateIssued": "2023",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "HashiCorp Certified: Terraform Associate (003)",
+        "issuingOrganization": "HashiCorp",
+        "logoUrl": "https://logo.clearbit.com/hashicorp.com",
+        "dateIssued": "2023",
+        "credentialId": "",
+        "url": ""
+      },
+      {
+        "title": "HashiCorp Certified: Terraform Associate (002)",
+        "issuingOrganization": "HashiCorp",
+        "logoUrl": "https://logo.clearbit.com/hashicorp.com",
+        "dateIssued": "2020",
+        "credentialId": "",
+        "url": ""
+      }
+    ],
+    "volunteerWork": [],
+    "awards": [
+      {
+        "title": "2nd Place, AWS ASEAN AI/ML GameDay",
+        "organization": "AWS",
+        "dateAwarded": "2021",
+        "description": ""
+      },
+      {
+        "title": "Finalist, DEFCON 28th CTF Hacking Competition World Final",
+        "organization": "DEFCON",
+        "dateAwarded": "2020",
+        "description": ""
+      },
+      {
+        "title": "Finalist, DEFCON 26th CTF Hacking Competition World Final",
+        "organization": "DEFCON",
+        "dateAwarded": "2018",
+        "description": ""
+      },
+      {
+        "title": "Finalist, DEFCON 25th CTF Hacking Competition World Final",
+        "organization": "DEFCON",
+        "dateAwarded": "2017",
+        "description": ""
+      },
+      {
+        "title": "Silver Prize, KISA HDCON Hacking Competition Final",
+        "organization": "KISA",
+        "dateAwarded": "2017",
+        "description": ""
+      },
+      {
+        "title": "2nd Place, AWS Korea GameDay",
+        "organization": "AWS",
+        "dateAwarded": "2021",
+        "description": ""
+      }
+    ],
+    "languages": [
+      {
+        "name": "Korean",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Japanese",
+        "proficiency": "Conversational"
+      }
+    ],
+    "interests": [],
+    "testimonials": [],
+    "openSourceContributions": [],
+    "speakingEngagements": [
+      {
+        "title": "Hosting Web Application for Free Utilizing GitHub, Netlify and Cloudflare",
+        "event": "DevFest Seoul by Google Developer Group Korea",
+        "location": "Seoul, S.Korea",
+        "date": "Nov. 2017",
+        "slidesLink": "",
+        "description": "Introduced the history of web technology and the JAM stack which is for modern web application development."
+      },
+      {
+        "title": "DEFCON 20TH: The Way to Go to Las Vegas",
+        "event": "6th CodeEngn (Reverse Engineering Conference)",
+        "location": "Seoul, S.Korea",
+        "date": "Jul. 2012",
+        "slidesLink": "",
+        "description": "Introduced CTF hacking competition and advanced techniques and strategy for CTF."
+      },
+      {
+        "title": "Metasploit 101",
+        "event": "6th Hacking Camp",
+        "location": "S.Korea",
+        "date": "Sep. 2012",
+        "slidesLink": "",
+        "description": "Introduced basic procedure for penetration testing and how to use Metasploit."
+      }
+    ],
+    "patents": []
+  }

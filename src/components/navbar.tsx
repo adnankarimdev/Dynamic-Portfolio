@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Dock, DockIcon } from "@/components/magicui/dock";
 import { useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -16,20 +16,23 @@ import { HomeIcon, LogOut } from "lucide-react";
 import { PortfolioData } from "./types/types";
 import Link from "next/link";
 
-export default function Navbar() {
+interface NavBarProps {
+  showLogout?:boolean
+}
+export default function Navbar({showLogout}:NavBarProps) {
   const router = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userEmail");
-    sessionStorage.removeItem("authToken")
+    sessionStorage.removeItem("authToken");
     // router.push("/login");
-    window.location.href = "/login"
+    window.location.href = "/login";
   };
 
   const handleSwitchToPortfolio = () => {
     // router.push("/login");
-    window.location.href = "/realtime"
+    window.location.href = "/realtime";
   };
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 mx-auto mb-4 flex origin-bottom h-full max-h-14">
@@ -55,46 +58,46 @@ export default function Navbar() {
             </Tooltip>
           </DockIcon>
         ))} */}
-          <DockIcon key={"Home"}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    href="/home"
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "icon" }),
-                      "size-12"
-                    )}
-                  >
-                    <HomeIcon className="size-4" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{"Home"}</p>
-                </TooltipContent>
-              </Tooltip>
-            </DockIcon>
+        <DockIcon key={"Home"}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/home"
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "icon" }),
+                  "size-12",
+                )}
+              >
+                <HomeIcon className="size-4" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{"Home"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </DockIcon>
         <DockIcon key={"talk-with-portfolio"}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent the default behavior of the link
-                      handleSwitchToPortfolio(); // Call your custom function instead
-                    }}
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "icon" }),
-                      "size-12"
-                    )}
-                  >
-                    <TbRobot className="size-4" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{"Talk with Portfolio"}</p>
-                </TooltipContent>
-              </Tooltip>
-            </DockIcon>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent the default behavior of the link
+                  handleSwitchToPortfolio(); // Call your custom function instead
+                }}
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "icon" }),
+                  "size-12",
+                )}
+              >
+                <TbRobot className="size-4" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{"Talk with Portfolio"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </DockIcon>
         <Separator orientation="vertical" className="h-full" />
         {/* {Object.entries(DATA.contact.social)
           .filter(([_, social]) => social.navbar)
@@ -119,28 +122,31 @@ export default function Navbar() {
             </DockIcon>
           ))} */}
         {/* <Separator orientation="vertical" className="h-full py-2" /> */}
-        <DockIcon key={"logout"}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent the default behavior of the link
-                      handleLogout(); // Call your custom function instead
-                    }}
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "icon" }),
-                      "size-12"
-                    )}
-                  >
-                    <LogOut className="size-4" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{"Logout"}</p>
-                </TooltipContent>
-              </Tooltip>
-            </DockIcon>
+        {showLogout && (
+                  <DockIcon key={"logout"}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevent the default behavior of the link
+                          handleLogout(); // Call your custom function instead
+                        }}
+                        className={cn(
+                          buttonVariants({ variant: "ghost", size: "icon" }),
+                          "size-12",
+                        )}
+                      >
+                        <LogOut className="size-4" />
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{"Logout"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </DockIcon>
+        )}
+
         <DockIcon>
           <Tooltip>
             <TooltipTrigger asChild>

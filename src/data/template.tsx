@@ -13,7 +13,7 @@ export const DATA = {
   skills: [],
   navbar: [
     { href: "/", icon: HomeIcon, label: "Home" },
-    { href: "/blog", icon: NotebookIcon, label: "Blog" }
+    { href: "/blog", icon: NotebookIcon, label: "Blog" },
   ],
   contact: {
     email: "",
@@ -23,33 +23,33 @@ export const DATA = {
         name: "GitHub",
         url: "",
         icon: Icons.github,
-        navbar: true
+        navbar: true,
       },
       LinkedIn: {
         name: "LinkedIn",
         url: "",
         icon: Icons.linkedin,
-        navbar: true
+        navbar: true,
       },
       X: {
         name: "X",
         url: "",
         icon: Icons.x,
-        navbar: true
+        navbar: true,
       },
       Youtube: {
         name: "Youtube",
         url: "",
         icon: Icons.youtube,
-        navbar: true
+        navbar: true,
       },
       email: {
         name: "Send Email",
         url: "",
         icon: Icons.email,
-        navbar: false
-      }
-    }
+        navbar: false,
+      },
+    },
   },
   work: [
     {
@@ -61,8 +61,8 @@ export const DATA = {
       logoUrl: "",
       start: "",
       end: "",
-      description: ""
-    }
+      description: "",
+    },
   ],
   education: [
     {
@@ -71,8 +71,8 @@ export const DATA = {
       degree: "",
       logoUrl: "",
       start: "",
-      end: ""
-    }
+      end: "",
+    },
   ],
   projects: [
     {
@@ -86,14 +86,14 @@ export const DATA = {
         {
           type: "",
           href: "",
-          icon: null
-        }
+          icon: null,
+        },
       ],
       image: "",
-      video: ""
-    }
+      video: "",
+    },
   ],
-    //we'll probs want to make different keys; not hackathon perse. but all sorts of tech resumes   
+  //we'll probs want to make different keys; not hackathon perse. but all sorts of tech resumes
   hackathons: [
     {
       title: "",
@@ -101,15 +101,15 @@ export const DATA = {
       location: "",
       description: "",
       image: "",
-      mlh: "",  // Optional
-      win: "",   // Optional
+      mlh: "", // Optional
+      win: "", // Optional
       links: [
         {
           title: "",
           icon: null,
-          href: ""
-        }
-      ]
-    }
-  ]
+          href: "",
+        },
+      ],
+    },
+  ],
 } as const;

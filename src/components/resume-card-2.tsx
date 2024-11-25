@@ -1,27 +1,27 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { ChevronDown, ExternalLink, Edit2Icon, SaveIcon } from 'lucide-react'
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import Link from 'next/link'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { ChevronDown, ExternalLink, Edit2Icon, SaveIcon } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
 
 interface ResumeCardProps {
-  logoUrl: string
-  altText: string
-  title: string
-  subtitle?: string
-  href?: string
-  badges?: readonly string[]
-  period: string
-  description?: string
-  onSave?: (updatedData: Partial<ResumeCardProps>) => void
-  readOnly: boolean
+  logoUrl: string;
+  altText: string;
+  title: string;
+  subtitle?: string;
+  href?: string;
+  badges?: readonly string[];
+  period: string;
+  description?: string;
+  onSave?: (updatedData: Partial<ResumeCardProps>) => void;
+  readOnly: boolean;
 }
 
 export const ResumeCard = ({
@@ -34,21 +34,21 @@ export const ResumeCard = ({
   period: initialPeriod,
   description: initialDescription,
   onSave,
-  readOnly
+  readOnly,
 }: ResumeCardProps) => {
-  const [isEditing, setIsEditing] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [logoUrl, setLogoUrl] = useState(initialLogoUrl)
-  const [altText, setAltText] = useState(initialAltText)
-  const [title, setTitle] = useState(initialTitle)
-  const [subtitle, setSubtitle] = useState(initialSubtitle || '')
-  const [href, setHref] = useState(initialHref || '')
-  const [badges, setBadges] = useState(initialBadges?.join(', ') || '')
-  const [period, setPeriod] = useState(initialPeriod)
-  const [description, setDescription] = useState(initialDescription || '')
+  const [isEditing, setIsEditing] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(initialLogoUrl);
+  const [altText, setAltText] = useState(initialAltText);
+  const [title, setTitle] = useState(initialTitle);
+  const [subtitle, setSubtitle] = useState(initialSubtitle || "");
+  const [href, setHref] = useState(initialHref || "");
+  const [badges, setBadges] = useState(initialBadges?.join(", ") || "");
+  const [period, setPeriod] = useState(initialPeriod);
+  const [description, setDescription] = useState(initialDescription || "");
 
   const handleSave = () => {
-    setIsEditing(false)
+    setIsEditing(false);
     if (onSave) {
       onSave({
         logoUrl,
@@ -56,19 +56,19 @@ export const ResumeCard = ({
         title,
         subtitle: subtitle || undefined,
         href: href || undefined,
-        badges: badges.split(',').map(badge => badge.trim()),
+        badges: badges.split(",").map((badge) => badge.trim()),
         period,
         description: description || undefined,
-      })
+      });
     }
-  }
+  };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (description && !isEditing) {
-      e.preventDefault()
-      setIsExpanded(!isExpanded)
+      e.preventDefault();
+      setIsExpanded(!isExpanded);
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto overflow-hidden transition-all duration-300 hover:shadow-lg">
@@ -141,7 +141,7 @@ export const ResumeCard = ({
                     placeholder="Badges (comma-separated)"
                   />
                 ) : (
-                  badges.split(',').map((badge, index) => (
+                  badges.split(",").map((badge, index) => (
                     <Badge key={index} variant="secondary" className="text-xs">
                       {badge.trim()}
                     </Badge>
@@ -154,7 +154,10 @@ export const ResumeCard = ({
         {(description || isEditing) && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: isExpanded || isEditing ? 'auto' : 0, opacity: isExpanded || isEditing ? 1 : 0 }}
+            animate={{
+              height: isExpanded || isEditing ? "auto" : 0,
+              opacity: isExpanded || isEditing ? 1 : 0,
+            }}
             transition={{ duration: 0.3 }}
             className="mt-4 overflow-hidden"
           >
@@ -184,8 +187,12 @@ export const ResumeCard = ({
                 }
               }}
             >
-              {isEditing ? <SaveIcon className="h-4 w-4 mr-2" /> : <Edit2Icon className="h-4 w-4 mr-2" />}
-              {isEditing ? 'Save' : 'Edit'}
+              {isEditing ? (
+                <SaveIcon className="h-4 w-4 mr-2" />
+              ) : (
+                <Edit2Icon className="h-4 w-4 mr-2" />
+              )}
+              {isEditing ? "Save" : "Edit"}
             </Button>
           )}
           {href && !isEditing && (
@@ -203,13 +210,14 @@ export const ResumeCard = ({
               onClick={() => setIsExpanded(!isExpanded)}
               className="ml-auto"
             >
-              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
-              {isExpanded ? 'Less' : 'More'}
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+              />
+              {isExpanded ? "Less" : "More"}
             </Button>
           )}
         </div>
       </CardContent>
     </Card>
-  )
-}
-
+  );
+};

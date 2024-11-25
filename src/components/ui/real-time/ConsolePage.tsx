@@ -9,35 +9,35 @@
  * You can run it with `npm run relay`, in parallel with `npm start`
  */
 const LOCAL_RELAY_SERVER_URL: string =
-  process.env.REACT_APP_LOCAL_RELAY_SERVER_URL || '';
+  process.env.REACT_APP_LOCAL_RELAY_SERVER_URL || "";
 
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState } from "react";
 
-import { RealtimeClient } from '@openai/realtime-api-beta';
-import { ItemType } from '@openai/realtime-api-beta/dist/lib/client.js';
-import { WavRecorder, WavStreamPlayer } from '@/lib/wavtools/index.js';
-import { useToast } from '@/hooks/use-toast';
-import { instructions } from '@/utils/conversation_config.js';
+import { RealtimeClient } from "@openai/realtime-api-beta";
+import { ItemType } from "@openai/realtime-api-beta/dist/lib/client.js";
+import { WavRecorder, WavStreamPlayer } from "@/lib/wavtools/index.js";
+import { useToast } from "@/hooks/use-toast";
+import { instructions } from "@/utils/conversation_config.js";
 import { useRouter } from "next/navigation";
-import { WavRenderer } from '@/utils/wav_renderer';
+import { WavRenderer } from "@/utils/wav_renderer";
 
-import { X, Edit, Zap, ArrowUp, ArrowDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { X, Edit, Zap, ArrowUp, ArrowDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // import './ConsolePage.scss';
-import { isJsxOpeningLikeElement } from 'typescript';
-import { strict } from 'assert';
-import { Label } from '../label';
-import VoiceGridVisualization from './VoiceGridVisualization';
-import { Switch } from '../switch';
-import { PortfolioData } from '@/components/types/types';
-import { Separator } from '../separator';
-import ColorPickerCard from './ColorPickerCard';
-import AnimatedLayout from '@/components/animations/AnimatedLayout';
-import { RainbowButton } from '../rainbow-button';
-import { AnimatedList } from '../animated-list';
-import { ScrollArea } from '../scroll-area';
-import Marquee from '../marquee';
+import { isJsxOpeningLikeElement } from "typescript";
+import { strict } from "assert";
+import { Label } from "../label";
+import VoiceGridVisualization from "./VoiceGridVisualization";
+import { Switch } from "../switch";
+import { PortfolioData } from "@/components/types/types";
+import { Separator } from "../separator";
+import ColorPickerCard from "./ColorPickerCard";
+import AnimatedLayout from "@/components/animations/AnimatedLayout";
+import { RainbowButton } from "../rainbow-button";
+import { AnimatedList } from "../animated-list";
+import { ScrollArea } from "../scroll-area";
+import Marquee from "../marquee";
 
 /**
  * Type for result from get_weather() function call
@@ -61,13 +61,13 @@ interface Coordinates {
  */
 interface RealtimeEvent {
   time: string;
-  source: 'client' | 'server';
+  source: "client" | "server";
   count?: number;
   event: { [key: string]: any };
 }
 
 interface Props {
-  DATA?: PortfolioData
+  DATA?: PortfolioData;
 }
 
 interface CardData {
@@ -81,32 +81,35 @@ export function ConsolePage(DATA: Props) {
    * Ask user for API Key
    * If we're using the local relay server, we don't need this
    */
-  const [isVAD, setIsVAD] = useState(false)
-  const [clientFrequencies, setClientFrequencies] = useState<any>(new Float32Array([0]))
+  const [isVAD, setIsVAD] = useState(false);
+  const [clientFrequencies, setClientFrequencies] = useState<any>(
+    new Float32Array([0]),
+  );
   const router = useRouter();
   const { toast } = useToast();
-  const [serverFrequencies, setServerFrequencies] = useState<any>(new Float32Array([0]))
-  const [cardData, setCardData] = useState<CardData>()
-  const [summaryOfCards, setSummaryOfCards] = useState<CardData[]>([])
+  const [serverFrequencies, setServerFrequencies] = useState<any>(
+    new Float32Array([0]),
+  );
+  const [cardData, setCardData] = useState<CardData>();
+  const [summaryOfCards, setSummaryOfCards] = useState<CardData[]>([]);
   const [showSummary, setShowSummary] = useState(false);
 
-
   const handleToggle = () => {
-    setIsVAD((prev) => !prev)
-    const newValue = !isVAD ? 'server_vad' : 'none'
-    changeTurnEndType(newValue)
-    console.log("Turn end type changed to:", newValue)
+    setIsVAD((prev) => !prev);
+    const newValue = !isVAD ? "server_vad" : "none";
+    changeTurnEndType(newValue);
+    console.log("Turn end type changed to:", newValue);
     // You can add any additional logic here
-  }
+  };
 
   // to do- set open ai key immediately.
   const apiKey = LOCAL_RELAY_SERVER_URL
-    ? ''
-    : localStorage.getItem('tmp::voice_api_key') ||
-      prompt('OpenAI API Key') ||
-      '';
-  if (apiKey !== '') {
-    localStorage.setItem('tmp::voice_api_key', apiKey);
+    ? ""
+    : localStorage.getItem("tmp::voice_api_key") ||
+      prompt("OpenAI API Key") ||
+      "";
+  if (apiKey !== "") {
+    localStorage.setItem("tmp::voice_api_key", apiKey);
   }
 
   /**
@@ -116,10 +119,10 @@ export function ConsolePage(DATA: Props) {
    * - RealtimeClient (API client)
    */
   const wavRecorderRef = useRef<WavRecorder>(
-    new WavRecorder({ sampleRate: 24000 })
+    new WavRecorder({ sampleRate: 24000 }),
   );
   const wavStreamPlayerRef = useRef<WavStreamPlayer>(
-    new WavStreamPlayer({ sampleRate: 24000 })
+    new WavStreamPlayer({ sampleRate: 24000 }),
   );
   const clientRef = useRef<RealtimeClient>(
     new RealtimeClient(
@@ -128,8 +131,8 @@ export function ConsolePage(DATA: Props) {
         : {
             apiKey: apiKey,
             dangerouslyAllowAPIKeyInBrowser: true,
-          }
-    )
+          },
+    ),
   );
 
   /**
@@ -178,9 +181,9 @@ export function ConsolePage(DATA: Props) {
     const s = Math.floor(delta / 1000) % 60;
     const m = Math.floor(delta / 60_000) % 60;
     const pad = (n: number) => {
-      let s = n + '';
+      let s = n + "";
       while (s.length < 2) {
-        s = '0' + s;
+        s = "0" + s;
       }
       return s;
     };
@@ -191,10 +194,10 @@ export function ConsolePage(DATA: Props) {
    * When you click the API key
    */
   const resetAPIKey = useCallback(() => {
-    const apiKey = prompt('OpenAI API Key');
+    const apiKey = prompt("OpenAI API Key");
     if (apiKey !== null) {
       localStorage.clear();
-      localStorage.setItem('tmp::voice_api_key', apiKey);
+      localStorage.setItem("tmp::voice_api_key", apiKey);
       window.location.reload();
     }
   }, []);
@@ -211,8 +214,8 @@ export function ConsolePage(DATA: Props) {
     // Set state variables
     startTimeRef.current = new Date().toISOString();
     setIsConnected(true);
-    setSummaryOfCards([])
-    setShowSummary(false)
+    setSummaryOfCards([]);
+    setShowSummary(false);
     setRealtimeEvents([]);
     setItems(client.conversation.getItems());
 
@@ -232,7 +235,7 @@ export function ConsolePage(DATA: Props) {
       },
     ]);
 
-    if (client.getTurnDetectionType() === 'server_vad') {
+    if (client.getTurnDetectionType() === "server_vad") {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
     }
   }, []);
@@ -241,9 +244,9 @@ export function ConsolePage(DATA: Props) {
    * Disconnect and reset conversation state
    */
   const disconnectConversation = useCallback(async () => {
-    setCardData(undefined)
+    setCardData(undefined);
     setIsConnected(false);
-    setShowSummary(true)
+    setShowSummary(true);
     setRealtimeEvents([]);
     setItems([]);
     setMemoryKv({});
@@ -302,16 +305,16 @@ export function ConsolePage(DATA: Props) {
   const changeTurnEndType = async (value: string) => {
     const client = clientRef.current;
     const wavRecorder = wavRecorderRef.current;
-    if (value === 'none' && wavRecorder.getStatus() === 'recording') {
+    if (value === "none" && wavRecorder.getStatus() === "recording") {
       await wavRecorder.pause();
     }
     client.updateSession({
-      turn_detection: value === 'none' ? null : { type: 'server_vad' },
+      turn_detection: value === "none" ? null : { type: "server_vad" },
     });
-    if (value === 'server_vad' && client.isConnected()) {
+    if (value === "server_vad" && client.isConnected()) {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
     }
-    setCanPushToTalk(value === 'none');
+    setCanPushToTalk(value === "none");
   };
 
   /**
@@ -334,14 +337,13 @@ export function ConsolePage(DATA: Props) {
    */
   useEffect(() => {
     const conversationEls = [].slice.call(
-      document.body.querySelectorAll('[data-conversation-content]')
+      document.body.querySelectorAll("[data-conversation-content]"),
     );
     for (const el of conversationEls) {
       const conversationEl = el as HTMLDivElement;
       conversationEl.scrollTop = conversationEl.scrollHeight;
     }
   }, [items]);
-
 
   useEffect(() => {
     const email = sessionStorage.getItem("authToken");
@@ -355,33 +357,33 @@ export function ConsolePage(DATA: Props) {
       return;
     }
     let isLoaded = true;
-  
+
     const wavRecorder = wavRecorderRef.current;
     const wavStreamPlayer = wavStreamPlayerRef.current;
-  
+
     const render = () => {
       if (!isLoaded) return;
-  
+
       // Fetch client frequencies
       const clientFrequencies = wavRecorder?.recording
-        ? wavRecorder.getFrequencies('voice')
+        ? wavRecorder.getFrequencies("voice")
         : { values: new Float32Array([0]) };
-  
+
       // Fetch server frequencies
       const serverFrequencies = wavStreamPlayer?.analyser
-        ? wavStreamPlayer.getFrequencies('voice')
+        ? wavStreamPlayer.getFrequencies("voice")
         : { values: new Float32Array([0]) };
-  
+
       // Update state for the visualization components
       setClientFrequencies(clientFrequencies.values); // Update state with values only
       setServerFrequencies(serverFrequencies.values); // Update state with values only
-  
+
       // Schedule the next animation frame
       window.requestAnimationFrame(render);
     };
-  
+
     render();
-  
+
     return () => {
       isLoaded = false; // Clean up when the component unmounts
     };
@@ -408,20 +410,20 @@ export function ConsolePage(DATA: Props) {
             clientCanvas.width = clientCanvas.offsetWidth;
             clientCanvas.height = clientCanvas.offsetHeight;
           }
-          clientCtx = clientCtx || clientCanvas.getContext('2d');
+          clientCtx = clientCtx || clientCanvas.getContext("2d");
           if (clientCtx) {
             clientCtx.clearRect(0, 0, clientCanvas.width, clientCanvas.height);
             const result = wavRecorder.recording
-              ? wavRecorder.getFrequencies('voice')
+              ? wavRecorder.getFrequencies("voice")
               : { values: new Float32Array([0]) };
             WavRenderer.drawBars(
               clientCanvas,
               clientCtx,
               result.values,
-              '#0099ff',
+              "#0099ff",
               10,
               0,
-              8
+              8,
             );
           }
         }
@@ -430,20 +432,20 @@ export function ConsolePage(DATA: Props) {
             serverCanvas.width = serverCanvas.offsetWidth;
             serverCanvas.height = serverCanvas.offsetHeight;
           }
-          serverCtx = serverCtx || serverCanvas.getContext('2d');
+          serverCtx = serverCtx || serverCanvas.getContext("2d");
           if (serverCtx) {
             serverCtx.clearRect(0, 0, serverCanvas.width, serverCanvas.height);
             const result = wavStreamPlayer.analyser
-              ? wavStreamPlayer.getFrequencies('voice')
+              ? wavStreamPlayer.getFrequencies("voice")
               : { values: new Float32Array([0]) };
             WavRenderer.drawBars(
               serverCanvas,
               serverCtx,
               result.values,
-              '#009900',
+              "#009900",
               10,
               0,
-              8
+              8,
             );
           }
         }
@@ -465,36 +467,36 @@ export function ConsolePage(DATA: Props) {
     // Get refs
     const wavStreamPlayer = wavStreamPlayerRef.current;
     const client = clientRef.current;
-    console.log(DATA)
-    console.log(JSON.stringify(DATA))
-    const newInstructions = instructions + JSON.stringify(DATA)
-    console.log(newInstructions)
+    console.log(DATA);
+    console.log(JSON.stringify(DATA));
+    const newInstructions = instructions + JSON.stringify(DATA);
+    console.log(newInstructions);
 
     // Set instructions
-    client.updateSession({ instructions: newInstructions});
+    client.updateSession({ instructions: newInstructions });
     // Set transcription, otherwise we don't get user transcriptions back
-    client.updateSession({ voice: 'ash' });
-    client.updateSession({ input_audio_transcription: { model: 'whisper-1' } });
+    client.updateSession({ voice: "ash" });
+    client.updateSession({ input_audio_transcription: { model: "whisper-1" } });
 
     // Add tools
     client.addTool(
       {
-        name: 'set_card_data',
+        name: "set_card_data",
         description:
-          'Populates the cardData object with a title, summary, a random color, and an appropriate text color based on contrast.',
+          "Populates the cardData object with a title, summary, a random color, and an appropriate text color based on contrast.",
         parameters: {
-          type: 'object',
+          type: "object",
           properties: {
             title: {
-              type: 'string',
-              description: 'The title of the card.',
+              type: "string",
+              description: "The title of the card.",
             },
             summary: {
-              type: 'string',
-              description: 'A brief summary to include in the card.',
+              type: "string",
+              description: "A brief summary to include in the card.",
             },
           },
-          required: ['title', 'summary'],
+          required: ["title", "summary"],
         },
       },
       async ({ title, summary }: { [key: string]: any }) => {
@@ -516,7 +518,7 @@ export function ConsolePage(DATA: Props) {
           { name: "Forest", hex: "#193918" },
           { name: "Kelly", hex: "#2D712A" },
         ];
-    
+
         // Helper to determine the best text color based on background brightness
         const calculateTextColor = (hex: string): string => {
           const r = parseInt(hex.slice(1, 3), 16);
@@ -525,10 +527,10 @@ export function ConsolePage(DATA: Props) {
           const brightness = (r * 299 + g * 587 + b * 114) / 1000;
           return brightness > 125 ? "black" : "white";
         };
-    
+
         // Choose a random color
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    
+
         // Populate cardData with the provided title, summary, and calculated colors
         setCardData({
           title,
@@ -536,13 +538,16 @@ export function ConsolePage(DATA: Props) {
           color: randomColor.hex,
           textColor: calculateTextColor(randomColor.hex),
         });
-        setSummaryOfCards((prevItems) => [...prevItems, {
-          title,
-          summary,
-          color: randomColor.hex,
-          textColor: calculateTextColor(randomColor.hex),
-        }])
-    
+        setSummaryOfCards((prevItems) => [
+          ...prevItems,
+          {
+            title,
+            summary,
+            color: randomColor.hex,
+            textColor: calculateTextColor(randomColor.hex),
+          },
+        ]);
+
         return {
           ok: true,
           cardData: {
@@ -552,27 +557,27 @@ export function ConsolePage(DATA: Props) {
             textColor: calculateTextColor(randomColor.hex),
           },
         };
-      }
+      },
     );
 
     client.addTool(
       {
-        name: 'set_memory',
-        description: 'Saves important data about the user into memory.',
+        name: "set_memory",
+        description: "Saves important data about the user into memory.",
         parameters: {
-          type: 'object',
+          type: "object",
           properties: {
             key: {
-              type: 'string',
+              type: "string",
               description:
-                'The key of the memory value. Always use lowercase and underscores, no other characters.',
+                "The key of the memory value. Always use lowercase and underscores, no other characters.",
             },
             value: {
-              type: 'string',
-              description: 'Value can be anything represented as a string',
+              type: "string",
+              description: "Value can be anything represented as a string",
             },
           },
-          required: ['key', 'value'],
+          required: ["key", "value"],
         },
       },
       async ({ key, value }: { [key: string]: any }) => {
@@ -582,10 +587,10 @@ export function ConsolePage(DATA: Props) {
           return newKv;
         });
         return { ok: true };
-      }
+      },
     );
     // handle realtime events from client + server for event logging
-    client.on('realtime.event', (realtimeEvent: RealtimeEvent) => {
+    client.on("realtime.event", (realtimeEvent: RealtimeEvent) => {
       setRealtimeEvents((realtimeEvents) => {
         const lastEvent = realtimeEvents[realtimeEvents.length - 1];
         if (lastEvent?.event.type === realtimeEvent.event.type) {
@@ -597,24 +602,24 @@ export function ConsolePage(DATA: Props) {
         }
       });
     });
-    client.on('error', (event: any) => console.error(event));
-    client.on('conversation.interrupted', async () => {
+    client.on("error", (event: any) => console.error(event));
+    client.on("conversation.interrupted", async () => {
       const trackSampleOffset = await wavStreamPlayer.interrupt();
       if (trackSampleOffset?.trackId) {
         const { trackId, offset } = trackSampleOffset;
         await client.cancelResponse(trackId, offset);
       }
     });
-    client.on('conversation.updated', async ({ item, delta }: any) => {
+    client.on("conversation.updated", async ({ item, delta }: any) => {
       const items = client.conversation.getItems();
       if (delta?.audio) {
         wavStreamPlayer.add16BitPCM(delta.audio, item.id);
       }
-      if (item.status === 'completed' && item.formatted.audio?.length) {
+      if (item.status === "completed" && item.formatted.audio?.length) {
         const wavFile = await WavRecorder.decode(
           item.formatted.audio,
           24000,
-          24000
+          24000,
         );
         item.formatted.file = wavFile;
       }
@@ -634,88 +639,91 @@ export function ConsolePage(DATA: Props) {
    * Render the application
    */
   return (
-<div className="flex h-screen w-screen">
-  {/* Left Side */}
-  <div className="w-1/2 p-8 flex flex-col items-center justify-center">
-    <div className="w-full max-w-md flex flex-col items-center">
-      <div className="mb-8 w-full">
-        <div className="visualization">
-          <div className="grid justify-center items-center">
-            <div className="visualization-entry">
-              <VoiceGridVisualization
-                type="server"
-                frequencyData={serverFrequencies}
-                canvasRef={serverCanvasRef}
+    <div className="flex h-screen w-screen">
+      {/* Left Side */}
+      <div className="w-1/2 p-8 flex flex-col items-center justify-center">
+        <div className="w-full max-w-md flex flex-col items-center">
+          <div className="mb-8 w-full">
+            <div className="visualization">
+              <div className="grid justify-center items-center">
+                <div className="visualization-entry">
+                  <VoiceGridVisualization
+                    type="server"
+                    frequencyData={serverFrequencies}
+                    canvasRef={serverCanvasRef}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex flex-col items-center gap-4 w-full">
+            {isConnected && canPushToTalk && (
+              <RainbowButton
+                disabled={!isConnected || !canPushToTalk}
+                onMouseDown={startRecording}
+                onMouseUp={stopRecording}
+                className="w-1/2"
+              >
+                {isRecording ? "Release to send" : "Push to talk"}
+              </RainbowButton>
+            )}
+            <RainbowButton
+              onClick={
+                isConnected ? disconnectConversation : connectConversation
+              }
+              className="w-1/2"
+            >
+              {isConnected ? "Disconnect" : "Let's talk"}
+            </RainbowButton>
+
+            {/* API Key Button */}
+            {/* {!LOCAL_RELAY_SERVER_URL && (
+          <Button onClick={() => resetAPIKey()} className="w-full">Change Key</Button>
+        )} */}
+
+            {/* Switch */}
+            <div className="flex items-center justify-center gap-2 mt-4 w-full">
+              <Switch
+                checked={isVAD}
+                onCheckedChange={handleToggle}
+                id="vad-mode"
               />
+              <Label htmlFor="vad-mode">Open Mic</Label>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Buttons */}
-      <div className="flex flex-col items-center gap-4 w-full">
-        {isConnected && canPushToTalk && (
-          <RainbowButton
-            disabled={!isConnected || !canPushToTalk}
-            onMouseDown={startRecording}
-            onMouseUp={stopRecording}
-            className="w-1/2"
-          >
-            {isRecording ? "Release to send" : "Push to talk"}
-          </RainbowButton>
+      {/* Separator */}
+      <div className="flex items-center px-4">
+        <Separator orientation="vertical" className="h-full" />
+      </div>
+
+      {/* Right Side */}
+      <div className="w-1/2 p-8 flex items-center justify-center">
+        {cardData && (
+          <div className="w-full">
+            <AnimatedLayout>
+              <ColorPickerCard cardData={cardData} />
+            </AnimatedLayout>
+          </div>
         )}
-        <RainbowButton
-          onClick={isConnected ? disconnectConversation : connectConversation}
-          className="w-1/2"
-        >
-          {isConnected ? "Disconnect" : "Let's talk"}
-        </RainbowButton>
-
-        {/* API Key Button */}
-        {/* {!LOCAL_RELAY_SERVER_URL && (
-          <Button onClick={() => resetAPIKey()} className="w-full">Change Key</Button>
-        )} */}
-
-        {/* Switch */}
-        <div className="flex items-center justify-center gap-2 mt-4 w-full">
-          <Switch checked={isVAD} onCheckedChange={handleToggle} id="vad-mode" />
-          <Label htmlFor="vad-mode">Open Mic</Label>
-        </div>
+        {!cardData && !showSummary && (
+          <>
+            <p>Push to start talking 😇</p>
+            {/* <img src="/swirlyarrow.png" alt="My Image" /> */}
+          </>
+        )}
+        {showSummary && (
+          <Marquee pauseOnHover vertical className="[--duration:20s] ">
+            {summaryOfCards.map((item, idx) => (
+              <ColorPickerCard cardData={item} key={idx} />
+            ))}
+          </Marquee>
+        )}
       </div>
     </div>
-  </div>
-
-  {/* Separator */}
-  <div className="flex items-center px-4">
-    <Separator orientation="vertical" className="h-full" />
-  </div>
-
-  {/* Right Side */}
-  <div className="w-1/2 p-8 flex items-center justify-center">
-      {cardData && (
-          <div className="w-full">
-          <AnimatedLayout>
-          <ColorPickerCard cardData={cardData}/>
-          </AnimatedLayout>
-        </div>
-      )}
-      {!cardData && !showSummary && (
-        <>
-        <p>Push to start talking 😇</p>
-        {/* <img src="/swirlyarrow.png" alt="My Image" /> */}
-        </>
-      )}
-      {showSummary && (
-       
-       
-       <Marquee pauseOnHover vertical className="[--duration:20s] ">
-              {summaryOfCards.map((item, idx) => (
-                <ColorPickerCard cardData={item} key={idx}/>
-              ))}
-
-</Marquee>
-      )}
-</div>
-</div>
   );
 }

@@ -1,12 +1,28 @@
-"use client"
+"use client";
 import { HackathonCard } from "@/components/hackathon-card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { PlusCircle, Check, X, Loader2 } from 'lucide-react'
-import { Input } from "@/components/ui/input"
+import { FaXTwitter } from "react-icons/fa6";
+import { BsFiletypeDoc, BsFiletypePdf } from "react-icons/bs";
+import {
+  PlusCircle,
+  Check,
+  X,
+  Loader2,
+  Pen,
+  Youtube,
+  Twitter,
+  Facebook,
+  Github,
+  Mail,
+  Phone,
+  Linkedin,
+} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import Marquee from "@/components/ui/marquee";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
-import {ProjectCard} from "@/components/project-card";
+import { ProjectCard } from "@/components/project-card";
 import {
   Dialog,
   DialogContent,
@@ -14,10 +30,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import { ResumeCard } from "@/components/resume-card";
 import { PaperCard } from "@/components/paper-card";
-import axios from "axios"
+import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { dummyData } from "../dummyData/dummydata";
 import { Badge } from "@/components/ui/badge";
@@ -26,42 +42,55 @@ import Link from "next/link";
 import Markdown from "react-markdown";
 import { PortfolioData } from "@/components/types/types";
 import RecordingLoader from "@/components/Skeleton/RecordingLoader";
-import { usePathname } from 'next/navigation'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Upload } from 'lucide-react'
+import { usePathname } from "next/navigation";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AwardsCard } from "@/components/award-card";
 import Navbar from "@/components/navbar";
 import { ToastAction } from "@/components/ui/toast";
 import { ConsolePage } from "@/components/ui/real-time/ConsolePage";
+import ResumeUploadLoader from "@/components/Skeleton/ResumeLoader";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+import { TbWorldUpload } from "react-icons/tb";
+import { CertificationCard } from "@/components/certification-card";
 
 const BLUR_FADE_DELAY = 0.04;
 
 export default function Page() {
-  const [DATA, setData] = useState<PortfolioData>({} as PortfolioData)
-  const [readOnly, setReadOnly] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const {toast} = useToast()
+  const [DATA, setData] = useState<PortfolioData>({} as PortfolioData);
+  const [readOnly, setReadOnly] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   const router = useRouter();
-  const pathname = usePathname()
-  console.log(pathname)
-  const [isOpen, setIsOpen] = useState(false)
-  const [savedText, setSavedText] = useState("")
-  const [userEmailToken, setUserEmailToken] = useState("")
-  const [isEditingName, setIsEditingName] = useState(false)
-  const [text, setText] = useState("")
-  const inputRef = useRef<HTMLInputElement>(null)
+  const pathname = usePathname();
+  console.log(pathname);
+  const [isOpen, setIsOpen] = useState(false);
+  const [savedText, setSavedText] = useState("");
+  const [userEmailToken, setUserEmailToken] = useState("");
+  const [isEditingIntro, setIsEditingIntro] = useState(false);
+  const [text, setText] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState('');
-  const [pdfText, setPdfText] = useState('');
-  const [openRealTime, setOpenRealTime] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [isSaving, setIsSaving] = useState(false)
+  const [uploadStatus, setUploadStatus] = useState("");
+  const [pdfText, setPdfText] = useState("");
+  const [openRealTime, setOpenRealTime] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
+  const [description, setDescription] = useState("");
+  const [about, setAbout] = useState("");
+  const [isPhoneEmailExpanded, setIsPhoneEmailExpanded] = useState(false);
+
+  const toggleExpanded = () => {
+    setIsPhoneEmailExpanded(!isPhoneEmailExpanded);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -72,60 +101,72 @@ export default function Page() {
   };
 
   const handleSubmit = async (file: File) => {
-    setIsLoading(true)
-    setIsOpen(false)
+    setIsLoading(true);
+    setIsOpen(false);
     // setUploadStatus('Uploading...');
 
     const formData = new FormData();
-    formData.append('pdf', file);
+    formData.append("pdf", file);
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/pdf-data/`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/pdf-data/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
-      console.log(response.data.content)
-      setData(response.data.content)
-      setUploadStatus('PDF processed successfully!');
+      );
+      console.log(response.data.content);
+      setData(response.data.content);
+      setUploadStatus("PDF processed successfully!");
     } catch (error) {
-      setUploadStatus('Error processing PDF');
+      setUploadStatus("Error processing PDF");
       console.error(error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
-  const handleSave = async () =>
-  {
-    setIsSaving(true)
+  const handleSave = async () => {
+    setIsSaving(true);
     axios
-    .post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/save-website-details/`,
-      {data: DATA, userToken:userEmailToken}
-    )
-    .then((response) => {
-      toast({
-        title: "Portfolio Saved.",
-        action: <ToastAction altText="Success" onClick={() => {window.open(response.data.url, "_blank")}}>Open Portfolio</ToastAction>,
-        duration: 3000,
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/save-website-details/`,
+        { data: DATA, userToken: userEmailToken },
+      )
+      .then((response) => {
+        toast({
+          title: "Portfolio Published.",
+          action: (
+            <ToastAction
+              altText="Success"
+              onClick={() => {
+                window.open(response.data.url, "_blank");
+              }}
+            >
+              Open Portfolio
+            </ToastAction>
+          ),
+          duration: 3000,
+        });
+        setIsSaving(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast({
+          title: "Failed to update",
+          description: error.response.data.error,
+          duration: 3000,
+        });
+        setIsSaving(false);
       });
-      setIsSaving(false)
-    })
-    .catch((error) => {
-      console.log(error);
-      toast({
-        title: "Failed to update",
-        description: error.response.data.error,
-        duration: 3000,
-      });
-      setIsSaving(false)
-    });
-  }
+  };
 
   useEffect(() => {
     setIsLoading(true);
-  
+
     const fetchData = async () => {
       const emailToken = sessionStorage.getItem("authToken");
       if (!emailToken) {
@@ -135,12 +176,12 @@ export default function Page() {
         });
         router.push("/login");
         console.error("Email not found in localStorage");
-        setIsLoading(false);  // You should set isLoading false here as well
+        setIsLoading(false); // You should set isLoading false here as well
         return;
       } else {
         setUserEmailToken(emailToken);
       }
-  
+
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details/`,
@@ -148,486 +189,648 @@ export default function Page() {
             headers: {
               Authorization: `Bearer ${emailToken}`,
             },
-          }
+          },
         );
-  
+
         console.log(response.data.content);
         setData(response.data.content);
-        const defaultName = "Hi, I'm " + response.data.content.name.split(" ")[0] + "👋";
-        setText(defaultName);
-        setSavedText(defaultName);
+        setText(response.data.content.name);
+        setSavedText(response.data.content.name);
+        setDescription(response.data.content.description);
+        setAbout(response.data.content.summary);
       } catch (error) {
         console.error(error);
       } finally {
         setIsLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
 
-
   useEffect(() => {
-    if (isEditingName && inputRef.current) {
-      inputRef.current.focus()
+    if (isEditingIntro && inputRef.current) {
+      inputRef.current.focus();
     }
-  }, [isEditingName])
+  }, [isEditingIntro]);
 
-  const handleDoubleClick = () => {
-    setIsEditingName(true)
-  }
+  const handleEditingIntro = () => {
+    setIsEditingIntro(true);
+  };
 
-  const handleSaveName = () => {
-    setSavedText(text)
-    setIsEditingName(false)
-  }
+  const handleSaveIntro = () => {
+    setSavedText(text);
+    setDescription(description);
+    setAbout(about);
+    setData((prevData) => ({
+      ...prevData,
+      name: text,
+      description: description,
+      summary: about,
+    }));
+    setIsEditingIntro(false);
+  };
 
-  const handleCancel = () => {
-    setIsEditingName(false)
-  }
-
-  const changeToRealTime = () =>
-  {
-    // I have no clue why router.push isnt working.
-    // I always have to manualy refresh the page. for now, this is a workaround
-    // router.refresh()
-    router.push("/realtime") 
-    // window.location.href = "/realtime"
-  }
-
-
-
-  if (isEditingName) {
-    return (
-      <div className="flex items-center space-x-2">
-        <Input
-          ref={inputRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <Button size="icon" onClick={handleSaveName}>
-          <Check className="h-4 w-4" />
-        </Button>
-        <Button size="icon" variant="outline" onClick={handleCancel}>
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-    )
-  }
+  const handleCancelEditingIntro = () => {
+    setIsEditingIntro(false);
+  };
 
   return (
     <>
-    {isLoading && (<RecordingLoader/>)}
-    {!isLoading && DATA && Object.keys(DATA).length == 0 && (
+      {isLoading && <ResumeUploadLoader />}
+      {!isLoading && DATA && Object.keys(DATA).length == 0 && (
         <Card className="flex flex-col items-center justify-center min-h-screen">
-        <CardHeader>
-          <CardTitle className="text-center"> Ready? 🚀</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={handleFileChange}
-            className="hidden"
-            ref={fileInputRef}
-          />
-          <Button 
-            onClick={() => fileInputRef.current?.click()} 
-            variant="ghost"
-            className="w-full"
-          >
-            <Upload className="mr-2 h-4 w-4" /> {"Upload CV/Resume (.pdf, .docx)"}
-          </Button>
-          
-          {uploadStatus && (
-            <Alert>
-              <AlertDescription>{uploadStatus}</AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
-    )}
-    {!isLoading &&  DATA && Object.keys(DATA).length > 0 && (
-
-    <main className="flex flex-col min-h-[100dvh] space-y-10">
-    <Button className="absolute top-4 right-4 px-4 py-2 rounded" variant="ghost" onClick={handleSave}>
-{isSaving ?  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Publish"}
-</Button>
-    <section id="hero">
-      <div className="mx-auto w-full max-w-2xl space-y-8">
-        <div className="gap-2 flex justify-between">
-          <div className="flex-col flex flex-1 space-y-1.5">
-          <div onDoubleClick={handleDoubleClick}>
-            <BlurFadeText
-              delay={BLUR_FADE_DELAY}
-              className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
-              yOffset={8}
-              text={savedText}
-            />
-            </div>
-            <BlurFadeText
-              className="max-w-[600px] md:text-xl"
-              delay={BLUR_FADE_DELAY}
-              text={DATA.description}
-            />
-          </div>
-          <BlurFade delay={BLUR_FADE_DELAY}>
-            <Avatar className="size-28 border">
-              <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
-              <AvatarFallback>{DATA.initials}</AvatarFallback>
-            </Avatar>
-          </BlurFade>
-        </div>
-      </div>
-    </section>
-    <section id="about">
-      <BlurFade delay={BLUR_FADE_DELAY * 3}>
-        <h2 className="text-xl font-bold">About</h2>
-      </BlurFade>
-      <BlurFade delay={BLUR_FADE_DELAY * 4}>
-        <Markdown className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
-          {DATA.summary}
-        </Markdown>
-      </BlurFade>
-    </section>
-    <section id="work">
-      <div className="flex min-h-0 flex-col gap-y-3">
-        <BlurFade delay={BLUR_FADE_DELAY * 5}>
-          <h2 className="text-xl font-bold">Work Experience</h2>
-        </BlurFade>
-        {DATA.work.map((work, id) => (
-          <BlurFade
-            key={work.company}
-            delay={BLUR_FADE_DELAY * 6 + id * 0.05}
-          >
-            <ResumeCard
-              key={work.company}
-              logoUrl={work.logoUrl}
-              altText={work.company}
-              title={work.company}
-              subtitle={work.title}
-              href={work.href}
-              badges={work.badges}
-              period={`${work.start} - ${work.end ?? "Present"}`}
-              description={work.description}
-              readOnly={false}
-            />
-          </BlurFade>
-        ))}
-      </div>
-    </section>
-    <section id="education">
-      <div className="flex min-h-0 flex-col gap-y-3">
-        <BlurFade delay={BLUR_FADE_DELAY * 7}>
-          <h2 className="text-xl font-bold">Education</h2>
-        </BlurFade>
-        {DATA.education.map((education, id) => (
-          <BlurFade
-            key={education.school}
-            delay={BLUR_FADE_DELAY * 8 + id * 0.05}
-          >
-            <ResumeCard
-              key={education.school}
-              href={education.href}
-              logoUrl={education.logoUrl}
-              altText={education.school}
-              title={education.school}
-              subtitle={education.degree}
-              readOnly={false}
-              period={`${education.start} - ${education.end}`}
-            />
-          </BlurFade>
-        ))}
-      </div>
-    </section>
-    <section id="skills">
-  <div className="flex min-h-0 flex-col gap-y-3">
-    <BlurFade delay={BLUR_FADE_DELAY * 9}>
-      <h2 className="text-xl font-bold">Skills</h2>
-    </BlurFade>
-    <div className="flex flex-wrap gap-1">
-      {DATA.skills.map((skill, id) => (
-        <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
-          <Badge key={skill} className="group">
-            {skill}
-            {!readOnly && (
-            <Button
-            variant="ghost"
-            size="icon"
-            className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => {
-              setData(prevData => ({
-                ...prevData,
-                skills: prevData.skills.filter(s => s !== skill)
-              }));
-            }}
-          >
-            <X className="h-3 w-3" />
-          </Button>
-            )}
-
-          </Badge>
-        </BlurFade>
-      ))}
-      {!readOnly && (
-      <EditableSkill onAddSkill={(newSkill) => {
-        setData(prevData => ({
-          ...prevData,
-          skills: [...prevData.skills, newSkill]
-        }));
-      }} />
-      )}
-
-    </div>
-  </div>
-</section>
-    <section id="projects">
-      <div className="space-y-12 w-full py-12">
-        <BlurFade delay={BLUR_FADE_DELAY * 11}>
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                My Projects
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                Check out my latest work
-              </h2>
-              <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                I&apos;ve worked on a variety of projects, from simple
-                websites to complex web applications. Here are a few of my
-                favorites.
-              </p>
-            </div>
-          </div>
-        </BlurFade>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
-          {DATA.projects.map((project, id) => (
-            <BlurFade
-              key={project.title}
-              delay={BLUR_FADE_DELAY * 12 + id * 0.05}
-            >
-              <ProjectCard
-                href={project.href}
-                key={project.title}
-                title={project.title}
-                description={project.description}
-                dates={project.dates}
-                tags={project.technologies}
-                image={project.image}
-                video={project.video}
-                links={project.links}
-              />
-            </BlurFade>
-          ))}
-        </div>
-      </div>
-    </section>
-    {DATA.papers && DATA.papers.length > 0 && (
-    <section id="papers">
-    <div className="space-y-12 w-full py-12">
-      <BlurFade delay={BLUR_FADE_DELAY * 13}>
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-              Papers
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                Check out my latest work
-              </h2>
-            <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              {"I had the opportunity to contribute to several research publications."}
-            </p>
-          </div>
-        </div>
-      </BlurFade>
-      <BlurFade delay={BLUR_FADE_DELAY * 14}>
-        <ul className="mb-4 ml-4  ">
-        {DATA.papers.map((project, id) => (
-<BlurFade
-  key={project.title + project.publicationDate}
-  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
->
-<PaperCard
-  title={project.title}
-  coAuthors={project.coAuthors}
-  publicationDate={project.publicationDate}
-  conference={project.conference}
-  journal={project.journal}
-  doi={project.doi}
-  abstract={project.abstract}
-  link={project.link}
-  className="mb-2"
-/>
-</BlurFade>
-))}
-        </ul>
-      </BlurFade>
-    </div>
-  </section>
-    )}
-
-{DATA.awards && DATA.awards.length > 0 && (
-    <section id="awards">
-    <div className="space-y-12 w-full py-12">
-      <BlurFade delay={BLUR_FADE_DELAY * 13}>
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-              Awards
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              I've gotten some really cool awards too!
-            </h2>
-            <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-             {""}
-            </p>
-          </div>
-        </div>
-      </BlurFade>
-      <BlurFade delay={BLUR_FADE_DELAY * 14}>
-        <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
-        {DATA.awards .map((project, id) => (
-<BlurFade
-  key={project.title + project.dateAwarded}
-  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
->
-  <AwardsCard
-  title={project.title}
-  organization={project.organization}
-  dateAwarded={project.dateAwarded}
-  description={project.description}
-  image={project.image}
-  />
-</BlurFade>
-))}
-        </ul>
-      </BlurFade>
-    </div>
-  </section>
-    )}
-
-    {DATA.hackathons && DATA.hackathons.length > 0 && (
-    <section id="hackathons">
-    <div className="space-y-12 w-full py-12">
-      <BlurFade delay={BLUR_FADE_DELAY * 13}>
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-              Hackathons
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              I like building things
-            </h2>
-            <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              During my time in university, I attended{" "}
-              + hackathons. People from around the
-              country would come together and build incredible things in 2-3
-              days. It was eye-opening to see the endless possibilities
-              brought to life by a group of motivated and passionate
-              individuals.
-            </p>
-          </div>
-        </div>
-      </BlurFade>
-      <BlurFade delay={BLUR_FADE_DELAY * 14}>
-        <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
-        {DATA.hackathons .map((project, id) => (
-<BlurFade
-  key={project.title + project.dates}
-  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
->
-  <HackathonCard
-    title={project.title}
-    description={project.description}
-    location={project.location}
-    dates={project.dates}
-    image={project.image}
-    links={project.links}
-  />
-</BlurFade>
-))}
-        </ul>
-      </BlurFade>
-    </div>
-  </section>
-    )}
-
-    <section id="contact">
-      <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6 w-full py-12">
-        <BlurFade delay={BLUR_FADE_DELAY * 16}>
-          <div className="space-y-3">
-            <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-              Contact
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              Get in Touch
-            </h2>
-            <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Want to chat? Just shoot me a dm{" "}
-              <Link
-                href={DATA.contact.social.X.url}
-                className="text-blue-500 hover:underline"
-              >
-                with a direct question on twitter
-              </Link>{" "}
-              and I&apos;ll respond whenever I can. I will ignore all
-              soliciting.
-            </p>
-          </div>
-        </BlurFade>
-      </div>
-    </section>
-   <div className="mb-2">
-   <Navbar />
-   </div>
-
-  </main>
-  
-    )}
-    
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {!isLoading &&  DATA && Object.keys(DATA).length > 0 && (
-          <Button className="absolute top-4 left-4 px-4 py-2 rounded" variant="ghost">Upload New CV/Resume</Button>
-        )}
-        
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Upload CV/Resume</DialogTitle>
-          <DialogDescription>
-            Upload your CV or resume in PDF or DOCX format.
-          </DialogDescription>
-        </DialogHeader>
-        <Card className="border-0 shadow-none">
           <CardHeader>
-            <CardTitle className="text-center">Ready? 🚀</CardTitle>
+            <CardTitle className="text-center"> Ready? 🚀</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <input
               type="file"
-              accept="application/pdf,.docx"
+              accept="application/pdf"
               onChange={handleFileChange}
               className="hidden"
               ref={fileInputRef}
             />
-            <Button 
-              onClick={() => fileInputRef.current?.click()} 
+            <Button
+              onClick={() => fileInputRef.current?.click()}
               variant="ghost"
               className="w-full"
             >
-              <Upload className="mr-2 h-4 w-4" /> Upload CV/Resume (.pdf, .docx)
+              <Upload className="mr-2 h-4 w-4" />{" "}
+              {"Upload CV/Resume (.pdf, .docx)"}
             </Button>
-            
+
+            {uploadStatus && (
+              <Alert>
+                <AlertDescription>{uploadStatus}</AlertDescription>
+              </Alert>
+            )}
           </CardContent>
         </Card>
-      </DialogContent>
-    </Dialog>
+      )}
+      {!isLoading && DATA && Object.keys(DATA).length > 0 && (
+        <main className="flex flex-col min-h-[100dvh] space-y-10">
+          <Button
+            className="absolute top-4 right-4 px-4 py-2 rounded "
+            variant="ghost"
+            onClick={handleSave}
+          >
+            {isSaving ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <TbWorldUpload size={16}/>
+            )}
+          </Button>
+          <section id="hero">
+            <div className="mx-auto w-full max-w-2xl space-y-8">
+              <div className="gap-2 flex justify-between">
+                <div className="flex-col flex flex-1 space-y-1.5">
+                  <div className="flex">
+                    {!isEditingIntro && (
+                      <>
+                        <BlurFadeText
+                          delay={BLUR_FADE_DELAY}
+                          className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
+                          yOffset={8}
+                          text={text}
+                        />
+                      </>
+                    )}
+                    {isEditingIntro && (
+                      <div className="flex flex-col items-center space-x-2">
+                        <div className="mb-2">
+                          <Button
+                            size="icon"
+                            onClick={handleSaveIntro}
+                            className="mr-4"
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={handleCancelEditingIntro}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Input
+                          ref={inputRef}
+                          value={text}
+                          onChange={(e) => setText(e.target.value)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex">
+                    {!isEditingIntro && (
+                      <>
+                        <Button
+                          onClick={handleEditingIntro}
+                          variant="ghost"
+                          className="absolute left-1/4"
+                          size="icon"
+                        >
+                          <Pen />
+                        </Button>
+                        <BlurFadeText
+                          className="max-w-[600px] md:text-xl"
+                          delay={BLUR_FADE_DELAY}
+                          text={description}
+                        />
+                      </>
+                    )}
+                    {isEditingIntro && (
+                      <div className="flex items-center space-x-2 w-full">
+                        <Textarea
+                          value={description}
+                          rows={description.split("\n").length}
+                          onChange={(e) => setDescription(e.target.value)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <BlurFade delay={BLUR_FADE_DELAY}>
+                  <Avatar className="size-28 border">
+                    <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
+                    <AvatarFallback>{DATA.initials}</AvatarFallback>
+                  </Avatar>
+                </BlurFade>
+              </div>
+            </div>
+          </section>
+          <section id="about">
+            <BlurFade delay={BLUR_FADE_DELAY * 3}>
+              <h2 className="text-xl font-bold">About</h2>
+            </BlurFade>
+            <BlurFade delay={BLUR_FADE_DELAY * 4}>
+              <div className="flex">
+                {!isEditingIntro && (
+                  <>
+                    <Markdown className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
+                      {about}
+                    </Markdown>
+                  </>
+                )}
+                {isEditingIntro && (
+                  <div className="flex items-center space-x-2 w-full">
+                    <Textarea
+                      value={about}
+                      rows={about.split("\n").length}
+                      onChange={(e) => setAbout(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+            </BlurFade>
+          </section>
+          <section id="work">
+            <div className="flex min-h-0 flex-col gap-y-3">
+              <BlurFade delay={BLUR_FADE_DELAY * 5}>
+                <h2 className="text-xl font-bold">Work Experience</h2>
+              </BlurFade>
+              {DATA.work.map((work, id) => (
+                <BlurFade
+                  key={work.company}
+                  delay={BLUR_FADE_DELAY * 6 + id * 0.05}
+                >
+                  <ResumeCard
+                    key={work.company}
+                    logoUrl={work.logoUrl}
+                    altText={work.company}
+                    title={work.company}
+                    subtitle={work.title}
+                    href={work.href}
+                    badges={work.badges}
+                    period={`${work.start} - ${work.end ?? "Present"}`}
+                    description={work.description}
+                    readOnly={false}
+                  />
+                </BlurFade>
+              ))}
+            </div>
+          </section>
+          <section id="education">
+            <div className="flex min-h-0 flex-col gap-y-3">
+              <BlurFade delay={BLUR_FADE_DELAY * 7}>
+                <h2 className="text-xl font-bold">Education</h2>
+              </BlurFade>
+              {DATA.education.map((education, id) => (
+                <BlurFade
+                  key={education.school}
+                  delay={BLUR_FADE_DELAY * 8 + id * 0.05}
+                >
+                  <ResumeCard
+                    key={education.school}
+                    href={education.href}
+                    logoUrl={education.logoUrl}
+                    altText={education.school}
+                    title={education.school}
+                    subtitle={education.degree}
+                    readOnly={false}
+                    period={`${education.start} - ${education.end}`}
+                  />
+                </BlurFade>
+              ))}
+            </div>
+          </section>
+          <section id="skills">
+            <div className="flex min-h-0 flex-col gap-y-3">
+              <BlurFade delay={BLUR_FADE_DELAY * 9}>
+                <h2 className="text-xl font-bold">Skills</h2>
+              </BlurFade>
+              <div className="flex flex-wrap gap-1">
+                {DATA.skills.map((skill, id) => (
+                  <BlurFade
+                    key={skill}
+                    delay={BLUR_FADE_DELAY * 10 + id * 0.05}
+                  >
+                    <Badge key={skill} className="group">
+                      {skill}
+                      {!readOnly && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => {
+                            setData((prevData) => ({
+                              ...prevData,
+                              skills: prevData.skills.filter(
+                                (s) => s !== skill,
+                              ),
+                            }));
+                          }}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </Badge>
+                  </BlurFade>
+                ))}
+                {!readOnly && (
+                  <EditableSkill
+                    onAddSkill={(newSkill) => {
+                      setData((prevData) => ({
+                        ...prevData,
+                        skills: [...prevData.skills, newSkill],
+                      }));
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </section>
+          {DATA && DATA.projects && DATA.projects.length > 0 && (
+          <section id="projects">
+          <div className="space-y-12 w-full py-12">
+            <BlurFade delay={BLUR_FADE_DELAY * 11}>
+              <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                <div className="space-y-2">
+                  <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                    My Projects
+                  </div>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    Check out my latest work
+                  </h2>
+                  <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                    I&apos;ve worked on a variety of projects, from simple
+                    websites to complex web applications. Here are a few of my
+                    favorites.
+                  </p>
+                </div>
+              </div>
+            </BlurFade>
+            <Marquee pauseOnHover className="[--duration:20s]">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
+                {DATA.projects.map((project, id) => (
+                  <BlurFade
+                    key={project.title}
+                    delay={BLUR_FADE_DELAY * 12 + id * 0.05}
+                  >
+                    <ProjectCard
+                      href={project.href}
+                      key={project.title}
+                      title={project.title}
+                      description={project.description}
+                      dates={project.dates}
+                      tags={project.technologies}
+                      image={project.image}
+                      video={project.video}
+                      links={project.links}
+                    />
+                  </BlurFade>
+                ))}
+              </div>
+            </Marquee>
+          </div>
+        </section>
+          )}
+
+{DATA && DATA.certifications && DATA.certifications.length > 0 && (
+          <section id="certifications">
+          <div className="space-y-12 w-full py-12">
+            <BlurFade delay={BLUR_FADE_DELAY * 11}>
+              <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                <div className="space-y-2">
+                  <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                    My Certifications
+                  </div>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    Check out my credentials
+                  </h2>
+                  <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                    I&apos;ve expanded my knowledge through these certifications.
+                  </p>
+                </div>
+              </div>
+            </BlurFade>
+            <Marquee pauseOnHover className="[--duration:20s]">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
+                {DATA.certifications.map((project, id) => (
+                  <BlurFade
+                    key={project.title}
+                    delay={BLUR_FADE_DELAY * 12 + id * 0.05}
+                  >
+                    <CertificationCard
+                      key={project.title}
+                      issuingOrganization={project.issuingOrganization}
+                      title={project.title}
+                      logoUrl={project.logoUrl}
+                      dateIssued={project.dateIssued}
+                      url={project.url}
+                      credentialId={project.credentialId}
+                    />
+                  </BlurFade>
+                ))}
+              </div>
+            </Marquee>
+          </div>
+        </section>
+          )}
+
+          {DATA && DATA.papers && DATA.papers.length > 0 && (
+            <section id="papers">
+              <div className="space-y-12 w-full py-12">
+                <BlurFade delay={BLUR_FADE_DELAY * 13}>
+                  <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                    <div className="space-y-2">
+                      <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                        Papers
+                      </div>
+                      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                        Check out my latest work
+                      </h2>
+                      <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                        {
+                          "I had the opportunity to contribute to several research publications."
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </BlurFade>
+                <BlurFade delay={BLUR_FADE_DELAY * 14}>
+                  <ul className="mb-4 ml-4  ">
+                    {DATA.papers.map((project, id) => (
+                      <BlurFade
+                        key={project.title + project.publicationDate}
+                        delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+                      >
+                        <PaperCard
+                          title={project.title}
+                          coAuthors={project.coAuthors}
+                          publicationDate={project.publicationDate}
+                          conference={project.conference}
+                          journal={project.journal}
+                          doi={project.doi}
+                          abstract={project.abstract}
+                          link={project.link}
+                          className="mb-2"
+                        />
+                      </BlurFade>
+                    ))}
+                  </ul>
+                </BlurFade>
+              </div>
+            </section>
+          )}
+
+          {DATA && DATA.awards && DATA.awards.length > 0 && (
+            <section id="awards">
+              <div className="space-y-12 w-full py-12">
+                <BlurFade delay={BLUR_FADE_DELAY * 13}>
+                  <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                    <div className="space-y-2">
+                      <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                        Awards
+                      </div>
+                      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                        I've gotten some really cool awards too!
+                      </h2>
+                      <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                        {""}
+                      </p>
+                    </div>
+                  </div>
+                </BlurFade>
+                <BlurFade delay={BLUR_FADE_DELAY * 14}>
+                  <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
+                    {DATA.awards.map((project, id) => (
+                      <BlurFade
+                        key={project.title + project.dateAwarded}
+                        delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+                      >
+                        <AwardsCard
+                          title={project.title}
+                          organization={project.organization}
+                          dateAwarded={project.dateAwarded}
+                          description={project.description}
+                          image={project.image}
+                        />
+                      </BlurFade>
+                    ))}
+                  </ul>
+                </BlurFade>
+              </div>
+            </section>
+          )}
+
+          {DATA.hackathons && DATA.hackathons.length > 0 && (
+            <section id="hackathons">
+              <div className="space-y-12 w-full py-12">
+                <BlurFade delay={BLUR_FADE_DELAY * 13}>
+                  <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                    <div className="space-y-2">
+                      <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                        Hackathons
+                      </div>
+                      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                        I like building things
+                      </h2>
+                      <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                        During my time in university, I attended + hackathons.
+                        People from around the country would come together and
+                        build incredible things in 2-3 days. It was eye-opening
+                        to see the endless possibilities brought to life by a
+                        group of motivated and passionate individuals.
+                      </p>
+                    </div>
+                  </div>
+                </BlurFade>
+                <BlurFade delay={BLUR_FADE_DELAY * 14}>
+                  <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
+                    {DATA.hackathons.map((project, id) => (
+                      <BlurFade
+                        key={project.title + project.dates}
+                        delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+                      >
+                        <HackathonCard
+                          title={project.title}
+                          description={project.description}
+                          location={project.location}
+                          dates={project.dates}
+                          image={project.image}
+                          links={project.links}
+                        />
+                      </BlurFade>
+                    ))}
+                  </ul>
+                </BlurFade>
+              </div>
+            </section>
+          )}
+
+          <section id="contact">
+            <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6 w-full py-12">
+              <BlurFade delay={BLUR_FADE_DELAY * 16}>
+                <div className="space-y-3">
+                  <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                    Contact
+                  </div>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    Get in Touch
+                  </h2>
+
+                  {Object.entries(DATA.contact)
+                    .filter(([name]) => name !== "social")
+                    .map(([name, value]) => (
+                      <div key={name} className="flex flex-col items-center justify-center">
+                        <Button
+                          onClick={toggleExpanded}
+                          variant="ghost"
+                          size="sm"
+                          className={cn(
+                            "relative z-10 flex items-center gap-2 transition-all duration-300 ease-in-out",
+                            isPhoneEmailExpanded ? "pr-3" : "pr-2 w-12",
+                          )}
+                          aria-expanded={isPhoneEmailExpanded}
+                          aria-label={`${name}: ${value}`}
+                        >
+                          {name == "email" ? (
+                            <Mail className="size-4 flex-shrink-0" />
+                          ) : (
+                            <Phone className="size-4 flex-shrink-0" />
+                          )}
+                          <span
+                            className={cn(
+                              "transition-all duration-300 ease-in-out overflow-hidden",
+                              isPhoneEmailExpanded
+                                ? "w-auto opacity-100"
+                                : "w-0 opacity-0",
+                            )}
+                          >
+                            {value}
+                          </span>
+                        </Button>
+                      </div>
+                    ))}
+                  {Object.entries(DATA.contact.social).filter(([name, social]) => name.toLowerCase() !== "email" && name.toLowerCase() !== "phone").map(
+                    ([name, social]) =>
+                      // Check if the social.url exists before rendering the Link
+                      social.url && (
+                        <div key={name}>
+                          <Link
+                            href={social.url}
+                            className={cn(
+                              buttonVariants({
+                                variant: "ghost",
+                                size: "icon",
+                              }),
+                              "size-12",
+                            )}
+                          >
+                            {/* Render the appropriate icon based on name */}
+                            {name.toLowerCase() === "youtube" && (
+                              <Youtube className="size-4" />
+                            )}
+                            {(name.toLowerCase() === "twitter" || name.toLowerCase() === "x") && (
+                              <FaXTwitter className="size-4" />
+                            )}
+                            {name.toLowerCase() === "facebook" && (
+                              <Facebook className="size-4" />
+                            )}
+                            {name.toLowerCase() === "github" && (
+                              <Github className="size-4" />
+                            )}
+                            {name.toLowerCase() === "linkedin" && (
+                              <Linkedin className="size-4" />
+                            )}
+                            {/* Add more cases as needed */}
+                          </Link>
+                        </div>
+                      ),
+                  )}
+                </div>
+              </BlurFade>
+            </div>
+          </section>
+          <div className="mb-2">
+            <Navbar showLogout={true}/>
+          </div>
+        </main>
+      )}
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          {!isLoading && DATA && Object.keys(DATA).length > 0 && (
+            <Button
+              className="absolute top-4 left-4 px-4 py-2 rounded"
+              variant="ghost"
+            >
+              <BsFiletypePdf /> {"/"} <BsFiletypeDoc/>
+            </Button>
+          )}
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+          </DialogHeader>
+          <Card className="border-0 shadow-none">
+            <CardHeader>
+              <CardTitle className="text-center">Ready? 🚀</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <input
+                type="file"
+                accept="application/pdf,.docx"
+                onChange={handleFileChange}
+                className="hidden"
+                ref={fileInputRef}
+              />
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                variant="ghost"
+                className="w-full"
+              >
+                <Upload className="mr-2 h-4 w-4" /> Upload CV/Resume (.pdf,
+                .docx)
+              </Button>
+            </CardContent>
+          </Card>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
-
-
 
 interface EditableSkillProps {
   onAddSkill: (skill: string) => void;
@@ -687,4 +890,3 @@ const EditableSkill: React.FC<EditableSkillProps> = ({ onAddSkill }) => {
     </Button>
   );
 };
-

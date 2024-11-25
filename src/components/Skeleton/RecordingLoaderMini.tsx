@@ -1,6 +1,6 @@
 export default function RecordingLoader() {
   return (
-    <div className="flex items-center justify-center h-screen bg-background">
+    <div className="flex items-center justify-center bg-background">
       <div className="flex space-x-2">
         <div className="w-3 h-3 bg-foreground rounded-full animate-bounce-1"></div>
         <div className="w-3 h-3 bg-foreground rounded-full animate-bounce-2"></div>

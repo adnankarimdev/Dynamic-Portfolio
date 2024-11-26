@@ -3,6 +3,7 @@ import { HackathonCard } from "@/components/hackathon-card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { FaXTwitter } from "react-icons/fa6";
+import Image from 'next/image'
 import { BsFiletypeDoc, BsFiletypePdf } from "react-icons/bs";
 import {
   PlusCircle,
@@ -51,6 +52,18 @@ import { Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AwardsCard } from "@/components/award-card";
 import Navbar from "@/components/navbar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog"
+
 import { ToastAction } from "@/components/ui/toast";
 import { ConsolePage } from "@/components/ui/real-time/ConsolePage";
 import ResumeUploadLoader from "@/components/Skeleton/ResumeLoader";
@@ -70,6 +83,7 @@ export default function Page() {
   const router = useRouter();
   const pathname = usePathname();
   console.log(pathname);
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isOpen, setIsOpen] = useState(false);
   const [savedText, setSavedText] = useState("");
   const [userEmailToken, setUserEmailToken] = useState("");
@@ -87,10 +101,47 @@ export default function Page() {
   const [description, setDescription] = useState("");
   const [about, setAbout] = useState("");
   const [isPhoneEmailExpanded, setIsPhoneEmailExpanded] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("")
+  const filePhotoInputRef = useRef<HTMLInputElement>(null)
+
+  const handleChangePhoto = () => {
+    filePhotoInputRef.current?.click()
+  }
 
   const toggleExpanded = () => {
     setIsPhoneEmailExpanded(!isPhoneEmailExpanded);
   };
+  const handleFilePhotoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    const email = DATA.contact.email // Replace with the user's email (dynamic or static)
+  
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file); // Add the file to the form data
+      formData.append("email", email); // Add the email to the form data
+  
+      try {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/upload-profile-picture/`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
+        if (response.status === 200) {
+          console.log("File uploaded successfully:", response.data);
+          setAvatarUrl(response.data.url)
+          // Handle success (e.g., update UI with new avatar URL)
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        toast({
+          title: "Failed to upload profile picture.",
+          duration: 3000,
+        });
+      }
+    }
+  };
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -198,6 +249,7 @@ export default function Page() {
         setSavedText(response.data.content.name);
         setDescription(response.data.content.description);
         setAbout(response.data.content.summary);
+        setAvatarUrl(response.data.content.avatarUrl)
       } catch (error) {
         console.error(error);
       } finally {
@@ -352,10 +404,41 @@ export default function Page() {
                   </div>
                 </div>
                 <BlurFade delay={BLUR_FADE_DELAY}>
-                  <Avatar className="size-28 border">
-                    <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
-                    <AvatarFallback>{DATA.initials}</AvatarFallback>
-                  </Avatar>
+                <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <AlertDialogTrigger asChild>
+                <Avatar className="size-28 border cursor-pointer">
+                  <AvatarImage alt={DATA.name} src={avatarUrl} />
+                  <AvatarFallback>{DATA.initials}</AvatarFallback>
+                </Avatar>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="max-w-md">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Profile Picture</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    <div className="mt-2 flex justify-center">
+                      <Image
+                        src={avatarUrl}
+                        alt={DATA.name}
+                        width={200}
+                        height={200}
+                        className="rounded-full"
+                      />
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Close</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleChangePhoto}>Change Photo</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <input
+              type="file"
+              ref={filePhotoInputRef}
+              onChange={handleFilePhotoChange}
+              accept="image/*"
+              className="hidden"
+            />
                 </BlurFade>
               </div>
             </div>

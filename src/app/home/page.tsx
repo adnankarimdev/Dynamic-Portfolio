@@ -42,7 +42,7 @@ import { DATA } from "@/data/resume";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import { PortfolioData } from "@/components/types/types";
-import RecordingLoader from "@/components/Skeleton/RecordingLoader";
+import RecordingLoader from "@/components/Skeleton/RecordingLoaderMini";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -97,6 +97,7 @@ export default function Page() {
   const [openRealTime, setOpenRealTime] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPhotoLoading, setIsPhotoLoading] = useState(false)
 
   const [description, setDescription] = useState("");
   const [about, setAbout] = useState("");
@@ -112,6 +113,7 @@ export default function Page() {
     setIsPhoneEmailExpanded(!isPhoneEmailExpanded);
   };
   const handleFilePhotoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsPhotoLoading(true)
     const file = event.target.files?.[0];
     const email = DATA.contact.email // Replace with the user's email (dynamic or static)
   
@@ -129,11 +131,17 @@ export default function Page() {
   
         if (response.status === 200) {
           console.log("File uploaded successfully:", response.data);
-          setAvatarUrl(response.data.url)
+          setAvatarUrl(`${response.data.url}?t=${new Date().getTime()}`);
+          setData((prevData) => ({
+            ...prevData,
+            avatarUrl: response.data.url,
+          }));
+          setIsPhotoLoading(false)
           // Handle success (e.g., update UI with new avatar URL)
         }
       } catch (error) {
         console.error("Error uploading file:", error);
+        setIsPhotoLoading(false)
         toast({
           title: "Failed to upload profile picture.",
           duration: 3000,
@@ -171,6 +179,11 @@ export default function Page() {
       );
       console.log(response.data.content);
       setData(response.data.content);
+      setText(response.data.content.name);
+      setSavedText(response.data.content.name);
+      setDescription(response.data.content.description);
+      setAbout(response.data.content.summary);
+      setAvatarUrl(`${response.data.content.avatarUrl}?t=${new Date().getTime()}`);
       setUploadStatus("PDF processed successfully!");
     } catch (error) {
       setUploadStatus("Error processing PDF");
@@ -249,7 +262,8 @@ export default function Page() {
         setSavedText(response.data.content.name);
         setDescription(response.data.content.description);
         setAbout(response.data.content.summary);
-        setAvatarUrl(response.data.content.avatarUrl)
+        setAvatarUrl(`${response.data.content.avatarUrl}?t=${new Date().getTime()}`);
+        console.log("avatar url ", response.data.content.avatarUrl)
       } catch (error) {
         console.error(error);
       } finally {
@@ -321,7 +335,8 @@ export default function Page() {
         </Card>
       )}
       {!isLoading && DATA && Object.keys(DATA).length > 0 && (
-        <main className="flex flex-col min-h-[100dvh] space-y-10">
+        <main className="flex flex-col min-h-[100dvh] space-y-10"
+        >
           <Button
             className="absolute top-4 right-4 px-4 py-2 rounded "
             variant="ghost"
@@ -363,7 +378,8 @@ export default function Page() {
                             variant="outline"
                             onClick={handleCancelEditingIntro}
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-4 w-4"/>
+                            
                           </Button>
                         </div>
                         <Input
@@ -407,8 +423,20 @@ export default function Page() {
                 <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <AlertDialogTrigger asChild>
                 <Avatar className="size-28 border cursor-pointer">
+                  {isPhotoLoading && (
+                              <div className="flex items-center justify-center w-full h-full">
+                              {/* <Loader2 className="w-1/3 h-1/3 animate-spin" /> */}
+                    <RecordingLoader/>
+
+                            </div>
+                  )}
+                  {!isPhotoLoading && (
+                    <>
                   <AvatarImage alt={DATA.name} src={avatarUrl} />
                   <AvatarFallback>{DATA.initials}</AvatarFallback>
+                  </>
+                  )}
+
                 </Avatar>
               </AlertDialogTrigger>
               <AlertDialogContent className="max-w-md">
@@ -416,19 +444,16 @@ export default function Page() {
                   <AlertDialogTitle>Profile Picture</AlertDialogTitle>
                   <AlertDialogDescription>
                     <div className="mt-2 flex justify-center">
-                      <Image
-                        src={avatarUrl}
-                        alt={DATA.name}
-                        width={200}
-                        height={200}
-                        className="rounded-full"
-                      />
+                    <Avatar className="size-28 border cursor-pointer">
+                  <AvatarImage alt={DATA.name} src={avatarUrl} />
+                  <AvatarFallback>{DATA.initials}</AvatarFallback>
+                </Avatar>
                     </div>
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Close</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleChangePhoto}>Change Photo</AlertDialogAction>
+                <AlertDialogFooter className="flex items-center justify-center">
+                  <AlertDialogCancel className="w-full text-center">Close</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleChangePhoto} className="w-full text-center">Change Photo</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -489,6 +514,9 @@ export default function Page() {
                     period={`${work.start} - ${work.end ?? "Present"}`}
                     description={work.description}
                     readOnly={false}
+                    data={DATA}
+                    setData={setData}
+                    targetId={work.id}
                   />
                 </BlurFade>
               ))}
@@ -513,6 +541,8 @@ export default function Page() {
                     subtitle={education.degree}
                     readOnly={false}
                     period={`${education.start} - ${education.end}`}
+                    data={DATA}
+                    setData={setData}
                   />
                 </BlurFade>
               ))}
@@ -535,7 +565,7 @@ export default function Page() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="h-4 w-4 ml-1 hover:bg-transparent"
                           onClick={() => {
                             setData((prevData) => ({
                               ...prevData,
@@ -545,7 +575,7 @@ export default function Page() {
                             }));
                           }}
                         >
-                          <X className="h-3 w-3" />
+                          <X className="h-3 w-3" color="white"/>
                         </Button>
                       )}
                     </Badge>

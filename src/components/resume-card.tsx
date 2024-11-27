@@ -11,6 +11,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PortfolioData } from "./types/types";
+import { title } from "process";
 
 interface ResumeCardProps {
   logoUrl: string;
@@ -21,8 +23,10 @@ interface ResumeCardProps {
   badges?: readonly string[];
   period: string;
   description?: string;
-  onSave?: (updatedData: Partial<ResumeCardProps>) => void;
   readOnly: boolean;
+  data?: PortfolioData;
+  setData?: React.Dispatch<React.SetStateAction<PortfolioData>>;
+  targetId?: BigInt;
 }
 
 export const ResumeCard = ({
@@ -35,13 +39,15 @@ export const ResumeCard = ({
   period: initialPeriod,
   description: initialDescription,
   readOnly,
-  onSave,
+  data,
+  setData,
+  targetId
 }: ResumeCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [logoUrl, setLogoUrl] = useState(initialLogoUrl);
   const [altText, setAltText] = useState(initialAltText);
-  const [title, setTitle] = useState(initialTitle);
+  const [company, setCompany] = useState(initialTitle);
   const [subtitle, setSubtitle] = useState(initialSubtitle || "");
   const [href, setHref] = useState(initialHref || "");
   const [badges, setBadges] = useState(initialBadges?.join(", ") || "");
@@ -50,18 +56,37 @@ export const ResumeCard = ({
 
   const handleSave = () => {
     setIsEditing(false);
-    if (onSave) {
-      onSave({
-        logoUrl,
-        altText,
-        title,
-        subtitle: subtitle || undefined,
-        href: href || undefined,
-        badges: badges.split(",").map((badge) => badge.trim()),
-        period,
-        description: description || undefined,
-      });
+  
+    const newData = {
+      logoUrl,
+      altText,
+      company: company,
+      title: subtitle,
+      href: href || undefined,
+      badges: badges.split(",").map((badge) => badge.trim()),
+      period,
+      description: description || undefined,
+    };
+  
+    console.log("Target ID:", targetId); // Debug log
+  
+    if (setData)
+    {
+      setData((prevData) => ({
+        ...prevData,
+        work: prevData.work.map((experience) => {
+          if (experience.id === targetId) {
+            console.log("Condition met for ID:", targetId, newData); // Log matched experience and new data
+            return {
+              ...experience, // Spread existing experience properties
+              ...newData, // Overwrite with updated fields
+            };
+          }
+          return experience; // Return unchanged for non-matching IDs
+        }),
+      }));
     }
+
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -127,12 +152,12 @@ export const ResumeCard = ({
               {isEditing ? (
                 <Input
                   type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
                   className="w-full"
                 />
               ) : (
-                title
+                company
               )}
               {!isEditing && badges && (
                 <span className="inline-flex gap-x-1 ml-2">

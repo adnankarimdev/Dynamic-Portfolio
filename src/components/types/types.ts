@@ -24,15 +24,16 @@ interface Contact {
 }
 
 interface WorkExperience {
+  id: BigInt;
   company: string;
-  href: string;
+  href?: string;
   badges: string[];
   location: string;
   title: string;
   logoUrl: string;
   start: string;
   end: string;
-  description: string;
+  description?: string;
 }
 
 interface Education {

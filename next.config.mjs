@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["via.placeholder.com"], // Allow domains from everywhere
+    domains: ["via.placeholder.com", "vchzcpsjnexzrzeqamix.supabase.co"], // Allow domains from everywhere
   },
 };
 

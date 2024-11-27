@@ -475,8 +475,8 @@ export function ConsolePage(DATA: Props) {
     // Set instructions
     client.updateSession({ instructions: newInstructions });
     // Set transcription, otherwise we don't get user transcriptions back
-    client.updateSession({ voice: "ash" });
-    client.updateSession({ input_audio_transcription: { model: "whisper-1" } });
+    client.updateSession({ voice: "verse" });
+    // client.updateSession({ input_audio_transcription: { model: "whisper-1" } });
 
     // Add tools
     client.addTool(

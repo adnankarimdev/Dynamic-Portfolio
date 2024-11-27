@@ -98,6 +98,12 @@ export default function Page() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isPhotoLoading, setIsPhotoLoading] = useState(false)
+  const [papersHeader, setPapersHeader] = useState("")
+  const [papersSubtitle, setPapersSubtitle] = useState("")
+  const [projectsHeader, setProjectsHeader] = useState("")
+  const [projectsSubtitle, setProjectsSubtitle] = useState("")
+  const [hackathonHeader, setHackathonHeader] = useState("")
+  const [hackathonSubtitle, setHackathonSubtitle] = useState("")
 
   const [description, setDescription] = useState("");
   const [about, setAbout] = useState("");
@@ -183,6 +189,12 @@ export default function Page() {
       setSavedText(response.data.content.name);
       setDescription(response.data.content.description);
       setAbout(response.data.content.summary);
+      setPapersHeader(response.data.content.papersWebsiteHeader)
+      setPapersHeader(response.data.content.papersWebsiteSubtitle)
+      setProjectsHeader(response.data.content.projectsWebsiteHeader)
+      setProjectsSubtitle(response.data.content.projectsWebsiteSubtitle)
+      setHackathonHeader(response.data.content.hackathonWebsiteHeader)
+      setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle)
       setAvatarUrl(`${response.data.content.avatarUrl}?t=${new Date().getTime()}`);
       setUploadStatus("PDF processed successfully!");
     } catch (error) {
@@ -262,6 +274,12 @@ export default function Page() {
         setSavedText(response.data.content.name);
         setDescription(response.data.content.description);
         setAbout(response.data.content.summary);
+        setPapersHeader(response.data.content.papersWebsiteHeader)
+        setPapersSubtitle(response.data.content.papersWebsiteSubtitle)
+        setProjectsHeader(response.data.content.projectsWebsiteHeader)
+        setProjectsSubtitle(response.data.content.projectsWebsiteSubtitle)
+        setHackathonHeader(response.data.content.hackathonWebsiteHeader)
+        setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle)
         setAvatarUrl(`${response.data.content.avatarUrl}?t=${new Date().getTime()}`);
         console.log("avatar url ", response.data.content.avatarUrl)
       } catch (error) {
@@ -604,12 +622,10 @@ export default function Page() {
                     My Projects
                   </div>
                   <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                    Check out my latest work
+                    {projectsHeader}
                   </h2>
                   <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    I&apos;ve worked on a variety of projects, from simple
-                    websites to complex web applications. Here are a few of my
-                    favorites.
+                    {projectsSubtitle}
                   </p>
                 </div>
               </div>
@@ -692,12 +708,10 @@ export default function Page() {
                         Papers
                       </div>
                       <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                        Check out my latest work
+                        {papersHeader}
                       </h2>
                       <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                        {
-                          "I had the opportunity to contribute to several research publications."
-                        }
+                      {papersSubtitle}
                       </p>
                     </div>
                   </div>

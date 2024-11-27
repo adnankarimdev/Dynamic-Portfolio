@@ -128,4 +128,10 @@ export interface PortfolioData {
   hackathons: Hackathon[];
   papers: Paper[];
   awards: Award[];
+  papersWebsiteHeader?:string;
+  papersWebsiteSubtitle?:string;
+  projectsWebsiteHeader?:string;
+  projectsWebsiteSubtitle?:string;
+  hackathonWebsiteHeader?:string;
+  hackathonWebsiteSubtitle?:string;
 }

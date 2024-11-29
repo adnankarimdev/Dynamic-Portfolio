@@ -89,6 +89,7 @@ export default function Page() {
   const [userEmailToken, setUserEmailToken] = useState("");
   const [isEditingIntro, setIsEditingIntro] = useState(false);
   const [text, setText] = useState("");
+  const [subscriptionStatus, setSubscriptionStatus] = useState("inactive")
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
@@ -213,6 +214,26 @@ export default function Page() {
         { data: DATA, userToken: userEmailToken },
       )
       .then((response) => {
+        if (subscriptionStatus != 'active')
+          {
+            toast({
+              title: "Subscribe to Publish.",
+              action: (
+                <ToastAction
+                  altText="Subscribe User"
+                  onClick={() => {
+                    handleStripePayment();
+                  }}
+                >
+                  {"Subscribe"}
+                </ToastAction>
+              ),
+              duration: 3000,
+            });
+            setIsSaving(false);
+            return
+          }
+
         toast({
           title: "Portfolio Published.",
           action: (
@@ -281,6 +302,8 @@ export default function Page() {
         setHackathonHeader(response.data.content.hackathonWebsiteHeader)
         setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle)
         setAvatarUrl(`${response.data.content.avatarUrl}?t=${new Date().getTime()}`);
+
+        setSubscriptionStatus(response.data.subscription_status)
         console.log("avatar url ", response.data.content.avatarUrl)
       } catch (error) {
         console.error(error);
@@ -317,6 +340,27 @@ export default function Page() {
 
   const handleCancelEditingIntro = () => {
     setIsEditingIntro(false);
+  };
+
+  const handleStripePayment = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/create-checkout-session/`,
+        {
+          stripe_customer_id: sessionStorage.getItem("stripe_customer_id"),
+        }
+      );
+  
+      if (response.data.url) {
+        // Redirect to the Stripe Checkout page
+        window.location.href = response.data.url;
+      } else {
+        console.error("No URL found in the response");
+      }
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      alert("Failed to initiate payment. Please try again later.");
+    }
   };
 
   return (
@@ -366,6 +410,7 @@ export default function Page() {
               <TbWorldUpload size={16}/>
             )}
           </Button>
+
           <section id="hero">
             <div className="mx-auto w-full max-w-2xl space-y-8">
               <div className="gap-2 flex justify-between">

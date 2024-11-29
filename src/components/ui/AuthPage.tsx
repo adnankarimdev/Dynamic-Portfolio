@@ -58,6 +58,7 @@ export default function AuthPage() {
       .then((response) => {
         localStorage.setItem("userEmail", email);
         sessionStorage.setItem("authToken", response.data.user.id);
+        sessionStorage.setItem("stripe_customer_id", response.data.user.stripe_customer_id);
         toast({
           title: "Successfully Logged In",
           description: "Welcome back 👋",
@@ -102,6 +103,7 @@ export default function AuthPage() {
 
         // Store the auth token (if returned)
         sessionStorage.setItem("authToken", response.data.user.id);
+        sessionStorage.setItem("stripe_customer_id", response.data.user.stripe_customer_id);
 
         // Navigate to home or onboarding page
         setTimeout(() => {

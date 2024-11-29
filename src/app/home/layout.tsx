@@ -61,6 +61,7 @@ export default function RootLayout({
       <TooltipProvider delayDuration={0}>
         <div className="flex flex-col min-h-screen"
         // style={{ backgroundImage: "url('/advanced-gradient.jpg')" }}
+        
         >
           {/* <Navbar /> */}
           <main

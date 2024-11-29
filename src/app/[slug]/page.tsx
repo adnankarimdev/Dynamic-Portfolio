@@ -69,6 +69,7 @@ export default function Page() {
   const [uploadStatus, setUploadStatus] = useState("");
   const [pdfText, setPdfText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUrlHidden, setIsUrlHidden] = useState(true)
   const [isPhoneEmailExpanded, setIsPhoneEmailExpanded] = useState(false);
 
   const toggleExpanded = () => {
@@ -144,8 +145,8 @@ export default function Page() {
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details-by-url/${pathname.slice(1)}/`,
           )
           .then((response) => {
-            console.log(response.data.content);
             setData(response.data.content);
+            setIsUrlHidden(response.data.url_hidden)
             setIsLoading(false);
             // toast({
             //   title: "Success",
@@ -173,14 +174,14 @@ export default function Page() {
   return (
     <>
       {isLoading && <RecordingLoader />}
-      {!isLoading && Object.keys(DATA).length == 0 && (
+      {isUrlHidden && (
         <Card className="flex flex-col items-center justify-center min-h-screen">
           <CardContent className="space-y-4">
-            {"This portfolio does not exist"}
+            {"This portfolio does not exist yet."}
           </CardContent>
         </Card>
       )}
-      {!isLoading && DATA && Object.keys(DATA).length > 0 && (
+      {!isUrlHidden && (!isLoading && DATA && Object.keys(DATA).length > 0) && (
         <main className="flex flex-col min-h-[100dvh] space-y-10">
           {!readOnly && (
             <Button

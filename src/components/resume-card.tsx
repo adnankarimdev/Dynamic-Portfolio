@@ -41,7 +41,7 @@ export const ResumeCard = ({
   readOnly,
   data,
   setData,
-  targetId
+  targetId,
 }: ResumeCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -56,7 +56,7 @@ export const ResumeCard = ({
 
   const handleSave = () => {
     setIsEditing(false);
-  
+
     const newData = {
       logoUrl,
       altText,
@@ -67,11 +67,10 @@ export const ResumeCard = ({
       period,
       description: description || undefined,
     };
-  
+
     console.log("Target ID:", targetId); // Debug log
-  
-    if (setData)
-    {
+
+    if (setData) {
       setData((prevData) => ({
         ...prevData,
         work: prevData.work.map((experience) => {
@@ -86,7 +85,6 @@ export const ResumeCard = ({
         }),
       }));
     }
-
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

@@ -12,14 +12,14 @@ import {
 } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
-import { HomeIcon, LogOut } from "lucide-react";
+import { HomeIcon, LogOut, Settings } from "lucide-react";
 import { PortfolioData } from "./types/types";
 import Link from "next/link";
 
 interface NavBarProps {
-  showLogout?:boolean
+  showLogout?: boolean;
 }
-export default function Navbar({showLogout}:NavBarProps) {
+export default function Navbar({ showLogout }: NavBarProps) {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -122,31 +122,51 @@ export default function Navbar({showLogout}:NavBarProps) {
             </DockIcon>
           ))} */}
         {/* <Separator orientation="vertical" className="h-full py-2" /> */}
+        {/* can't put it together, dock.tsx crashes on runtime */}
         {showLogout && (
-                  <DockIcon key={"logout"}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Link
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault(); // Prevent the default behavior of the link
-                          handleLogout(); // Call your custom function instead
-                        }}
-                        className={cn(
-                          buttonVariants({ variant: "ghost", size: "icon" }),
-                          "size-12",
-                        )}
-                      >
-                        <LogOut className="size-4" />
-                      </Link>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{"Logout"}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </DockIcon>
+          <DockIcon key={"settings"}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "icon" }),
+                    "size-12",
+                  )}
+                >
+                  <Settings className="size-4" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{"Settings"}</p>
+              </TooltipContent>
+            </Tooltip>
+          </DockIcon>
         )}
-
+        {showLogout && (
+          <DockIcon key={"logout"}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent the default behavior of the link
+                    handleLogout(); // Call your custom function instead
+                  }}
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "icon" }),
+                    "size-12",
+                  )}
+                >
+                  <LogOut className="size-4" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{"Logout"}</p>
+              </TooltipContent>
+            </Tooltip>
+          </DockIcon>
+        )}
         <DockIcon>
           <Tooltip>
             <TooltipTrigger asChild>

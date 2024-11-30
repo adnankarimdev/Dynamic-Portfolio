@@ -13,12 +13,12 @@ import Markdown from "react-markdown";
 import { Avatar, AvatarImage } from "./ui/avatar";
 
 interface Props {
-    title: string;
-    issuingOrganization: string;
-    logoUrl: string;
-    dateIssued: string;
-    credentialId: string;
-    url: string;
+  title: string;
+  issuingOrganization: string;
+  logoUrl: string;
+  dateIssued: string;
+  credentialId: string;
+  url: string;
 }
 
 export function CertificationCard({
@@ -27,7 +27,7 @@ export function CertificationCard({
   logoUrl,
   dateIssued,
   credentialId,
-  url
+  url,
 }: Props) {
   return (
     <Card
@@ -35,15 +35,10 @@ export function CertificationCard({
         "flex flex-col overflow-hidden border hover:shadow-lg transition-all duration-300 ease-out h-full"
       }
     >
-      <Link
-        href={"#"}
-      >
+      <Link href={"#"}>
         {logoUrl && (
-            <Avatar className="size-12 border">
-            <AvatarImage
-            src={logoUrl}
-            className="object-contain"
-          />
+          <Avatar className="size-12 border">
+            <AvatarImage src={logoUrl} className="object-contain" />
           </Avatar>
         )}
       </Link>
@@ -75,9 +70,7 @@ export function CertificationCard({
         )}
       </CardContent> */}
       <CardFooter className="px-2 pb-2">
-        <div>
-            {credentialId}
-        </div>
+        <div>{credentialId}</div>
       </CardFooter>
     </Card>
   );

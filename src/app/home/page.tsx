@@ -3,7 +3,12 @@ import { HackathonCard } from "@/components/hackathon-card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { FaXTwitter } from "react-icons/fa6";
-import Image from 'next/image'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Image from "next/image";
 import { BsFiletypeDoc, BsFiletypePdf } from "react-icons/bs";
 import {
   PlusCircle,
@@ -61,8 +66,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger
-} from "@/components/ui/alert-dialog"
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { ToastAction } from "@/components/ui/toast";
 import { ConsolePage } from "@/components/ui/real-time/ConsolePage";
@@ -72,6 +77,8 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { TbWorldUpload } from "react-icons/tb";
 import { CertificationCard } from "@/components/certification-card";
+import AnimatedSaveIcon from "@/components/ui/AnimatedIcons/AnimatedSaveIcon";
+import AnimatedFileText from "@/components/ui/AnimatedIcons/AnimatedFileIcon";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -83,13 +90,13 @@ export default function Page() {
   const router = useRouter();
   const pathname = usePathname();
   console.log(pathname);
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [savedText, setSavedText] = useState("");
   const [userEmailToken, setUserEmailToken] = useState("");
   const [isEditingIntro, setIsEditingIntro] = useState(false);
   const [text, setText] = useState("");
-  const [subscriptionStatus, setSubscriptionStatus] = useState("inactive")
+  const [subscriptionStatus, setSubscriptionStatus] = useState("inactive");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
@@ -98,44 +105,50 @@ export default function Page() {
   const [openRealTime, setOpenRealTime] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [isPhotoLoading, setIsPhotoLoading] = useState(false)
-  const [papersHeader, setPapersHeader] = useState("")
-  const [papersSubtitle, setPapersSubtitle] = useState("")
-  const [projectsHeader, setProjectsHeader] = useState("")
-  const [projectsSubtitle, setProjectsSubtitle] = useState("")
-  const [hackathonHeader, setHackathonHeader] = useState("")
-  const [hackathonSubtitle, setHackathonSubtitle] = useState("")
+  const [isPhotoLoading, setIsPhotoLoading] = useState(false);
+  const [papersHeader, setPapersHeader] = useState("");
+  const [papersSubtitle, setPapersSubtitle] = useState("");
+  const [projectsHeader, setProjectsHeader] = useState("");
+  const [projectsSubtitle, setProjectsSubtitle] = useState("");
+  const [hackathonHeader, setHackathonHeader] = useState("");
+  const [hackathonSubtitle, setHackathonSubtitle] = useState("");
 
   const [description, setDescription] = useState("");
   const [about, setAbout] = useState("");
   const [isPhoneEmailExpanded, setIsPhoneEmailExpanded] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState("")
-  const filePhotoInputRef = useRef<HTMLInputElement>(null)
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const filePhotoInputRef = useRef<HTMLInputElement>(null);
 
   const handleChangePhoto = () => {
-    filePhotoInputRef.current?.click()
-  }
+    filePhotoInputRef.current?.click();
+  };
 
   const toggleExpanded = () => {
     setIsPhoneEmailExpanded(!isPhoneEmailExpanded);
   };
-  const handleFilePhotoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsPhotoLoading(true)
+  const handleFilePhotoChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setIsPhotoLoading(true);
     const file = event.target.files?.[0];
-    const email = DATA.contact.email // Replace with the user's email (dynamic or static)
-  
+    const email = DATA.contact.email; // Replace with the user's email (dynamic or static)
+
     if (file) {
       const formData = new FormData();
       formData.append("file", file); // Add the file to the form data
       formData.append("email", email); // Add the email to the form data
-  
+
       try {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/upload-profile-picture/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/upload-profile-picture/`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           },
-        });
-  
+        );
+
         if (response.status === 200) {
           console.log("File uploaded successfully:", response.data);
           setAvatarUrl(`${response.data.url}?t=${new Date().getTime()}`);
@@ -143,20 +156,21 @@ export default function Page() {
             ...prevData,
             avatarUrl: response.data.url,
           }));
-          setIsPhotoLoading(false)
+          setIsPhotoLoading(false);
           // Handle success (e.g., update UI with new avatar URL)
         }
       } catch (error) {
         console.error("Error uploading file:", error);
-        setIsPhotoLoading(false)
+        setIsPhotoLoading(false);
         toast({
           title: "Failed to upload profile picture.",
           duration: 3000,
         });
       }
+    } else {
+      setIsLoading(false);
     }
   };
-
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -190,13 +204,15 @@ export default function Page() {
       setSavedText(response.data.content.name);
       setDescription(response.data.content.description);
       setAbout(response.data.content.summary);
-      setPapersHeader(response.data.content.papersWebsiteHeader)
-      setPapersHeader(response.data.content.papersWebsiteSubtitle)
-      setProjectsHeader(response.data.content.projectsWebsiteHeader)
-      setProjectsSubtitle(response.data.content.projectsWebsiteSubtitle)
-      setHackathonHeader(response.data.content.hackathonWebsiteHeader)
-      setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle)
-      setAvatarUrl(`${response.data.content.avatarUrl}?t=${new Date().getTime()}`);
+      setPapersHeader(response.data.content.papersWebsiteHeader);
+      setPapersHeader(response.data.content.papersWebsiteSubtitle);
+      setProjectsHeader(response.data.content.projectsWebsiteHeader);
+      setProjectsSubtitle(response.data.content.projectsWebsiteSubtitle);
+      setHackathonHeader(response.data.content.hackathonWebsiteHeader);
+      setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle);
+      setAvatarUrl(
+        `${response.data.content.avatarUrl}?t=${new Date().getTime()}`,
+      );
       setUploadStatus("PDF processed successfully!");
     } catch (error) {
       setUploadStatus("Error processing PDF");
@@ -214,28 +230,30 @@ export default function Page() {
         { data: DATA, userToken: userEmailToken },
       )
       .then((response) => {
-        if (subscriptionStatus != 'active')
-          {
-            toast({
-              title: "Subscribe to Publish.",
-              action: (
-                <ToastAction
-                  altText="Subscribe User"
-                  onClick={() => {
-                    handleStripePayment();
-                  }}
-                >
-                  {"Subscribe"}
-                </ToastAction>
-              ),
-              duration: 3000,
-            });
-            setIsSaving(false);
-            return
-          }
+        if (subscriptionStatus != "active") {
+          toast({
+            title: "Subscribe to Publish",
+            variant: "destructive",
+            description:
+              "Your portfolio is saved, but won’t be public until you purchase a subscription.",
+            action: (
+              <ToastAction
+                altText="Subscribe User"
+                onClick={() => {
+                  handleStripePayment();
+                }}
+              >
+                {"Subscribe"}
+              </ToastAction>
+            ),
+            duration: 10000,
+          });
+          setIsSaving(false);
+          return;
+        }
 
         toast({
-          title: "Portfolio Published.",
+          title: "Portfolio Published 🚀",
           action: (
             <ToastAction
               altText="Success"
@@ -295,16 +313,18 @@ export default function Page() {
         setSavedText(response.data.content.name);
         setDescription(response.data.content.description);
         setAbout(response.data.content.summary);
-        setPapersHeader(response.data.content.papersWebsiteHeader)
-        setPapersSubtitle(response.data.content.papersWebsiteSubtitle)
-        setProjectsHeader(response.data.content.projectsWebsiteHeader)
-        setProjectsSubtitle(response.data.content.projectsWebsiteSubtitle)
-        setHackathonHeader(response.data.content.hackathonWebsiteHeader)
-        setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle)
-        setAvatarUrl(`${response.data.content.avatarUrl}?t=${new Date().getTime()}`);
+        setPapersHeader(response.data.content.papersWebsiteHeader);
+        setPapersSubtitle(response.data.content.papersWebsiteSubtitle);
+        setProjectsHeader(response.data.content.projectsWebsiteHeader);
+        setProjectsSubtitle(response.data.content.projectsWebsiteSubtitle);
+        setHackathonHeader(response.data.content.hackathonWebsiteHeader);
+        setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle);
+        setAvatarUrl(
+          `${response.data.content.avatarUrl}?t=${new Date().getTime()}`,
+        );
 
-        setSubscriptionStatus(response.data.subscription_status)
-        console.log("avatar url ", response.data.content.avatarUrl)
+        setSubscriptionStatus(response.data.subscription_status);
+        console.log("avatar url ", response.data.content.avatarUrl);
       } catch (error) {
         console.error(error);
       } finally {
@@ -348,9 +368,9 @@ export default function Page() {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/create-checkout-session/`,
         {
           stripe_customer_id: sessionStorage.getItem("stripe_customer_id"),
-        }
+        },
       );
-  
+
       if (response.data.url) {
         // Redirect to the Stripe Checkout page
         window.location.href = response.data.url;
@@ -397,8 +417,7 @@ export default function Page() {
         </Card>
       )}
       {!isLoading && DATA && Object.keys(DATA).length > 0 && (
-        <main className="flex flex-col min-h-[100dvh] space-y-10"
-        >
+        <main className="flex flex-col min-h-[100dvh] space-y-10">
           <Button
             className="absolute top-4 right-4 px-4 py-2 rounded "
             variant="ghost"
@@ -407,7 +426,7 @@ export default function Page() {
             {isSaving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              <TbWorldUpload size={16}/>
+              <AnimatedSaveIcon/>
             )}
           </Button>
 
@@ -441,8 +460,7 @@ export default function Page() {
                             variant="outline"
                             onClick={handleCancelEditingIntro}
                           >
-                            <X className="h-4 w-4"/>
-                            
+                            <X className="h-4 w-4" />
                           </Button>
                         </div>
                         <Input
@@ -483,50 +501,58 @@ export default function Page() {
                   </div>
                 </div>
                 <BlurFade delay={BLUR_FADE_DELAY}>
-                <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <AlertDialogTrigger asChild>
-                <Avatar className="size-28 border cursor-pointer">
-                  {isPhotoLoading && (
-                              <div className="flex items-center justify-center w-full h-full">
-                              {/* <Loader2 className="w-1/3 h-1/3 animate-spin" /> */}
-                    <RecordingLoader/>
-
-                            </div>
-                  )}
-                  {!isPhotoLoading && (
-                    <>
-                  <AvatarImage alt={DATA.name} src={avatarUrl} />
-                  <AvatarFallback>{DATA.initials}</AvatarFallback>
-                  </>
-                  )}
-
-                </Avatar>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="max-w-md">
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Profile Picture</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    <div className="mt-2 flex justify-center">
-                    <Avatar className="size-28 border cursor-pointer">
-                  <AvatarImage alt={DATA.name} src={avatarUrl} />
-                  <AvatarFallback>{DATA.initials}</AvatarFallback>
-                </Avatar>
-                    </div>
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter className="flex items-center justify-center">
-                  <AlertDialogCancel className="w-full text-center">Close</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleChangePhoto} className="w-full text-center">Change Photo</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            <input
-              type="file"
-              ref={filePhotoInputRef}
-              onChange={handleFilePhotoChange}
-              accept="image/*"
-              className="hidden"
-            />
+                  <AlertDialog
+                    open={isDialogOpen}
+                    onOpenChange={setIsDialogOpen}
+                  >
+                    <AlertDialogTrigger asChild>
+                      <Avatar className="size-28 border cursor-pointer">
+                        {isPhotoLoading && (
+                          <div className="flex items-center justify-center w-full h-full">
+                            {/* <Loader2 className="w-1/3 h-1/3 animate-spin" /> */}
+                            <RecordingLoader />
+                          </div>
+                        )}
+                        {!isPhotoLoading && (
+                          <>
+                            <AvatarImage alt={DATA.name} src={avatarUrl} />
+                            <AvatarFallback>{DATA.initials}</AvatarFallback>
+                          </>
+                        )}
+                      </Avatar>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="max-w-md">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Profile Picture</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          <div className="mt-2 flex justify-center">
+                            <Avatar className="size-28 border cursor-pointer">
+                              <AvatarImage alt={DATA.name} src={avatarUrl} />
+                              <AvatarFallback>{DATA.initials}</AvatarFallback>
+                            </Avatar>
+                          </div>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter className="flex items-center justify-center">
+                        <AlertDialogCancel className="w-full text-center">
+                          Close
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleChangePhoto}
+                          className="w-full text-center"
+                        >
+                          Change Photo
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  <input
+                    type="file"
+                    ref={filePhotoInputRef}
+                    onChange={handleFilePhotoChange}
+                    accept="image/png, image/jpeg"
+                    className="hidden"
+                  />
                 </BlurFade>
               </div>
             </div>
@@ -638,7 +664,7 @@ export default function Page() {
                             }));
                           }}
                         >
-                          <X className="h-3 w-3" color="white"/>
+                          <X className="h-3 w-3" color="white" />
                         </Button>
                       )}
                     </Badge>
@@ -658,89 +684,90 @@ export default function Page() {
             </div>
           </section>
           {DATA && DATA.projects && DATA.projects.length > 0 && (
-          <section id="projects">
-          <div className="space-y-12 w-full py-12">
-            <BlurFade delay={BLUR_FADE_DELAY * 11}>
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                    My Projects
+            <section id="projects">
+              <div className="space-y-12 w-full py-12">
+                <BlurFade delay={BLUR_FADE_DELAY * 11}>
+                  <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                    <div className="space-y-2">
+                      <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                        My Projects
+                      </div>
+                      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                        {projectsHeader}
+                      </h2>
+                      <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                        {projectsSubtitle}
+                      </p>
+                    </div>
                   </div>
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                    {projectsHeader}
-                  </h2>
-                  <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    {projectsSubtitle}
-                  </p>
-                </div>
+                </BlurFade>
+                <Marquee pauseOnHover className="[--duration:20s]">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
+                    {DATA.projects.map((project, id) => (
+                      <BlurFade
+                        key={project.title}
+                        delay={BLUR_FADE_DELAY * 12 + id * 0.05}
+                      >
+                        <ProjectCard
+                          href={project.href}
+                          key={project.title}
+                          title={project.title}
+                          description={project.description}
+                          dates={project.dates}
+                          tags={project.technologies}
+                          image={project.image}
+                          video={project.video}
+                          links={project.links}
+                        />
+                      </BlurFade>
+                    ))}
+                  </div>
+                </Marquee>
               </div>
-            </BlurFade>
-            <Marquee pauseOnHover className="[--duration:20s]">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
-                {DATA.projects.map((project, id) => (
-                  <BlurFade
-                    key={project.title}
-                    delay={BLUR_FADE_DELAY * 12 + id * 0.05}
-                  >
-                    <ProjectCard
-                      href={project.href}
-                      key={project.title}
-                      title={project.title}
-                      description={project.description}
-                      dates={project.dates}
-                      tags={project.technologies}
-                      image={project.image}
-                      video={project.video}
-                      links={project.links}
-                    />
-                  </BlurFade>
-                ))}
-              </div>
-            </Marquee>
-          </div>
-        </section>
+            </section>
           )}
 
-{DATA && DATA.certifications && DATA.certifications.length > 0 && (
-          <section id="certifications">
-          <div className="space-y-12 w-full py-12">
-            <BlurFade delay={BLUR_FADE_DELAY * 11}>
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                    My Certifications
+          {DATA && DATA.certifications && DATA.certifications.length > 0 && (
+            <section id="certifications">
+              <div className="space-y-12 w-full py-12">
+                <BlurFade delay={BLUR_FADE_DELAY * 11}>
+                  <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                    <div className="space-y-2">
+                      <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                        My Certifications
+                      </div>
+                      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                        Check out my credentials
+                      </h2>
+                      <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                        I&apos;ve expanded my knowledge through these
+                        certifications.
+                      </p>
+                    </div>
                   </div>
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                    Check out my credentials
-                  </h2>
-                  <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    I&apos;ve expanded my knowledge through these certifications.
-                  </p>
-                </div>
+                </BlurFade>
+                <Marquee pauseOnHover className="[--duration:20s]">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
+                    {DATA.certifications.map((project, id) => (
+                      <BlurFade
+                        key={project.title}
+                        delay={BLUR_FADE_DELAY * 12 + id * 0.05}
+                      >
+                        <CertificationCard
+                          key={project.title}
+                          issuingOrganization={project.issuingOrganization}
+                          title={project.title}
+                          logoUrl={project.logoUrl}
+                          dateIssued={project.dateIssued}
+                          url={project.url}
+                          credentialId={project.credentialId}
+                        />
+                      </BlurFade>
+                    ))}
+                  </div>
+                </Marquee>
               </div>
-            </BlurFade>
-            <Marquee pauseOnHover className="[--duration:20s]">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
-                {DATA.certifications.map((project, id) => (
-                  <BlurFade
-                    key={project.title}
-                    delay={BLUR_FADE_DELAY * 12 + id * 0.05}
-                  >
-                    <CertificationCard
-                      key={project.title}
-                      issuingOrganization={project.issuingOrganization}
-                      title={project.title}
-                      logoUrl={project.logoUrl}
-                      dateIssued={project.dateIssued}
-                      url={project.url}
-                      credentialId={project.credentialId}
-                    />
-                  </BlurFade>
-                ))}
-              </div>
-            </Marquee>
-          </div>
-        </section>
+            </section>
           )}
 
           {DATA && DATA.papers && DATA.papers.length > 0 && (
@@ -756,7 +783,7 @@ export default function Page() {
                         {papersHeader}
                       </h2>
                       <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                      {papersSubtitle}
+                        {papersSubtitle}
                       </p>
                     </div>
                   </div>
@@ -886,78 +913,90 @@ export default function Page() {
                   {Object.entries(DATA.contact)
                     .filter(([name]) => name !== "social")
                     .map(([name, value]) => (
-                      <div key={name} className="flex flex-col items-center justify-center">
-                        <Button
-                          onClick={toggleExpanded}
-                          variant="ghost"
-                          size="sm"
-                          className={cn(
-                            "relative z-10 flex items-center gap-2 transition-all duration-300 ease-in-out",
-                            isPhoneEmailExpanded ? "pr-3" : "pr-2 w-12",
-                          )}
-                          aria-expanded={isPhoneEmailExpanded}
-                          aria-label={`${name}: ${value}`}
-                        >
-                          {name == "email" ? (
-                            <Mail className="size-4 flex-shrink-0" />
-                          ) : (
-                            <Phone className="size-4 flex-shrink-0" />
-                          )}
-                          <span
+                      <div
+                        key={name}
+                        className="flex flex-col items-center justify-center"
+                      >
+                        {value && (
+                          <Button
+                            onClick={toggleExpanded}
+                            variant="ghost"
+                            size="sm"
                             className={cn(
-                              "transition-all duration-300 ease-in-out overflow-hidden",
-                              isPhoneEmailExpanded
-                                ? "w-auto opacity-100"
-                                : "w-0 opacity-0",
+                              "relative z-10 flex items-center gap-2 transition-all duration-300 ease-in-out",
+                              isPhoneEmailExpanded ? "pr-3" : "pr-2 w-12",
                             )}
+                            aria-expanded={isPhoneEmailExpanded}
+                            aria-label={`${name}: ${value}`}
                           >
-                            {value}
-                          </span>
-                        </Button>
+                            {name === "email" && value ? (
+                              <Mail className="size-4 flex-shrink-0" />
+                            ) : name === "tel" && value ? (
+                              <Phone className="size-4 flex-shrink-0" />
+                            ) : null}
+                            <span
+                              className={cn(
+                                "transition-all duration-300 ease-in-out overflow-hidden",
+                                isPhoneEmailExpanded
+                                  ? "w-auto opacity-100"
+                                  : "w-0 opacity-0",
+                              )}
+                            >
+                              {value}
+                            </span>
+                          </Button>
+                        )}
                       </div>
                     ))}
-                  {Object.entries(DATA.contact.social).filter(([name, social]) => name.toLowerCase() !== "email" && name.toLowerCase() !== "phone").map(
-                    ([name, social]) =>
-                      // Check if the social.url exists before rendering the Link
-                      social.url && (
-                        <div key={name}>
-                          <Link
-                            href={social.url}
-                            className={cn(
-                              buttonVariants({
-                                variant: "ghost",
-                                size: "icon",
-                              }),
-                              "size-12",
-                            )}
-                          >
-                            {/* Render the appropriate icon based on name */}
-                            {name.toLowerCase() === "youtube" && (
-                              <Youtube className="size-4" />
-                            )}
-                            {(name.toLowerCase() === "twitter" || name.toLowerCase() === "x") && (
-                              <FaXTwitter className="size-4" />
-                            )}
-                            {name.toLowerCase() === "facebook" && (
-                              <Facebook className="size-4" />
-                            )}
-                            {name.toLowerCase() === "github" && (
-                              <Github className="size-4" />
-                            )}
-                            {name.toLowerCase() === "linkedin" && (
-                              <Linkedin className="size-4" />
-                            )}
-                            {/* Add more cases as needed */}
-                          </Link>
-                        </div>
-                      ),
-                  )}
+                  {Object.entries(DATA.contact.social)
+                    .filter(
+                      ([name, social]) =>
+                        name.toLowerCase() !== "email" &&
+                        name.toLowerCase() !== "phone",
+                    )
+                    .map(
+                      ([name, social]) =>
+                        // Check if the social.url exists before rendering the Link
+                        social.url && (
+                          <div key={name}>
+                            <Link
+                              href={social.url}
+                              className={cn(
+                                buttonVariants({
+                                  variant: "ghost",
+                                  size: "icon",
+                                }),
+                                "size-12",
+                              )}
+                            >
+                              {/* Render the appropriate icon based on name */}
+                              {name.toLowerCase() === "youtube" && (
+                                <Youtube className="size-4" />
+                              )}
+                              {(name.toLowerCase() === "twitter" ||
+                                name.toLowerCase() === "x") && (
+                                <FaXTwitter className="size-4" />
+                              )}
+                              {name.toLowerCase() === "facebook" && (
+                                <Facebook className="size-4" />
+                              )}
+                              {name.toLowerCase() === "github" && (
+                                <Github className="size-4" />
+                              )}
+                              {name.toLowerCase() === "linkedin" && (
+                                <Linkedin className="size-4" />
+                              )}
+                              {/* Add more cases as needed */}
+                            </Link>
+                          </div>
+                        ),
+                    )}
                 </div>
               </BlurFade>
             </div>
           </section>
           <div className="mb-2">
-            <Navbar showLogout={true}/>
+            <Navbar showLogout={true} />
           </div>
         </main>
       )}
@@ -969,13 +1008,12 @@ export default function Page() {
               className="absolute top-4 left-4 px-4 py-2 rounded"
               variant="ghost"
             >
-              <BsFiletypePdf /> {"/"} <BsFiletypeDoc/>
+              <AnimatedFileText/>
             </Button>
           )}
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-          </DialogHeader>
+          <DialogHeader></DialogHeader>
           <Card className="border-0 shadow-none">
             <CardHeader>
               <CardTitle className="text-center">Ready? 🚀</CardTitle>

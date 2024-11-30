@@ -1,74 +1,60 @@
 {
-  "name": "Hi, I'm Claud 👋",
-  "initials": "CDP",
-  "url": "www.posquit0.com",
-  "location": "Seoul, Republic of Korea",
-  "locationLink": "",
-  "description": "A passionate Site Reliability Engineer and Software Architect with extensive experience in cloud infrastructure, DevOps practices, and robust software development.",
-  "summary": "Driven Site Reliability Engineer and Software Architect with over 8 years of experience in building and managing large-scale and resilient cloud infrastructure across multiple industries. Adept in optimizing AWS resources for cost efficiency while ensuring high availability and security compliance. Proven expertise in CI/CD automation, microservices architecture, and container orchestration through Kubernetes. A strong advocate for using best practices in infrastructure as code, with a focus on operational efficiency and collaboration with cross-functional teams.",
-  "avatarUrl": "",
+  "name": "Hi, I'm Alex Johnson 👋",
+  "initials": "AJ",
+  "url": "https://alexjohnson.dev",
+  "location": "Toronto, Canada",
+  "locationLink": "https://goo.gl/maps/toronto",
+  "description": "Software Engineer passionate about building innovative web applications and contributing to open-source.",
+  "summary": "I am a full-stack developer with 5+ years of experience, specializing in building scalable web applications, enhancing user experience, and mentoring junior developers. I have a strong passion for learning and leveraging modern tech stacks.",
+  "avatarUrl": "https://via.placeholder.com/150",
   "skills": [
-    "DevOps",
+    "JavaScript",
+    "React",
+    "Node.js",
+    "TypeScript",
+    "GraphQL",
+    "Python",
+    "Django",
+    "PostgreSQL",
     "AWS",
     "Docker",
-    "Kubernetes",
-    "Rancher",
-    "Vagrant",
-    "Packer",
-    "Terraform",
-    "Jenkins",
-    "CircleCI",
-    "Koa",
-    "Express",
-    "Django",
-    "REST API",
-    "Hugo",
-    "Redux",
-    "React",
-    "HTML5",
-    "LESS",
-    "SASS",
-    "Node.js",
-    "Python",
-    "JAVA",
-    "OCaml",
-    "LaTeX"
+    "Tailwind CSS"
   ],
   "navbar": [
     { "href": "/", "icon": "HomeIcon", "label": "Home" },
     { "href": "/blog", "icon": "NotebookIcon", "label": "Blog" }
   ],
   "contact": {
-    "email": "posquit0.bj@gmail.com",
-    "tel": "+82 10-9030-1843",
+    "email": "alex.johnson@example.com",
+    "tel": "+1 647 123 4567",
     "social": {
       "GitHub": {
         "name": "GitHub",
-        "url": "https://github.com/posquit0",
+        "url": "https://github.com/alexjohnson",
         "icon": "Icons.github",
         "navbar": true
       },
       "LinkedIn": {
         "name": "LinkedIn",
-        "url": "https://www.linkedin.com/in/posquit0",
+        "url": "https://linkedin.com/in/alexjohnson",
         "icon": "Icons.linkedin",
         "navbar": true
       },
       "X": {
         "name": "X",
-        "url": "https://twitter.com/posquit0",
+        "url": "https://twitter.com/alexjohnson",
         "icon": "Icons.x",
         "navbar": true
       },
       "Youtube": {
         "name": "Youtube",
-        "url": "https://www.youtube.com/channel/posquit0",
+        "url": "https://youtube.com/alexjohnson",
         "icon": "Icons.youtube",
         "navbar": true
       },
       "email": {
         "name": "Send Email",
-        "url": "mailto:posquit0.bj@gmail.com",
+        "url": "mailto:alex.johnson@example.com",
         "icon": "Icons.email",
         "navbar": false
       }
@@ -76,267 +62,155 @@
   },
   "work": [
     {
-      "company": "Danggeun Pay Inc. (KarrotPay)",
-      "href": "",
-      "badges": [],
-      "location": "Seoul, S.Korea",
-      "title": "Founding Member & Site Reliability Engineer & Infrastructure Team Lead",
-      "logoUrl": "https://logo.clearbit.com/danggeunpay.com",
-      "start": "Mar. 2021",
+      "id": 12345678901234567890123456789012,
+      "company": "Tech Innovators",
+      "href": "https://techinnovators.com",
+      "badges": ["Full-stack Developer", "Mentor"],
+      "location": "Toronto, Canada",
+      "title": "Senior Software Engineer",
+      "logoUrl": "https://via.placeholder.com/100",
+      "start": "January 2020",
       "end": "Present",
-      "description": "Designed and provisioned the entire infrastructure on the AWS cloud to meet security compliance and acquire a business license for financial services in Korea."
-    },
-    {
-      "company": "Danggeun Market Inc.",
-      "href": "",
-      "badges": [],
-      "location": "Seoul, S.Korea",
-      "title": "Site Reliability Engineer",
-      "logoUrl": "https://logo.clearbit.com/danggeun.com",
-      "start": "Feb. 2021",
-      "end": "Mar. 2021",
-      "description": ""
-    },
-    {
-      "company": "Kasa",
-      "href": "",
-      "badges": [],
-      "location": "Seoul, S.Korea",
-      "title": "Founding Member & Director of Infrastructure Division",
-      "logoUrl": "https://logo.clearbit.com/kasa.com",
-      "start": "Jun. 2018",
-      "end": "Jan. 2021",
-      "description": "Managed complex network configurations on AWS and designed an on-boarding process to guide new engineers."
-    },
-    {
-      "company": "Omnious. Co., Ltd.",
-      "href": "",
-      "badges": [],
-      "location": "Seoul, S.Korea",
-      "title": "Software Architect",
-      "logoUrl": "https://logo.clearbit.com/omnious.co.kr",
-      "start": "Jun. 2017",
-      "end": "May 2018",
-      "description": "Built fully automated CI/CD pipelines and designed service architecture for a Machine Learning based product."
-    },
-    {
-      "company": "PLAT Corp.",
-      "href": "",
-      "badges": [],
-      "location": "Seoul, S.Korea",
-      "title": "Co-Founder & Software Engineer",
-      "logoUrl": "https://logo.clearbit.com/plat.co.kr",
-      "start": "Jan. 2016",
-      "end": "Jun. 2017",
-      "description": "Implemented RESTful API server for a car rental booking application."
-    },
-    {
-      "company": "R.O.K Cyber Command, MND",
-      "href": "",
-      "badges": [],
-      "location": "Seoul, S.Korea",
-      "title": "Software Engineer & Security Researcher",
-      "logoUrl": "",
-      "start": "Aug. 2014",
-      "end": "Apr. 2016",
-      "description": "Lead engineer on an agent-less backtracking system."
-    },
-    {
-      "company": "NEXON",
-      "href": "",
-      "badges": [],
-      "location": "Seoul, S.Korea & LA, U.S.A",
-      "title": "Game Developer Intern",
-      "logoUrl": "https://logo.clearbit.com/nexon.com",
-      "start": "Jan. 2013",
-      "end": "Feb. 2013",
-      "description": "Developed an action puzzle game."
+      "description": "Leading a team of developers to build scalable and performant web applications using modern tech stacks like React, Node.js, and AWS."
     }
   ],
   "education": [
     {
-      "school": "POSTECH (Pohang University of Science and Technology)",
-      "href": "",
-      "degree": "B.S. in Computer Science and Engineering",
-      "logoUrl": "https://logo.clearbit.com/postech.ac.kr",
-      "start": "Mar. 2010",
-      "end": "Aug. 2017"
+      "school": "University of Toronto",
+      "href": "https://www.utoronto.ca",
+      "degree": "Bachelor of Science in Computer Science",
+      "logoUrl": "https://via.placeholder.com/100",
+      "start": "September 2014",
+      "end": "May 2018"
     }
   ],
-  "projects": [],
-  "hackathons": [],
-  "papers": [],
+  "projects": [
+    {
+      "title": "DevPortfolio",
+      "href": "https://devportfolio.com",
+      "dates": "2022 - Present",
+      "active": true,
+      "description": "A customizable and dynamic portfolio generator for developers.",
+      "technologies": ["React", "TypeScript", "Tailwind CSS", "Node.js"],
+      "links": [
+        {
+          "type": "GitHub",
+          "href": "https://github.com/alexjohnson/devportfolio",
+          "icon": "Icons.github"
+        }
+      ],
+      "image": "https://via.placeholder.com/300",
+      "video": "https://www.youtube.com/embed/example"
+    }
+  ],
+  "projectsWebsiteHeader": "Showcasing My Creations",
+  "projectsWebsiteSubtitle": "Explore the innovative solutions I've built to solve real-world problems.",
+  "hackathons": [
+    {
+      "title": "Hack the North",
+      "dates": "September 2021",
+      "location": "Waterloo, Canada",
+      "description": "Built an AI-powered resume screening tool that won Best Use of Machine Learning.",
+      "image": "https://via.placeholder.com/300",
+      "mlh": "https://mlh.io",
+      "win": "Best Use of Machine Learning",
+      "links": [
+        {
+          "title": "GitHub",
+          "icon": "Icons.github",
+          "href": "https://github.com/alexjohnson/hackathon-project"
+        }
+      ]
+    }
+  ],
+  "hackathonWebsiteHeader": "Innovation in Action",
+  "hackathonWebsiteSubtitle": "Showcasing my participation and achievements in hackathons worldwide.",
+  "papers": [
+    {
+      "title": "Optimizing Web Performance with React",
+      "coAuthors": ["Jane Smith"],
+      "publicationDate": "March 2022",
+      "conference": "React Conference",
+      "journal": "Web Development Today",
+      "doi": "10.1234/react-perf",
+      "abstract": "This paper explores advanced techniques to optimize performance in large-scale React applications.",
+      "link": "https://example.com/react-paper"
+    }
+  ],
+  "papersWebsiteHeader": "Research & Publications",
+  "papersWebsiteSubtitle": "Delve into my contributions to the academic and technical community.",
   "certifications": [
     {
-      "title": "AWS Certified Advanced Networking - Specialty",
-      "issuingOrganization": "Amazon Web Services (AWS)",
-      "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
-      "dateIssued": "2023",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "AWS Certified Developer – Associate",
-      "issuingOrganization": "Amazon Web Services (AWS)",
-      "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
-      "dateIssued": "2023",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "AWS Certified Cloud Practitioner",
-      "issuingOrganization": "Amazon Web Services (AWS)",
-      "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
-      "dateIssued": "2023",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "AWS Certified Security - Specialty",
-      "issuingOrganization": "Amazon Web Services (AWS)",
-      "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
-      "dateIssued": "2022",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "AWS Certified Solutions Architect – Professional",
-      "issuingOrganization": "Amazon Web Services (AWS)",
-      "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
-      "dateIssued": "2022",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "AWS Certified Solutions Architect – Associate",
-      "issuingOrganization": "Amazon Web Services (AWS)",
-      "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
-      "dateIssued": "2019",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "AWS Certified SysOps Administrator – Associate",
-      "issuingOrganization": "Amazon Web Services (AWS)",
-      "logoUrl": "https://logo.clearbit.com/aws.amazon.com",
-      "dateIssued": "2021",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "Certified Kubernetes Application Developer (CKAD)",
-      "issuingOrganization": "The Linux Foundation",
-      "logoUrl": "https://logo.clearbit.com/linuxfoundation.org",
-      "dateIssued": "2020",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "HashiCorp Certified: Consul Associate (002)",
-      "issuingOrganization": "HashiCorp",
-      "logoUrl": "https://logo.clearbit.com/hashicorp.com",
-      "dateIssued": "2023",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "HashiCorp Certified: Terraform Associate (003)",
-      "issuingOrganization": "HashiCorp",
-      "logoUrl": "https://logo.clearbit.com/hashicorp.com",
-      "dateIssued": "2023",
-      "credentialId": "",
-      "url": ""
-    },
-    {
-      "title": "HashiCorp Certified: Terraform Associate (002)",
-      "issuingOrganization": "HashiCorp",
-      "logoUrl": "https://logo.clearbit.com/hashicorp.com",
-      "dateIssued": "2020",
-      "credentialId": "",
-      "url": ""
+      "title": "AWS Certified Solutions Architect",
+      "issuingOrganization": "Amazon Web Services",
+      "logoUrl": "https://via.placeholder.com/100",
+      "dateIssued": "July 2021",
+      "credentialId": "AWS-123456",
+      "url": "https://aws.amazon.com/certification"
     }
   ],
-  "volunteerWork": [],
+  "volunteerWork": [
+    {
+      "organization": "Code for Canada",
+      "role": "Mentor",
+      "location": "Toronto, Canada",
+      "start": "June 2020",
+      "end": "Present",
+      "description": "Mentoring aspiring developers in building impactful civic tech solutions."
+    }
+  ],
   "awards": [
     {
-      "title": "2nd Place, AWS ASEAN AI/ML GameDay",
-      "organization": "AWS",
-      "dateAwarded": "2021",
-      "description": ""
-    },
-    {
-      "title": "Finalist, DEFCON 28th CTF Hacking Competition World Final",
-      "organization": "DEFCON",
-      "dateAwarded": "2020",
-      "description": ""
-    },
-    {
-      "title": "Finalist, DEFCON 26th CTF Hacking Competition World Final",
-      "organization": "DEFCON",
-      "dateAwarded": "2018",
-      "description": ""
-    },
-    {
-      "title": "Finalist, DEFCON 25th CTF Hacking Competition World Final",
-      "organization": "DEFCON",
-      "dateAwarded": "2017",
-      "description": ""
-    },
-    {
-      "title": "Silver Prize, KISA HDCON Hacking Competition Final",
-      "organization": "KISA",
-      "dateAwarded": "2017",
-      "description": ""
-    },
-    {
-      "title": "2nd Place, AWS Korea GameDay",
-      "organization": "AWS",
-      "dateAwarded": "2021",
-      "description": ""
+      "title": "Developer of the Year",
+      "organization": "Tech Awards Canada",
+      "dateAwarded": "December 2022",
+      "description": "Recognized for contributions to the open-source community and innovative projects."
     }
   ],
   "languages": [
+    { "name": "English", "proficiency": "Fluent" },
+    { "name": "French", "proficiency": "Intermediate" }
+  ],
+  "interests": [
+    { "name": "Traveling", "icon": "Icons.plane" },
+    { "name": "Photography", "icon": "Icons.camera" }
+  ],
+  "testimonials": [
     {
-      "name": "Korean",
-      "proficiency": "Native"
-    },
-    {
-      "name": "English",
-      "proficiency": "Fluent"
-    },
-    {
-      "name": "Japanese",
-      "proficiency": "Conversational"
+      "name": "John Doe",
+      "role": "CTO at Tech Innovators",
+      "quote": "Alex is a highly skilled developer with a unique ability to lead teams and deliver exceptional results.",
+      "organization": "Tech Innovators",
+      "avatarUrl": "https://via.placeholder.com/100"
     }
   ],
-  "interests": [],
-  "testimonials": [],
-  "openSourceContributions": [],
+  "openSourceContributions": [
+    {
+      "project": "React",
+      "repository": "https://github.com/facebook/react",
+      "role": "Contributor",
+      "description": "Improved performance in the React reconciliation algorithm.",
+      "contributionDate": "May 2021"
+    }
+  ],
   "speakingEngagements": [
     {
-      "title": "Hosting Web Application for Free Utilizing GitHub, Netlify and Cloudflare",
-      "event": "DevFest Seoul by Google Developer Group Korea",
-      "location": "Seoul, S.Korea",
-      "date": "Nov. 2017",
-      "slidesLink": "",
-      "description": "Introduced the history of web technology and the JAM stack which is for modern web application development."
-    },
-    {
-      "title": "DEFCON 20TH: The Way to Go to Las Vegas",
-      "event": "6th CodeEngn (Reverse Engineering Conference)",
-      "location": "Seoul, S.Korea",
-      "date": "Jul. 2012",
-      "slidesLink": "",
-      "description": "Introduced CTF hacking competition and advanced techniques and strategy for CTF."
-    },
-    {
-      "title": "Metasploit 101",
-      "event": "6th Hacking Camp",
-      "location": "S.Korea",
-      "date": "Sep. 2012",
-      "slidesLink": "",
-      "description": "Introduced basic procedure for penetration testing and how to use Metasploit."
+      "title": "Scaling React Applications",
+      "event": "ReactConf 2022",
+      "location": "San Francisco, CA",
+      "date": "August 2022",
+      "slidesLink": "https://example.com/slides",
+      "description": "A talk on optimizing performance for large-scale React applications."
     }
   ],
-  "patents": []
+  "patents": [
+    {
+      "title": "Dynamic Web Optimization Algorithms",
+      "patentId": "US1234567B",
+      "description": "An innovative algorithm to improve page load times dynamically.",
+      "dateFiled": "January 2023",
+      "status": "Granted",
+      "url": "https://example.com/patent"
+    }
+  ]
 }

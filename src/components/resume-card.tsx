@@ -1,12 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ChevronRightIcon, Edit2Icon, SaveIcon } from "lucide-react";
+import {
+  Check,
+  ChevronRightIcon,
+  Edit2Icon,
+  Info,
+  SaveIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +57,7 @@ export const ResumeCard = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [logoUrl, setLogoUrl] = useState(initialLogoUrl);
+  const [inputUrlValue, setInputUrlValue] = useState("");
   const [altText, setAltText] = useState(initialAltText);
   const [company, setCompany] = useState(initialTitle);
   const [subtitle, setSubtitle] = useState(initialSubtitle || "");
@@ -56,6 +68,9 @@ export const ResumeCard = ({
 
   const handleSave = () => {
     setIsEditing(false);
+    if (logoUrl === "https://logo.clearbit.com/") {
+      setLogoUrl(initialLogoUrl);
+    }
 
     const newData = {
       logoUrl,
@@ -94,14 +109,32 @@ export const ResumeCard = ({
     }
   };
 
+  const getUrlWithoutProtocol = (inputUrl: string) => {
+    const match = inputUrl.match(/(?:https?|ftp):\/\/(.*)/); // Matches "http", "https", or "ftp" protocols
+    if (match) {
+      return match[1]; // This will give the URL part after the protocol
+    }
+    return inputUrl; // If no protocol, return the original URL
+  };
+
+  const handleInputLocalUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newInputValue = e.target.value;
+    console.log("emptyyy", e.target.value);
+    const cleanedUrl = getUrlWithoutProtocol(newInputValue);
+    setInputUrlValue(cleanedUrl);
+    console.log("https://logo.clearbit.com/" + cleanedUrl);
+    setLogoUrl("https://logo.clearbit.com/" + cleanedUrl); // Append the domain
+  };
+
   return (
     <Card className="flex relative">
       <div className="flex justify-end">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 mb-2">
           {!readOnly && (
             <Button
               variant="ghost"
               size="icon"
+              className="mr-2"
               onClick={(e) => {
                 e.stopPropagation();
                 if (isEditing) {
@@ -112,7 +145,7 @@ export const ResumeCard = ({
               }}
             >
               {isEditing ? (
-                <SaveIcon className="h-4 w-4" />
+                <Check className="h-4 w-4" />
               ) : (
                 <Edit2Icon className="h-4 w-4" />
               )}
@@ -122,23 +155,43 @@ export const ResumeCard = ({
       </div>
       <div className="flex-none">
         <Avatar className="border size-12 m-auto bg-muted-background dark:bg-foreground">
-          {isEditing ? (
-            <Input
-              type="text"
-              value={logoUrl}
-              onChange={(e) => setLogoUrl(e.target.value)}
-              className="w-full h-full"
-              placeholder="Logo URL"
-            />
-          ) : (
-            <AvatarImage
-              src={logoUrl}
-              alt={altText}
-              className="object-contain"
-            />
-          )}
+          <AvatarImage
+            src={
+              logoUrl.trim() == "https://logo.clearbit.com/"
+                ? initialLogoUrl
+                : logoUrl
+            }
+            alt={altText}
+            className="object-contain"
+          />
           <AvatarFallback>{altText[0]}</AvatarFallback>
         </Avatar>
+        {isEditing && (
+          <div className="relative w-full py-4">
+            <Input
+              type="text"
+              value={
+                inputUrlValue === ""
+                  ? logoUrl.replace("https://logo.clearbit.com/", "")
+                  : inputUrlValue
+              }
+              onChange={handleInputLocalUrlChange}
+              className="mt-2 w-full pl-4 pr-10" // Add padding for the icon space
+              placeholder="Logo URL"
+            />
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="absolute right-2 top-1/2 transform -translate-y-1/2 mt-1" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{"Paste company url"}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Adjust positioning of the Info icon */}
+          </div>
+        )}
       </div>
       <div
         className="flex-grow ml-4 items-center flex-col group"

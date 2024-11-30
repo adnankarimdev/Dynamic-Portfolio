@@ -80,10 +80,27 @@ export default function AnimatedFileText() {
         variants={iconVariants}
       />
       <motion.polyline points="14 2 14 8 20 8" variants={iconVariants} />
-      <motion.line x1="16" y1="13" x2="8" y2="13" variants={lineVariants} custom={0} />
-      <motion.line x1="16" y1="17" x2="8" y2="17" variants={lineVariants} custom={1} />
-      <motion.polyline points="10 9 9 9 8 9" variants={lineVariants} custom={2} />
+      <motion.line
+        x1="16"
+        y1="13"
+        x2="8"
+        y2="13"
+        variants={lineVariants}
+        custom={0}
+      />
+      <motion.line
+        x1="16"
+        y1="17"
+        x2="8"
+        y2="17"
+        variants={lineVariants}
+        custom={1}
+      />
+      <motion.polyline
+        points="10 9 9 9 8 9"
+        variants={lineVariants}
+        custom={2}
+      />
     </motion.svg>
   );
 }
-

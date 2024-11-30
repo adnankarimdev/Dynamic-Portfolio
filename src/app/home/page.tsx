@@ -79,6 +79,7 @@ import { TbWorldUpload } from "react-icons/tb";
 import { CertificationCard } from "@/components/certification-card";
 import AnimatedSaveIcon from "@/components/ui/AnimatedIcons/AnimatedSaveIcon";
 import AnimatedFileText from "@/components/ui/AnimatedIcons/AnimatedFileIcon";
+import IconCloud from "@/components/ui/icon-cloud";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -306,7 +307,6 @@ export default function Page() {
             },
           },
         );
-
         console.log(response.data.content);
         setData(response.data.content);
         setText(response.data.content.name);
@@ -426,7 +426,7 @@ export default function Page() {
             {isSaving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              <AnimatedSaveIcon/>
+              <AnimatedSaveIcon />
             )}
           </Button>
 
@@ -589,7 +589,7 @@ export default function Page() {
               </BlurFade>
               {DATA.work.map((work, id) => (
                 <BlurFade
-                  key={work.company}
+                  key={work.company + id.toString()}
                   delay={BLUR_FADE_DELAY * 6 + id * 0.05}
                 >
                   <ResumeCard
@@ -642,7 +642,9 @@ export default function Page() {
               <BlurFade delay={BLUR_FADE_DELAY * 9}>
                 <h2 className="text-xl font-bold">Skills</h2>
               </BlurFade>
+
               <div className="flex flex-wrap gap-1">
+                {/* <IconCloud iconSlugs={DATA.skills.map(skill => skill.charAt(0).toLowerCase() + skill.slice(1))} /> */}
                 {DATA.skills.map((skill, id) => (
                   <BlurFade
                     key={skill}
@@ -1008,7 +1010,7 @@ export default function Page() {
               className="absolute top-4 left-4 px-4 py-2 rounded"
               variant="ghost"
             >
-              <AnimatedFileText/>
+              <AnimatedFileText />
             </Button>
           )}
         </DialogTrigger>

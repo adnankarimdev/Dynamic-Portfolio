@@ -31,6 +31,8 @@ import {
   Phone,
   Linkedin,
   Plus,
+  SaveIcon,
+  FileText,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Marquee from "@/components/ui/marquee";
@@ -91,6 +93,7 @@ import IconCloud from "@/components/ui/icon-cloud";
 import { ProjectForm } from "@/components/ui/Projects/ProjectForms";
 import { PaperForm } from "@/components/ui/Papers/PapersForm";
 import { PortfolioFormSelector } from "@/components/ui/Forms/portfolio-form-selector";
+import { Dock, DockIcon } from "@/components/magicui/dock";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -481,18 +484,91 @@ export default function Page() {
       )}
       {!isLoading && DATA && Object.keys(DATA).length > 0 && (
         <main className="flex flex-col min-h-[100dvh] space-y-10">
-          <PortfolioFormSelector data={DATA} setData={setData} />
-          <Button
-            className="absolute top-4 right-4 px-4 py-2 rounded"
-            variant="ghost"
-            onClick={handleSave}
-          >
-            {isSaving ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <AnimatedSaveIcon />
-            )}
-          </Button>
+          <div className="pointer-events-none fixed inset-x-0 top-0 z-30 mx-auto mt-4 flex origin-top h-full max-h-14">
+            <Dock className="z-50 pointer-events-auto relative mx-auto flex min-h-full h-full items-center px-1 bg-gradient-to-r from-purple-500 to-rose-400 [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] transform-gpu dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset] ">
+              <DockIcon key={"Save"}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      // className="absolute top-4 right-4 px-4 py-2 rounded"
+                      variant="ghost"
+                      
+                      onClick={handleSave}
+                    >
+                      {isSaving ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <SaveIcon />
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{"Save/Publish"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
+
+              <DockIcon key={"Upload"}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                      <DialogTrigger asChild>
+                        {!isLoading && DATA && Object.keys(DATA).length > 0 && (
+                          <Button
+                            // className="absolute top-4 left-4 px-4 py-2 rounded"
+                            variant="ghost"
+                          >
+                            <FileText />
+                          </Button>
+                        )}
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader></DialogHeader>
+                        <Card className="border-0 shadow-none">
+                          <CardHeader>
+                            <CardTitle className="text-center">
+                              Ready? 🚀
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <input
+                              type="file"
+                              accept="application/pdf,.docx"
+                              onChange={handleFileChange}
+                              className="hidden"
+                              ref={fileInputRef}
+                            />
+                            <Button
+                              onClick={() => fileInputRef.current?.click()}
+                              variant="ghost"
+                              className="w-full"
+                            >
+                              <Upload className="mr-2 h-4 w-4" /> Upload
+                              CV/Resume (.pdf, .docx)
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      </DialogContent>
+                    </Dialog>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{"Upload"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
+
+              <DockIcon key={"Manage"}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                      <PortfolioFormSelector data={DATA} setData={setData} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{"Manage Portfolio"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
+            </Dock>
+          </div>
 
           <section id="hero">
             <div className="mx-auto w-full max-w-2xl space-y-8">
@@ -1135,44 +1211,6 @@ export default function Page() {
           </div>
         </main>
       )}
-
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          {!isLoading && DATA && Object.keys(DATA).length > 0 && (
-            <Button
-              className="absolute top-4 left-4 px-4 py-2 rounded"
-              variant="ghost"
-            >
-              <AnimatedFileText />
-            </Button>
-          )}
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader></DialogHeader>
-          <Card className="border-0 shadow-none">
-            <CardHeader>
-              <CardTitle className="text-center">Ready? 🚀</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <input
-                type="file"
-                accept="application/pdf,.docx"
-                onChange={handleFileChange}
-                className="hidden"
-                ref={fileInputRef}
-              />
-              <Button
-                onClick={() => fileInputRef.current?.click()}
-                variant="ghost"
-                className="w-full"
-              >
-                <Upload className="mr-2 h-4 w-4" /> Upload CV/Resume (.pdf,
-                .docx)
-              </Button>
-            </CardContent>
-          </Card>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

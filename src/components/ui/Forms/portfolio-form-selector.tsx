@@ -35,8 +35,9 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Trash2 } from "lucide-react";
+import { BookPlus, Trash2 } from "lucide-react";
 import { Separator } from "../separator";
+import { useEffect } from "react";
 
 interface PortfolioFormSelectorProps {
   data: PortfolioData;
@@ -62,6 +63,10 @@ export function PortfolioFormSelector({
     paper: PaperForm,
     award: AwardForm,
   };
+
+  useEffect(() => {
+    console.log(data); // Should log the updated data after submit
+  }, [data]);
 
   const handleSubmit = (formData: any) => {
     setData((prevData) => {
@@ -214,7 +219,9 @@ export function PortfolioFormSelector({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost">Add/Edit Portfolio Data</Button>
+        <Button variant="ghost">
+          <BookPlus />{" "}
+        </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[400px] sm:w-[540px]">
         <SheetHeader>

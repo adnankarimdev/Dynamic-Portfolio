@@ -50,7 +50,7 @@ export function CertificationForm({
     if (date) {
       setFormData((prev) => ({
         ...prev,
-        dateIssued: format(date, "yyyy-MM-dd"),
+        dateIssued: format(date, "MMM yyyy"),
       }));
     }
   };
@@ -90,7 +90,6 @@ export function CertificationForm({
           type="url"
           value={formData.logoUrl}
           onChange={handleChange}
-          
         />
       </div>
       <div className="space-y-2">

@@ -47,7 +47,7 @@ export function PaperForm({ onSubmit }: PaperFormProps) {
     if (date) {
       setFormData((prev) => ({
         ...prev,
-        publicationDate: format(date, "yyyy-MM-dd"),
+        publicationDate: format(date, "MMM yyyy"),
       }));
     }
   };

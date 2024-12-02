@@ -55,12 +55,12 @@ export function WorkExperienceForm({
 
   const handleDateChange = (date: Date | undefined, field: "start" | "end") => {
     if (date) {
-      setFormData((prev) => ({ ...prev, [field]: format(date, "yyyy-MM-dd") }));
+      setFormData((prev) => ({ ...prev, [field]: format(date, "MMM yyyy") }));
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.log(formData)
+    console.log(formData);
     e.preventDefault();
     onSubmit(formData);
   };
@@ -129,7 +129,6 @@ export function WorkExperienceForm({
           type="url"
           value={formData.logoUrl}
           onChange={handleChange}
-          required
         />
       </div>
       <div className="space-y-2">
@@ -173,7 +172,7 @@ export function WorkExperienceForm({
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {formData.end ? (
+              {formData.end && formData.end != "Current" ? (
                 format(new Date(formData.end), "PPP")
               ) : (
                 <span>Pick a date</span>

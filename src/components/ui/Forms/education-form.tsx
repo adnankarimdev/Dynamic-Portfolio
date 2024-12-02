@@ -45,7 +45,7 @@ export function EducationForm({ onSubmit, editingItem }: EducationFormProps) {
 
   const handleDateChange = (date: Date | undefined, field: "start" | "end") => {
     if (date) {
-      setFormData((prev) => ({ ...prev, [field]: format(date, "yyyy-MM-dd") }));
+      setFormData((prev) => ({ ...prev, [field]: format(date, "MMM yyyy") }));
     }
   };
 

@@ -40,7 +40,7 @@ export function AwardForm({ onSubmit }: AwardFormProps) {
     if (date) {
       setFormData((prev) => ({
         ...prev,
-        dateAwarded: format(date, "yyyy-MM-dd"),
+        dateAwarded: format(date, "MMM yyyy"),
       }));
     }
   };

@@ -3,7 +3,13 @@ import { HackathonCard } from "@/components/hackathon-card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { FaXTwitter } from "react-icons/fa6";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
@@ -124,58 +130,59 @@ export default function Page() {
   const [isPhoneEmailExpanded, setIsPhoneEmailExpanded] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const filePhotoInputRef = useRef<HTMLInputElement>(null);
-  const [editingProject, setEditingProject] = useState<Project | null>(null)
-  const [editingPaper, setEditingPaper] = useState<Paper | null>(null)
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [editingPaper, setEditingPaper] = useState<Paper | null>(null);
 
   const handleAddPaper = (newPaper: Paper) => {
     setData((prevData) => ({
       ...prevData,
       papers: [...(prevData.papers || []), newPaper],
-    }))
-  }
+    }));
+  };
 
   const handleEditPaper = (editedPaper: Paper) => {
     setData((prevData) => ({
       ...prevData,
       papers: prevData.papers?.map((paper) =>
-        paper.title === editedPaper.title ? editedPaper : paper
+        paper.title === editedPaper.title ? editedPaper : paper,
       ),
-    }))
-    setEditingPaper(null)
-  }
+    }));
+    setEditingPaper(null);
+  };
 
   const handleDeletePaper = (paperTitle: string) => {
     setData((prevData) => ({
       ...prevData,
       papers: prevData.papers?.filter((paper) => paper.title !== paperTitle),
-    }))
-  }
+    }));
+  };
 
   const handleAddProject = (newProject: Project) => {
     setData((prevData) => ({
       ...prevData,
       projects: [...(prevData.projects || []), newProject],
-    }))
-  }
+    }));
+  };
 
   const handleEditProject = (editedProject: Project) => {
     setData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((project) =>
-        project.title === editedProject.title ? editedProject : project
+        project.title === editedProject.title ? editedProject : project,
       ),
-    }))
-    setEditingProject(null)
-  }
+    }));
+    setEditingProject(null);
+  };
 
   const handleDeleteProject = (projectTitle: string) => {
     setData((prevData) => ({
       ...prevData,
-      projects: prevData.projects?.filter((project) => project.title !== projectTitle),
-    }))
-  }
+      projects: prevData.projects?.filter(
+        (project) => project.title !== projectTitle,
+      ),
+    }));
+  };
 
-  
   const handleChangePhoto = () => {
     filePhotoInputRef.current?.click();
   };
@@ -474,7 +481,7 @@ export default function Page() {
       )}
       {!isLoading && DATA && Object.keys(DATA).length > 0 && (
         <main className="flex flex-col min-h-[100dvh] space-y-10">
-          <PortfolioFormSelector data={DATA} setData={setData}/>
+          <PortfolioFormSelector data={DATA} setData={setData} />
           <Button
             className="absolute top-4 right-4 px-4 py-2 rounded "
             variant="ghost"
@@ -639,109 +646,118 @@ export default function Page() {
               </div>
             </BlurFade>
           </section>
-          <section id="work">
-            <div className="flex min-h-0 flex-col gap-y-3">
-              <BlurFade delay={BLUR_FADE_DELAY * 5}>
-                <h2 className="text-xl font-bold">Work Experience</h2>
-              </BlurFade>
-              {DATA.work.map((work, id) => (
-                <BlurFade
-                  key={work.company + id.toString()}
-                  delay={BLUR_FADE_DELAY * 6 + id * 0.05}
-                >
-                  <ResumeCard
-                    key={work.company}
-                    logoUrl={work.logoUrl}
-                    altText={work.company}
-                    title={work.company}
-                    subtitle={work.title}
-                    href={work.href}
-                    badges={work.badges}
-                    period={`${work.start} - ${work.end ?? "Present"}`}
-                    description={work.description}
-                    readOnly={false}
-                    data={DATA}
-                    setData={setData}
-                    targetId={work.id}
-                  />
+          {DATA && DATA.work && DATA.work.length > 0 && (
+            <section id="work">
+              <div className="flex min-h-0 flex-col gap-y-3">
+                <BlurFade delay={BLUR_FADE_DELAY * 5}>
+                  <h2 className="text-xl font-bold">Work Experience</h2>
                 </BlurFade>
-              ))}
-            </div>
-          </section>
-          <section id="education">
-            <div className="flex min-h-0 flex-col gap-y-3">
-              <BlurFade delay={BLUR_FADE_DELAY * 7}>
-                <h2 className="text-xl font-bold">Education</h2>
-              </BlurFade>
-              {DATA.education.map((education, id) => (
-                <BlurFade
-                  key={education.school}
-                  delay={BLUR_FADE_DELAY * 8 + id * 0.05}
-                >
-                  <ResumeCard
-                    key={education.school}
-                    href={education.href}
-                    logoUrl={education.logoUrl}
-                    altText={education.school}
-                    title={education.school}
-                    subtitle={education.degree}
-                    readOnly={false}
-                    period={`${education.start} - ${education.end}`}
-                    data={DATA}
-                    setData={setData}
-                  />
-                </BlurFade>
-              ))}
-            </div>
-          </section>
-          <section id="skills">
-            <div className="flex min-h-0 flex-col gap-y-3">
-              <BlurFade delay={BLUR_FADE_DELAY * 9}>
-                <h2 className="text-xl font-bold">Skills</h2>
-              </BlurFade>
-
-              <div className="flex flex-wrap gap-1">
-                {/* <IconCloud iconSlugs={DATA.skills.map(skill => skill.charAt(0).toLowerCase() + skill.slice(1))} /> */}
-                {DATA.skills.map((skill, id) => (
+                {DATA.work.map((work, id) => (
                   <BlurFade
-                    key={skill}
-                    delay={BLUR_FADE_DELAY * 10 + id * 0.05}
+                    key={work.company + id.toString()}
+                    delay={BLUR_FADE_DELAY * 6 + id * 0.05}
                   >
-                    <Badge key={skill} className="group">
-                      {skill}
-                      {!readOnly && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-4 w-4 ml-1 hover:bg-transparent"
-                          onClick={() => {
-                            setData((prevData) => ({
-                              ...prevData,
-                              skills: prevData.skills.filter(
-                                (s) => s !== skill,
-                              ),
-                            }));
-                          }}
-                        >
-                          <X className="h-3 w-3" color="white" />
-                        </Button>
-                      )}
-                    </Badge>
+                    <ResumeCard
+                      key={work.company}
+                      logoUrl={work.logoUrl}
+                      altText={work.company}
+                      title={work.company}
+                      subtitle={work.title}
+                      href={work.href}
+                      badges={work.badges}
+                      period={`${work.start} - ${work.end ?? "Present"}`}
+                      description={work.description}
+                      readOnly={false}
+                      data={DATA}
+                      setData={setData}
+                      targetId={work.id}
+                    />
                   </BlurFade>
                 ))}
-                {!readOnly && (
-                  <EditableSkill
-                    onAddSkill={(newSkill) => {
-                      setData((prevData) => ({
-                        ...prevData,
-                        skills: [...prevData.skills, newSkill],
-                      }));
-                    }}
-                  />
-                )}
               </div>
-            </div>
-          </section>
+            </section>
+          )}
+
+          {DATA && DATA.education && DATA.education.length > 0 && (
+            <section id="education">
+              <div className="flex min-h-0 flex-col gap-y-3">
+                <BlurFade delay={BLUR_FADE_DELAY * 7}>
+                  <h2 className="text-xl font-bold">Education</h2>
+                </BlurFade>
+                {DATA.education.map((education, id) => (
+                  <BlurFade
+                    key={education.school}
+                    delay={BLUR_FADE_DELAY * 8 + id * 0.05}
+                  >
+                    <ResumeCard
+                      key={education.school}
+                      href={education.href}
+                      logoUrl={education.logoUrl}
+                      altText={education.school}
+                      title={education.school}
+                      subtitle={education.degree}
+                      readOnly={false}
+                      period={`${education.start} - ${education.end}`}
+                      data={DATA}
+                      setData={setData}
+                    />
+                  </BlurFade>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {DATA && DATA.skills && DATA.skills.length > 0 && (
+            <section id="skills">
+              <div className="flex min-h-0 flex-col gap-y-3">
+                <BlurFade delay={BLUR_FADE_DELAY * 9}>
+                  <h2 className="text-xl font-bold">Skills</h2>
+                </BlurFade>
+
+                <div className="flex flex-wrap gap-1">
+                  {/* <IconCloud iconSlugs={DATA.skills.map(skill => skill.charAt(0).toLowerCase() + skill.slice(1))} /> */}
+                  {DATA.skills.map((skill, id) => (
+                    <BlurFade
+                      key={skill}
+                      delay={BLUR_FADE_DELAY * 10 + id * 0.05}
+                    >
+                      <Badge key={skill} className="group">
+                        {skill}
+                        {!readOnly && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-4 w-4 ml-1 hover:bg-transparent"
+                            onClick={() => {
+                              setData((prevData) => ({
+                                ...prevData,
+                                skills: prevData.skills.filter(
+                                  (s) => s !== skill,
+                                ),
+                              }));
+                            }}
+                          >
+                            <X className="h-3 w-3" color="white" />
+                          </Button>
+                        )}
+                      </Badge>
+                    </BlurFade>
+                  ))}
+                  {!readOnly && (
+                    <EditableSkill
+                      onAddSkill={(newSkill) => {
+                        setData((prevData) => ({
+                          ...prevData,
+                          skills: [...prevData.skills, newSkill],
+                        }));
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
           {DATA && DATA.projects && DATA.projects.length > 0 && (
             <section id="projects">
               <div className="space-y-12 w-full py-12">
@@ -777,37 +793,41 @@ export default function Page() {
                           image={project.image}
                           video={project.video}
                           links={project.links}
-                          onEdit={() => setEditingProject(project)}
-                          onDelete={() => handleDeleteProject(project.title)}
                         />
                       </BlurFade>
                     ))}
                   </div>
                 </Marquee>
                 <Sheet>
-        <SheetTrigger asChild>
-          <Button className="mt-4" variant="outline">
+                  <SheetTrigger asChild>
+                    {/* <Button className="mt-4" variant="outline">
             <PlusCircle className="mr-2 h-4 w-4" /> Add Project
-          </Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Add New Project</SheetTitle>
-          </SheetHeader>
-          <ProjectForm onSubmit={handleAddProject} />
-        </SheetContent>
-      </Sheet>
+          </Button> */}
+                  </SheetTrigger>
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle>Add New Project</SheetTitle>
+                    </SheetHeader>
+                    <ProjectForm onSubmit={handleAddProject} />
+                  </SheetContent>
+                </Sheet>
 
-      {editingProject && (
-        <Sheet open={!!editingProject} onOpenChange={() => setEditingProject(null)}>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Edit Project</SheetTitle>
-            </SheetHeader>
-            <ProjectForm project={editingProject} onSubmit={handleEditProject} />
-          </SheetContent>
-        </Sheet>
-      )}
+                {editingProject && (
+                  <Sheet
+                    open={!!editingProject}
+                    onOpenChange={() => setEditingProject(null)}
+                  >
+                    <SheetContent>
+                      <SheetHeader>
+                        <SheetTitle>Edit Project</SheetTitle>
+                      </SheetHeader>
+                      <ProjectForm
+                        project={editingProject}
+                        onSubmit={handleEditProject}
+                      />
+                    </SheetContent>
+                  </Sheet>
+                )}
               </div>
             </section>
           )}
@@ -890,8 +910,6 @@ export default function Page() {
                           abstract={paper.abstract}
                           link={paper.link}
                           className="mb-2"
-                          onEdit={() => setEditingPaper(paper)}
-                          onDelete={() => handleDeletePaper(paper.title)}
                         />
                       </BlurFade>
                     ))}
@@ -899,29 +917,35 @@ export default function Page() {
                 </BlurFade>
               </div>
               <Sheet>
-        <SheetTrigger asChild>
-          <Button className="mt-4" variant="outline">
+                <SheetTrigger asChild>
+                  {/* <Button className="mt-4" variant="outline">
             <PlusCircle className="mr-2 h-4 w-4" /> Add Paper
-          </Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Add New Paper</SheetTitle>
-          </SheetHeader>
-          <PaperForm onSubmit={handleAddPaper} />
-        </SheetContent>
-      </Sheet>
+          </Button> */}
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Add New Paper</SheetTitle>
+                  </SheetHeader>
+                  <PaperForm onSubmit={handleAddPaper} />
+                </SheetContent>
+              </Sheet>
 
-      {editingPaper && (
-        <Sheet open={!!editingPaper} onOpenChange={() => setEditingPaper(null)}>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Edit Paper</SheetTitle>
-            </SheetHeader>
-            <PaperForm paper={editingPaper} onSubmit={handleEditPaper} />
-          </SheetContent>
-        </Sheet>
-      )}
+              {editingPaper && (
+                <Sheet
+                  open={!!editingPaper}
+                  onOpenChange={() => setEditingPaper(null)}
+                >
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle>Edit Paper</SheetTitle>
+                    </SheetHeader>
+                    <PaperForm
+                      paper={editingPaper}
+                      onSubmit={handleEditPaper}
+                    />
+                  </SheetContent>
+                </Sheet>
+              )}
             </section>
           )}
 

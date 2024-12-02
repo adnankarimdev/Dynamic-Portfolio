@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Hackathon, HackathonLink } from "@/components/types/types"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Hackathon, HackathonLink } from "@/components/types/types";
 
 interface HackathonFormProps {
-  onSubmit: (data: Hackathon) => void
+  onSubmit: (data: Hackathon) => void;
 }
 
 export function HackathonForm({ onSubmit }: HackathonFormProps) {
@@ -21,56 +21,99 @@ export function HackathonForm({ onSubmit }: HackathonFormProps) {
     mlh: "",
     win: "",
     links: [],
-  })
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleLinksChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     try {
-      const links: HackathonLink[] = JSON.parse(e.target.value)
-      setFormData((prev) => ({ ...prev, links }))
+      const links: HackathonLink[] = JSON.parse(e.target.value);
+      setFormData((prev) => ({ ...prev, links }));
     } catch (error) {
-      console.error("Invalid JSON for links")
+      console.error("Invalid JSON for links");
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit(formData)
-  }
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <Label htmlFor="title">Hackathon Title</Label>
-        <Input id="title" name="title" value={formData.title} onChange={handleChange} required />
+        <Input
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="dates">Dates</Label>
-        <Input id="dates" name="dates" value={formData.dates} onChange={handleChange} required />
+        <Input
+          id="dates"
+          name="dates"
+          value={formData.dates}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="location">Location</Label>
-        <Input id="location" name="location" value = {formData.location} onChange={handleChange} required />
+        <Input
+          id="location"
+          name="location"
+          value={formData.location}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="description">Description</Label>
-        <Textarea id="description" name="description" value={formData.description} onChange={handleChange} required />
+        <Textarea
+          id="description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="image">Image URL</Label>
-        <Input id="image" name="image" type="url" value={formData.image} onChange={handleChange} />
+        <Input
+          id="image"
+          name="image"
+          type="url"
+          value={formData.image}
+          onChange={handleChange}
+        />
       </div>
       <div>
         <Label htmlFor="mlh">MLH Event URL</Label>
-        <Input id="mlh" name="mlh" type="url" value={formData.mlh} onChange={handleChange} />
+        <Input
+          id="mlh"
+          name="mlh"
+          type="url"
+          value={formData.mlh}
+          onChange={handleChange}
+        />
       </div>
       <div>
         <Label htmlFor="win">Win Details</Label>
-        <Input id="win" name="win" value={formData.win} onChange={handleChange} />
+        <Input
+          id="win"
+          name="win"
+          value={formData.win}
+          onChange={handleChange}
+        />
       </div>
       <div>
         <Label htmlFor="links">Links (JSON format)</Label>
@@ -83,6 +126,5 @@ export function HackathonForm({ onSubmit }: HackathonFormProps) {
       </div>
       <Button type="submit">Add Hackathon</Button>
     </form>
-  )
+  );
 }
-

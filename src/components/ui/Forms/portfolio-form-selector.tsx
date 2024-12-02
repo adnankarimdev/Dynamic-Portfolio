@@ -1,32 +1,54 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import  SocialPlatformForm  from "./social-platform-form"
-import { NavItemForm } from "./nav-item-form"
-import { ContactForm } from "./contact-form"
-import { WorkExperienceForm } from "./work-experience-form"
-import { EducationForm } from "./education-form"
-import { ProjectForm } from "./project-form"
-import { CertificationForm } from "./certification-form"
-import { HackathonForm } from "./hackathon-form"
-import { PaperForm } from "./paper-form"
-import { AwardForm } from "./award-form"
-import { PortfolioData } from "@/components/types/types"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import { Trash2 } from 'lucide-react'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import SocialPlatformForm from "./social-platform-form";
+import { NavItemForm } from "./nav-item-form";
+import { ContactForm } from "./contact-form";
+import { WorkExperienceForm } from "./work-experience-form";
+import { EducationForm } from "./education-form";
+import { ProjectForm } from "./project-form";
+import { CertificationForm } from "./certification-form";
+import { HackathonForm } from "./hackathon-form";
+import { PaperForm } from "./paper-form";
+import { AwardForm } from "./award-form";
+import { PortfolioData } from "@/components/types/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Trash2 } from "lucide-react";
+import { Separator } from "../separator";
 
 interface PortfolioFormSelectorProps {
-  data: PortfolioData
-  setData: React.Dispatch<React.SetStateAction<PortfolioData>>
+  data: PortfolioData;
+  setData: React.Dispatch<React.SetStateAction<PortfolioData>>;
 }
 
-export function PortfolioFormSelector({ data, setData }: PortfolioFormSelectorProps) {
-  const [selectedForm, setSelectedForm] = useState<string | null>(null)
-  const [editingItem, setEditingItem] = useState<any | null>(null)
+export function PortfolioFormSelector({
+  data,
+  setData,
+}: PortfolioFormSelectorProps) {
+  const [selectedForm, setSelectedForm] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<any | null>(null);
 
   const formComponents: { [key: string]: React.ComponentType<any> } = {
     socialPlatform: SocialPlatformForm,
@@ -39,151 +61,176 @@ export function PortfolioFormSelector({ data, setData }: PortfolioFormSelectorPr
     hackathon: HackathonForm,
     paper: PaperForm,
     award: AwardForm,
-  }
+  };
 
   const handleSubmit = (formData: any) => {
     setData((prevData) => {
-      const newData = { ...prevData }
+      const newData = { ...prevData };
       switch (selectedForm) {
         case "socialPlatform":
-          newData.contact.social = { ...newData.contact.social, [formData.name]: formData }
-          break
+          newData.contact.social = {
+            ...newData.contact.social,
+            [formData.name]: formData,
+          };
+          break;
         case "navItem":
           if (editingItem) {
             newData.navbar = newData.navbar.map((item) =>
-              item.href === editingItem.href ? formData : item
-            )
+              item.href === editingItem.href ? formData : item,
+            );
           } else {
-            newData.navbar = [...newData.navbar, formData]
+            newData.navbar = [...newData.navbar, formData];
           }
-          break
+          break;
         case "contact":
-          newData.contact = { ...newData.contact, ...formData }
-          break
+          newData.contact = { ...newData.contact, ...formData };
+          break;
         case "workExperience":
           if (editingItem) {
             newData.work = newData.work.map((item) =>
-              item.id === editingItem.id ? { ...formData, id: item.id } : item
-            )
+              item.id === editingItem.id ? { ...formData, id: item.id } : item,
+            );
           } else {
-            newData.work = [...newData.work, { ...formData, id: BigInt(Date.now()) }]
+            newData.work = [
+              ...newData.work,
+              { ...formData, id: BigInt(Date.now()) },
+            ];
           }
-          break
+          break;
         case "education":
           if (editingItem) {
             newData.education = newData.education.map((item) =>
-              item.school === editingItem.school ? formData : item
-            )
+              item.school === editingItem.school ? formData : item,
+            );
           } else {
-            newData.education = [...newData.education, formData]
+            newData.education = [...newData.education, formData];
           }
-          break
+          break;
         case "project":
           if (editingItem) {
             newData.projects = newData.projects.map((item) =>
-              item.title === editingItem.title ? formData : item
-            )
+              item.title === editingItem.title ? formData : item,
+            );
           } else {
-            newData.projects = [...newData.projects, formData]
+            newData.projects = [...newData.projects, formData];
           }
-          break
+          break;
         case "certification":
           if (editingItem) {
             newData.certifications = newData.certifications.map((item) =>
-              item.title === editingItem.title ? formData : item
-            )
+              item.title === editingItem.title ? formData : item,
+            );
           } else {
-            newData.certifications = [...newData.certifications, formData]
+            newData.certifications = [...newData.certifications, formData];
           }
-          break
+          break;
         case "hackathon":
           if (editingItem) {
             newData.hackathons = newData.hackathons.map((item) =>
-              item.title === editingItem.title ? formData : item
-            )
+              item.title === editingItem.title ? formData : item,
+            );
           } else {
-            newData.hackathons = [...newData.hackathons, formData]
+            newData.hackathons = [...newData.hackathons, formData];
           }
-          break
+          break;
         case "paper":
           if (editingItem) {
             newData.papers = newData.papers.map((item) =>
-              item.title === editingItem.title ? formData : item
-            )
+              item.title === editingItem.title ? formData : item,
+            );
           } else {
-            newData.papers = [...newData.papers, formData]
+            newData.papers = [...newData.papers, formData];
           }
-          break
+          break;
         case "award":
           if (editingItem) {
             newData.awards = newData.awards.map((item) =>
-              item.title === editingItem.title ? formData : item
-            )
+              item.title === editingItem.title ? formData : item,
+            );
           } else {
-            newData.awards = [...newData.awards, formData]
+            newData.awards = [...newData.awards, formData];
           }
-          break
+          break;
       }
-      return newData
-    })
-    setEditingItem(null)
-  }
+      return newData;
+    });
+    setEditingItem(null);
+  };
 
   const handleDelete = (type: string, item: any) => {
     setData((prevData) => {
-      const newData = { ...prevData }
+      const newData = { ...prevData };
       switch (type) {
         case "socialPlatform":
-          delete newData.contact.social[item.name as keyof typeof newData.contact.social];
-          break
+          delete newData.contact.social[
+            item.name as keyof typeof newData.contact.social
+          ];
+          break;
         case "navItem":
-          newData.navbar = newData.navbar.filter((navItem) => navItem.href !== item.href)
-          break
+          newData.navbar = newData.navbar.filter(
+            (navItem) => navItem.href !== item.href,
+          );
+          break;
         case "workExperience":
-          newData.work = newData.work.filter((work) => work.id !== item.id)
-          break
+          newData.work = newData.work.filter((work) => work.id !== item.id);
+          break;
         case "education":
-          newData.education = newData.education.filter((edu) => edu.school !== item.school)
-          break
+          newData.education = newData.education.filter(
+            (edu) => edu.school !== item.school,
+          );
+          break;
         case "project":
-          newData.projects = newData.projects.filter((project) => project.title !== item.title)
-          break
+          newData.projects = newData.projects.filter(
+            (project) => project.title !== item.title,
+          );
+          break;
         case "certification":
-          newData.certifications = newData.certifications.filter((cert) => cert.title !== item.title)
-          break
+          newData.certifications = newData.certifications.filter(
+            (cert) => cert.title !== item.title,
+          );
+          break;
         case "hackathon":
-          newData.hackathons = newData.hackathons.filter((hackathon) => hackathon.title !== hackathon.title)
-          break
+          newData.hackathons = newData.hackathons.filter(
+            (hackathon) => hackathon.title !== hackathon.title,
+          );
+          break;
         case "paper":
-          newData.papers = newData.papers.filter((paper) => paper.title !== item.title)
-          break
+          newData.papers = newData.papers.filter(
+            (paper) => paper.title !== item.title,
+          );
+          break;
         case "award":
-          newData.awards = newData.awards.filter((award) => award.title !== item.title)
-          break
+          newData.awards = newData.awards.filter(
+            (award) => award.title !== item.title,
+          );
+          break;
       }
-      return newData
-    })
-  }
+      return newData;
+    });
+  };
 
-  const SelectedForm = selectedForm ? formComponents[selectedForm] : null
+  const SelectedForm = selectedForm ? formComponents[selectedForm] : null;
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button>Add/Edit Portfolio Data</Button>
+        <Button variant="ghost">Add/Edit Portfolio Data</Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[400px] sm:w-[540px]">
         <SheetHeader>
           <SheetTitle>Add/Edit Portfolio Data</SheetTitle>
         </SheetHeader>
         <div className="py-4">
-          <Select onValueChange={setSelectedForm} value={selectedForm || undefined}>
+          <Select
+            onValueChange={setSelectedForm}
+            value={selectedForm || undefined}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select data type to add/edit" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="socialPlatform">Social Platform</SelectItem>
-              <SelectItem value="navItem">Navigation Item</SelectItem>
+              {/* <SelectItem value="navItem">Navigation Item</SelectItem> */}
               <SelectItem value="contact">Contact Information</SelectItem>
               <SelectItem value="workExperience">Work Experience</SelectItem>
               <SelectItem value="education">Education</SelectItem>
@@ -195,12 +242,14 @@ export function PortfolioFormSelector({ data, setData }: PortfolioFormSelectorPr
             </SelectContent>
           </Select>
         </div>
+        <Separator className="mt-2 mb-2" />
+
         <ScrollArea className="h-[calc(100vh-180px)]">
           {SelectedForm && (
             <SelectedForm
               onSubmit={handleSubmit}
               editingItem={editingItem}
-              key={editingItem ? 'editing' : 'adding'}
+              key={editingItem ? "editing" : "adding"}
             />
           )}
           {selectedForm && (
@@ -326,18 +375,33 @@ export function PortfolioFormSelector({ data, setData }: PortfolioFormSelectorPr
         </ScrollArea>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
 
-function ExistingItemCard({ item, onEdit, onDelete }: { item: any; onEdit: () => void; onDelete: () => void }) {
+function ExistingItemCard({
+  item,
+  onEdit,
+  onDelete,
+}: {
+  item: any;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   return (
     <Card className="mb-4">
       <CardHeader>
-        <CardTitle>{item.title || item.name || item.company || item.school}</CardTitle>
+        <CardTitle>
+          {item.title || item.name || item.company || item.school}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-gray-500">
-          {item.description || item.dates || item.location || item.degree || item.issuingOrganization || ""}
+          {item.description ||
+            item.dates ||
+            item.location ||
+            item.degree ||
+            item.issuingOrganization ||
+            ""}
         </p>
       </CardContent>
       <CardFooter className="flex justify-between">
@@ -350,6 +414,5 @@ function ExistingItemCard({ item, onEdit, onDelete }: { item: any; onEdit: () =>
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
-

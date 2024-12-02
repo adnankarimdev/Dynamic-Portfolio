@@ -1,29 +1,35 @@
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-import { Edit, Trash } from 'lucide-react'
-import Image from "next/image"
-import Link from "next/link"
-import Markdown from "react-markdown"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { Edit, Trash } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import Markdown from "react-markdown";
 
 interface Props {
-  title: string
-  href?: string
-  description: string
-  dates: string
-  tags: readonly string[]
-  link?: string
-  image?: string
-  video?: string
+  title: string;
+  href?: string;
+  description: string;
+  dates: string;
+  tags: readonly string[];
+  link?: string;
+  image?: string;
+  video?: string;
   links?: readonly {
-    icon: React.ReactNode
-    type: string
-    href: string
-  }[]
-  className?: string
-  onEdit?: () => void
-  onDelete?: () => void
+    icon: React.ReactNode;
+    type: string;
+    href: string;
+  }[];
+  className?: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 export function ProjectCard({
@@ -46,7 +52,10 @@ export function ProjectCard({
         "flex flex-col overflow-hidden border hover:shadow-lg transition-all duration-300 ease-out h-full"
       }
     >
-      <Link href={href || "#"} className={cn("block cursor-pointer", className)}>
+      <Link
+        href={href || "#"}
+        className={cn("block cursor-pointer", className)}
+      >
         {video && (
           <video
             src={video}
@@ -83,7 +92,11 @@ export function ProjectCard({
         {tags && tags.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1">
             {tags?.map((tag) => (
-              <Badge className="px-1 py-0 text-[10px]" variant="secondary" key={tag}>
+              <Badge
+                className="px-1 py-0 text-[10px]"
+                variant="secondary"
+                key={tag}
+              >
                 {tag}
               </Badge>
             ))}
@@ -104,15 +117,14 @@ export function ProjectCard({
           </div>
         )}
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" onClick={onEdit}>
+          {/* <Button size="sm" variant="outline" onClick={onEdit}>
             <Edit className="h-4 w-4" />
           </Button>
           <Button size="sm" variant="outline" onClick={onDelete}>
             <Trash className="h-4 w-4" />
-          </Button>
+          </Button> */}
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }
-

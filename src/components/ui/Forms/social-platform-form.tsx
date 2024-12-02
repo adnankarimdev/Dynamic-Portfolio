@@ -43,7 +43,7 @@ const SocialPlatformForm: React.FC<SocialPlatformFormProps> = ({
     setFormData({
       ...formData,
       [e.target.name]:
-        e.target.type === "checkbox" ? e.target.checked : e.target.value,
+        e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value,
     });
   };
 

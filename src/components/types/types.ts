@@ -1,17 +1,17 @@
-interface SocialPlatform {
+export interface SocialPlatform {
   name: string;
   url: string;
   icon: string;
   navbar: boolean;
 }
 
-interface NavItem {
+export interface NavItem {
   href: string;
   icon: string;
   label: string;
 }
 
-interface Contact {
+export interface Contact {
   email: string;
   tel: string;
   social: {
@@ -23,7 +23,7 @@ interface Contact {
   };
 }
 
-interface WorkExperience {
+export interface WorkExperience {
   id: BigInt;
   company: string;
   href?: string;
@@ -36,7 +36,7 @@ interface WorkExperience {
   description?: string;
 }
 
-interface Education {
+export interface Education {
   school: string;
   href: string;
   degree: string;
@@ -45,13 +45,13 @@ interface Education {
   end: string;
 }
 
-interface ProjectLink {
+export interface ProjectLink {
   type: string;
   href: string;
   icon: string | null;
 }
 
-interface Project {
+export interface Project {
   title: string;
   href: string;
   dates: string;
@@ -63,7 +63,7 @@ interface Project {
   video: string;
 }
 
-interface Certification {
+export interface Certification {
   title: string;
   issuingOrganization: string;
   logoUrl: string;
@@ -72,13 +72,13 @@ interface Certification {
   url: string;
 }
 
-interface HackathonLink {
+export interface HackathonLink {
   title: string;
   icon: string | null;
   href: string;
 }
 
-interface Hackathon {
+export interface Hackathon {
   title: string;
   dates: string;
   location: string;
@@ -89,7 +89,7 @@ interface Hackathon {
   links: HackathonLink[];
 }
 
-interface Paper {
+export interface Paper {
   title: string;
   coAuthors: string[];
   publicationDate: string;
@@ -101,7 +101,7 @@ interface Paper {
   className?: string;
 }
 
-interface Award {
+export interface Award {
   title: string;
   organization: string;
   dateAwarded: string;

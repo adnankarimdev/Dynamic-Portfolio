@@ -1,25 +1,23 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import Markdown from "react-markdown";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+import { Edit, Trash } from 'lucide-react'
+import Link from "next/link"
+import Markdown from "react-markdown"
 
 interface Paper {
-  title: string;
-  coAuthors: string[];
-  publicationDate: string;
-  conference?: string;
-  journal?: string;
-  doi?: string;
-  abstract: string;
-  link?: string;
-  className?: string;
+  title: string
+  coAuthors: string[]
+  publicationDate: string
+  conference?: string
+  journal?: string
+  doi?: string
+  abstract: string
+  link?: string
+  className?: string
+  onEdit?: () => void
+  onDelete?: () => void
 }
 
 export function PaperCard({
@@ -32,6 +30,8 @@ export function PaperCard({
   abstract,
   link,
   className,
+  onEdit,
+  onDelete,
 }: Paper) {
   return (
     <Card
@@ -82,8 +82,8 @@ export function PaperCard({
           </p>
         )}
       </CardContent>
-      {link && (
-        <CardFooter className="px-4 py-2">
+      <CardFooter className="px-4 py-2 flex justify-between items-center">
+        {link && (
           <Link
             href={link}
             target="_blank"
@@ -91,8 +91,19 @@ export function PaperCard({
           >
             View Full Paper
           </Link>
-        </CardFooter>
-      )}
+        )}
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={onEdit}>
+            <Edit className="h-4 w-4" />
+            <span className="sr-only">Edit paper</span>
+          </Button>
+          <Button size="sm" variant="outline" onClick={onDelete}>
+            <Trash className="h-4 w-4" />
+            <span className="sr-only">Delete paper</span>
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
-  );
+  )
 }
+

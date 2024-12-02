@@ -1,31 +1,29 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
-import Markdown from "react-markdown";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+import { Edit, Trash } from 'lucide-react'
+import Image from "next/image"
+import Link from "next/link"
+import Markdown from "react-markdown"
 
 interface Props {
-  title: string;
-  href?: string;
-  description: string;
-  dates: string;
-  tags: readonly string[];
-  link?: string;
-  image?: string;
-  video?: string;
+  title: string
+  href?: string
+  description: string
+  dates: string
+  tags: readonly string[]
+  link?: string
+  image?: string
+  video?: string
   links?: readonly {
-    icon: React.ReactNode;
-    type: string;
-    href: string;
-  }[];
-  className?: string;
+    icon: React.ReactNode
+    type: string
+    href: string
+  }[]
+  className?: string
+  onEdit?: () => void
+  onDelete?: () => void
 }
 
 export function ProjectCard({
@@ -39,6 +37,8 @@ export function ProjectCard({
   video,
   links,
   className,
+  onEdit,
+  onDelete,
 }: Props) {
   return (
     <Card
@@ -46,10 +46,7 @@ export function ProjectCard({
         "flex flex-col overflow-hidden border hover:shadow-lg transition-all duration-300 ease-out h-full"
       }
     >
-      <Link
-        href={href || "#"}
-        className={cn("block cursor-pointer", className)}
-      >
+      <Link href={href || "#"} className={cn("block cursor-pointer", className)}>
         {video && (
           <video
             src={video}
@@ -57,7 +54,7 @@ export function ProjectCard({
             loop
             muted
             playsInline
-            className="pointer-events-none mx-auto h-40 w-full object-cover object-top" // needed because random black line at bottom of video
+            className="pointer-events-none mx-auto h-40 w-full object-cover object-top"
           />
         )}
         {image && (
@@ -86,18 +83,14 @@ export function ProjectCard({
         {tags && tags.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1">
             {tags?.map((tag) => (
-              <Badge
-                className="px-1 py-0 text-[10px]"
-                variant="secondary"
-                key={tag}
-              >
+              <Badge className="px-1 py-0 text-[10px]" variant="secondary" key={tag}>
                 {tag}
               </Badge>
             ))}
           </div>
         )}
       </CardContent>
-      <CardFooter className="px-2 pb-2">
+      <CardFooter className="px-2 pb-2 flex justify-between">
         {links && links.length > 0 && (
           <div className="flex flex-row flex-wrap items-start gap-1">
             {links?.map((link, idx) => (
@@ -110,7 +103,16 @@ export function ProjectCard({
             ))}
           </div>
         )}
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={onEdit}>
+            <Edit className="h-4 w-4" />
+          </Button>
+          <Button size="sm" variant="outline" onClick={onDelete}>
+            <Trash className="h-4 w-4" />
+          </Button>
+        </div>
       </CardFooter>
     </Card>
-  );
+  )
 }
+

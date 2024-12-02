@@ -3,6 +3,7 @@ import { HackathonCard } from "@/components/hackathon-card";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { FaXTwitter } from "react-icons/fa6";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import {
   Tooltip,
   TooltipContent,
@@ -23,6 +24,7 @@ import {
   Mail,
   Phone,
   Linkedin,
+  Plus,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Marquee from "@/components/ui/marquee";
@@ -46,7 +48,7 @@ import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/data/resume";
 import Link from "next/link";
 import Markdown from "react-markdown";
-import { PortfolioData } from "@/components/types/types";
+import { Paper, PortfolioData, Project } from "@/components/types/types";
 import RecordingLoader from "@/components/Skeleton/RecordingLoaderMini";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -80,6 +82,9 @@ import { CertificationCard } from "@/components/certification-card";
 import AnimatedSaveIcon from "@/components/ui/AnimatedIcons/AnimatedSaveIcon";
 import AnimatedFileText from "@/components/ui/AnimatedIcons/AnimatedFileIcon";
 import IconCloud from "@/components/ui/icon-cloud";
+import { ProjectForm } from "@/components/ui/Projects/ProjectForms";
+import { PaperForm } from "@/components/ui/Papers/PapersForm";
+import { PortfolioFormSelector } from "@/components/ui/Forms/portfolio-form-selector";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -119,7 +124,58 @@ export default function Page() {
   const [isPhoneEmailExpanded, setIsPhoneEmailExpanded] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const filePhotoInputRef = useRef<HTMLInputElement>(null);
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
+  const [editingPaper, setEditingPaper] = useState<Paper | null>(null)
 
+  const handleAddPaper = (newPaper: Paper) => {
+    setData((prevData) => ({
+      ...prevData,
+      papers: [...(prevData.papers || []), newPaper],
+    }))
+  }
+
+  const handleEditPaper = (editedPaper: Paper) => {
+    setData((prevData) => ({
+      ...prevData,
+      papers: prevData.papers?.map((paper) =>
+        paper.title === editedPaper.title ? editedPaper : paper
+      ),
+    }))
+    setEditingPaper(null)
+  }
+
+  const handleDeletePaper = (paperTitle: string) => {
+    setData((prevData) => ({
+      ...prevData,
+      papers: prevData.papers?.filter((paper) => paper.title !== paperTitle),
+    }))
+  }
+
+  const handleAddProject = (newProject: Project) => {
+    setData((prevData) => ({
+      ...prevData,
+      projects: [...(prevData.projects || []), newProject],
+    }))
+  }
+
+  const handleEditProject = (editedProject: Project) => {
+    setData((prevData) => ({
+      ...prevData,
+      projects: prevData.projects?.map((project) =>
+        project.title === editedProject.title ? editedProject : project
+      ),
+    }))
+    setEditingProject(null)
+  }
+
+  const handleDeleteProject = (projectTitle: string) => {
+    setData((prevData) => ({
+      ...prevData,
+      projects: prevData.projects?.filter((project) => project.title !== projectTitle),
+    }))
+  }
+
+  
   const handleChangePhoto = () => {
     filePhotoInputRef.current?.click();
   };
@@ -418,6 +474,7 @@ export default function Page() {
       )}
       {!isLoading && DATA && Object.keys(DATA).length > 0 && (
         <main className="flex flex-col min-h-[100dvh] space-y-10">
+          <PortfolioFormSelector data={DATA} setData={setData}/>
           <Button
             className="absolute top-4 right-4 px-4 py-2 rounded "
             variant="ghost"
@@ -720,11 +777,37 @@ export default function Page() {
                           image={project.image}
                           video={project.video}
                           links={project.links}
+                          onEdit={() => setEditingProject(project)}
+                          onDelete={() => handleDeleteProject(project.title)}
                         />
                       </BlurFade>
                     ))}
                   </div>
                 </Marquee>
+                <Sheet>
+        <SheetTrigger asChild>
+          <Button className="mt-4" variant="outline">
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Project
+          </Button>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Add New Project</SheetTitle>
+          </SheetHeader>
+          <ProjectForm onSubmit={handleAddProject} />
+        </SheetContent>
+      </Sheet>
+
+      {editingProject && (
+        <Sheet open={!!editingProject} onOpenChange={() => setEditingProject(null)}>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Edit Project</SheetTitle>
+            </SheetHeader>
+            <ProjectForm project={editingProject} onSubmit={handleEditProject} />
+          </SheetContent>
+        </Sheet>
+      )}
               </div>
             </section>
           )}
@@ -792,27 +875,53 @@ export default function Page() {
                 </BlurFade>
                 <BlurFade delay={BLUR_FADE_DELAY * 14}>
                   <ul className="mb-4 ml-4  ">
-                    {DATA.papers.map((project, id) => (
+                    {DATA.papers.map((paper, id) => (
                       <BlurFade
-                        key={project.title + project.publicationDate}
+                        key={paper.title + paper.publicationDate}
                         delay={BLUR_FADE_DELAY * 15 + id * 0.05}
                       >
                         <PaperCard
-                          title={project.title}
-                          coAuthors={project.coAuthors}
-                          publicationDate={project.publicationDate}
-                          conference={project.conference}
-                          journal={project.journal}
-                          doi={project.doi}
-                          abstract={project.abstract}
-                          link={project.link}
+                          title={paper.title}
+                          coAuthors={paper.coAuthors}
+                          publicationDate={paper.publicationDate}
+                          conference={paper.conference}
+                          journal={paper.journal}
+                          doi={paper.doi}
+                          abstract={paper.abstract}
+                          link={paper.link}
                           className="mb-2"
+                          onEdit={() => setEditingPaper(paper)}
+                          onDelete={() => handleDeletePaper(paper.title)}
                         />
                       </BlurFade>
                     ))}
                   </ul>
                 </BlurFade>
               </div>
+              <Sheet>
+        <SheetTrigger asChild>
+          <Button className="mt-4" variant="outline">
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Paper
+          </Button>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Add New Paper</SheetTitle>
+          </SheetHeader>
+          <PaperForm onSubmit={handleAddPaper} />
+        </SheetContent>
+      </Sheet>
+
+      {editingPaper && (
+        <Sheet open={!!editingPaper} onOpenChange={() => setEditingPaper(null)}>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Edit Paper</SheetTitle>
+            </SheetHeader>
+            <PaperForm paper={editingPaper} onSubmit={handleEditPaper} />
+          </SheetContent>
+        </Sheet>
+      )}
             </section>
           )}
 

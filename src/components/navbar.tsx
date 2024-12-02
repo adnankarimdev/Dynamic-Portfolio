@@ -15,11 +15,13 @@ import { cn } from "@/lib/utils";
 import { HomeIcon, LogOut, Settings } from "lucide-react";
 import { PortfolioData } from "./types/types";
 import Link from "next/link";
+import { RefObject } from "react";
 
 interface NavBarProps {
   showLogout?: boolean;
+  fileInputRef?: RefObject<HTMLInputElement>;
 }
-export default function Navbar({ showLogout }: NavBarProps) {
+export default function Navbar({ showLogout, fileInputRef }: NavBarProps) {
   const router = useRouter();
 
   const handleLogout = () => {

@@ -60,6 +60,7 @@ export function WorkExperienceForm({
   };
 
   const handleSubmit = (e: React.FormEvent) => {
+    console.log(formData)
     e.preventDefault();
     onSubmit(formData);
   };

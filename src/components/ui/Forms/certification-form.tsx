@@ -90,7 +90,7 @@ export function CertificationForm({
           type="url"
           value={formData.logoUrl}
           onChange={handleChange}
-          required
+          
         />
       </div>
       <div className="space-y-2">
@@ -142,7 +142,6 @@ export function CertificationForm({
           type="url"
           value={formData.url}
           onChange={handleChange}
-          required
         />
       </div>
       <Button type="submit">

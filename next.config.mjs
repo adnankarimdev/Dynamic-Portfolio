@@ -2,8 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["via.placeholder.com", "vchzcpsjnexzrzeqamix.supabase.co"], // Allow domains from everywhere
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**', // Matches all hostnames
+      },
+    ],
   },
 };
-
 export default nextConfig;

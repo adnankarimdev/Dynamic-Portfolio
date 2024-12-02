@@ -483,7 +483,7 @@ export default function Page() {
         <main className="flex flex-col min-h-[100dvh] space-y-10">
           <PortfolioFormSelector data={DATA} setData={setData} />
           <Button
-            className="absolute top-4 right-4 px-4 py-2 rounded "
+            className="absolute top-4 right-4 px-4 py-2 rounded"
             variant="ghost"
             onClick={handleSave}
           >
@@ -667,7 +667,7 @@ export default function Page() {
                       badges={work.badges}
                       period={`${work.start} - ${work.end ?? "Present"}`}
                       description={work.description}
-                      readOnly={false}
+                      readOnly={true}
                       data={DATA}
                       setData={setData}
                       targetId={work.id}
@@ -696,7 +696,7 @@ export default function Page() {
                       altText={education.school}
                       title={education.school}
                       subtitle={education.degree}
-                      readOnly={false}
+                      readOnly={true}
                       period={`${education.start} - ${education.end}`}
                       data={DATA}
                       setData={setData}

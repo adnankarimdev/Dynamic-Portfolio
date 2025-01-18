@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { WorkExperience } from "@/components/types/types";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { WorkExperience } from "@/components/types/types";
+import { useEffect, useState } from "react";
 
 interface WorkExperienceFormProps {
   onSubmit: (data: WorkExperience) => void;
@@ -37,7 +37,7 @@ export function WorkExperienceForm({
       start: "",
       end: "",
       description: "",
-    },
+    }
   );
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export function WorkExperienceForm({
   }, [editingItem]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -139,7 +139,7 @@ export function WorkExperienceForm({
               variant={"outline"}
               className={cn(
                 "w-full justify-start text-left font-normal",
-                !formData.start && "text-muted-foreground",
+                !formData.start && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
@@ -168,7 +168,7 @@ export function WorkExperienceForm({
               variant={"outline"}
               className={cn(
                 "w-full justify-start text-left font-normal",
-                !formData.end && "text-muted-foreground",
+                !formData.end && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />

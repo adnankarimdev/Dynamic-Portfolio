@@ -11,25 +11,23 @@
 const LOCAL_RELAY_SERVER_URL: string =
   process.env.REACT_APP_LOCAL_RELAY_SERVER_URL || "";
 
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useToast } from "@/hooks/use-toast";
+import { WavRecorder, WavStreamPlayer } from "@/lib/wavtools/index.js";
+import { instructions } from "@/utils/conversation_config.js";
+import { WavRenderer } from "@/utils/wav_renderer";
 import { RealtimeClient } from "@openai/realtime-api-beta";
 import { ItemType } from "@openai/realtime-api-beta/dist/lib/client.js";
-import { WavRecorder, WavStreamPlayer } from "@/lib/wavtools/index.js";
-import { useToast } from "@/hooks/use-toast";
-import { instructions } from "@/utils/conversation_config.js";
 import { useRouter } from "next/navigation";
-import { WavRenderer } from "@/utils/wav_renderer";
 
-import { X, Edit, Zap, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 // import './ConsolePage.scss';
-import { isJsxOpeningLikeElement } from "typescript";
-import { strict } from "assert";
 import { Label } from "../label";
-import VoiceGridVisualization from "./VoiceGridVisualization";
 import { Switch } from "../switch";
+import VoiceGridVisualization from "./VoiceGridVisualization";
 
 /**
  * Type for result from get_weather() function call
@@ -65,12 +63,12 @@ export function ConsolePage() {
    */
   const [isVAD, setIsVAD] = useState(false);
   const [clientFrequencies, setClientFrequencies] = useState<any>(
-    new Float32Array([0]),
+    new Float32Array([0])
   );
   const router = useRouter();
   const { toast } = useToast();
   const [serverFrequencies, setServerFrequencies] = useState<any>(
-    new Float32Array([0]),
+    new Float32Array([0])
   );
 
   const handleToggle = () => {
@@ -98,10 +96,10 @@ export function ConsolePage() {
    * - RealtimeClient (API client)
    */
   const wavRecorderRef = useRef<WavRecorder>(
-    new WavRecorder({ sampleRate: 24000 }),
+    new WavRecorder({ sampleRate: 24000 })
   );
   const wavStreamPlayerRef = useRef<WavStreamPlayer>(
-    new WavStreamPlayer({ sampleRate: 24000 }),
+    new WavStreamPlayer({ sampleRate: 24000 })
   );
   const clientRef = useRef<RealtimeClient>(
     new RealtimeClient(
@@ -110,8 +108,8 @@ export function ConsolePage() {
         : {
             apiKey: apiKey,
             dangerouslyAllowAPIKeyInBrowser: true,
-          },
-    ),
+          }
+    )
   );
 
   /**
@@ -322,7 +320,7 @@ export function ConsolePage() {
    */
   useEffect(() => {
     const conversationEls = [].slice.call(
-      document.body.querySelectorAll("[data-conversation-content]"),
+      document.body.querySelectorAll("[data-conversation-content]")
     );
     for (const el of conversationEls) {
       const conversationEl = el as HTMLDivElement;
@@ -398,7 +396,7 @@ export function ConsolePage() {
               "#0099ff",
               10,
               0,
-              8,
+              8
             );
           }
         }
@@ -420,7 +418,7 @@ export function ConsolePage() {
               "#009900",
               10,
               0,
-              8,
+              8
             );
           }
         }
@@ -477,7 +475,7 @@ export function ConsolePage() {
           return newKv;
         });
         return { ok: true };
-      },
+      }
     );
     client.addTool(
       {
@@ -533,7 +531,7 @@ export function ConsolePage() {
           message: "User information collected successfully.",
           data: userInfo,
         };
-      },
+      }
     );
     client.addTool(
       {
@@ -547,7 +545,7 @@ export function ConsolePage() {
       async () => {
         // Redirects to the dashboard
         router.push("/login");
-      },
+      }
     );
     // handle realtime events from client + server for event logging
     client.on("realtime.event", (realtimeEvent: RealtimeEvent) => {
@@ -579,7 +577,7 @@ export function ConsolePage() {
         const wavFile = await WavRecorder.decode(
           item.formatted.audio,
           24000,
-          24000,
+          24000
         );
         item.formatted.file = wavFile;
       }
@@ -676,7 +674,9 @@ export function ConsolePage() {
                 className="conversation-item mb-4 bg-white p-2 rounded shadow"
               >
                 <div
-                  className={`speaker ${conversationItem.role || ""} flex justify-between items-center mb-1`}
+                  className={`speaker ${
+                    conversationItem.role || ""
+                  } flex justify-between items-center mb-1`}
                 >
                   <div className="font-semibold">
                     {(

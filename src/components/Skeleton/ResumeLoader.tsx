@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import RecordingLoader from "./RecordingLoaderMini";
 
 const messages = [

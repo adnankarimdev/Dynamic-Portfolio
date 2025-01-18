@@ -1,9 +1,11 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
@@ -11,19 +13,9 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import {
-  Check,
-  ChevronRightIcon,
-  Edit2Icon,
-  Info,
-  SaveIcon,
-} from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Check, ChevronRightIcon, Edit2Icon, Info } from "lucide-react";
+import { ChangeEvent, useState } from "react";
 import { PortfolioData } from "./types/types";
-import { title } from "process";
 
 interface ResumeCardProps {
   logoUrl: string;
@@ -227,7 +219,7 @@ export const ResumeCard = ({
                 <ChevronRightIcon
                   className={cn(
                     "size-4 translate-x-0 transform opacity-0 transition-all duration-300 ease-out group-hover:translate-x-1 group-hover:opacity-100",
-                    isExpanded ? "rotate-90" : "rotate-0",
+                    isExpanded ? "rotate-90" : "rotate-0"
                   )}
                 />
               )}

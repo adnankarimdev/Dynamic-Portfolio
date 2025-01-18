@@ -1,72 +1,15 @@
 "use client";
+import { AwardsCard } from "@/components/award-card";
 import { HackathonCard } from "@/components/hackathon-card";
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
-import { FaXTwitter } from "react-icons/fa6";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import Image from "next/image";
-import { BsFiletypeDoc, BsFiletypePdf } from "react-icons/bs";
-import {
-  PlusCircle,
-  Check,
-  X,
-  Loader2,
-  Pen,
-  Youtube,
-  Twitter,
-  Facebook,
-  Github,
-  Mail,
-  Phone,
-  Linkedin,
-  Plus,
-  SaveIcon,
-  FileText,
-} from "lucide-react";
-import { Input } from "@/components/ui/input";
-import Marquee from "@/components/ui/marquee";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
-import { ProjectCard } from "@/components/project-card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ResumeCard } from "@/components/resume-card";
-import { PaperCard } from "@/components/paper-card";
-import axios from "axios";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { dummyData } from "../dummyData/dummydata";
-import { Badge } from "@/components/ui/badge";
-import { DATA } from "@/data/resume";
-import Link from "next/link";
-import Markdown from "react-markdown";
-import { Paper, PortfolioData, Project } from "@/components/types/types";
-import RecordingLoader from "@/components/Skeleton/RecordingLoaderMini";
-import { usePathname } from "next/navigation";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { AwardsCard } from "@/components/award-card";
 import Navbar from "@/components/navbar";
+import { PaperCard } from "@/components/paper-card";
+import { ProjectCard } from "@/components/project-card";
+import { ResumeCard } from "@/components/resume-card";
+import RecordingLoader from "@/components/Skeleton/RecordingLoaderMini";
+import { Paper, PortfolioData, Project } from "@/components/types/types";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -78,22 +21,58 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import Marquee from "@/components/ui/marquee";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import {
+  Check,
+  Facebook,
+  FileText,
+  Github,
+  Linkedin,
+  Loader2,
+  Mail,
+  Pen,
+  Phone,
+  PlusCircle,
+  SaveIcon,
+  Upload,
+  X,
+  Youtube,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { FaXTwitter } from "react-icons/fa6";
+import Markdown from "react-markdown";
 
-import { ToastAction } from "@/components/ui/toast";
-import { ConsolePage } from "@/components/ui/real-time/ConsolePage";
-import ResumeUploadLoader from "@/components/Skeleton/ResumeLoader";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-import { TbWorldUpload } from "react-icons/tb";
 import { CertificationCard } from "@/components/certification-card";
-import AnimatedSaveIcon from "@/components/ui/AnimatedIcons/AnimatedSaveIcon";
-import AnimatedFileText from "@/components/ui/AnimatedIcons/AnimatedFileIcon";
-import IconCloud from "@/components/ui/icon-cloud";
-import { ProjectForm } from "@/components/ui/Projects/ProjectForms";
-import { PaperForm } from "@/components/ui/Papers/PapersForm";
-import { PortfolioFormSelector } from "@/components/ui/Forms/portfolio-form-selector";
 import { Dock, DockIcon } from "@/components/magicui/dock";
+import ResumeUploadLoader from "@/components/Skeleton/ResumeLoader";
+import { PortfolioFormSelector } from "@/components/ui/Forms/portfolio-form-selector";
+import { PaperForm } from "@/components/ui/Papers/PapersForm";
+import { ProjectForm } from "@/components/ui/Projects/ProjectForms";
+import { Textarea } from "@/components/ui/textarea";
+import { ToastAction } from "@/components/ui/toast";
+import { cn } from "@/lib/utils";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -147,7 +126,7 @@ export default function Page() {
     setData((prevData) => ({
       ...prevData,
       papers: prevData.papers?.map((paper) =>
-        paper.title === editedPaper.title ? editedPaper : paper,
+        paper.title === editedPaper.title ? editedPaper : paper
       ),
     }));
     setEditingPaper(null);
@@ -171,7 +150,7 @@ export default function Page() {
     setData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((project) =>
-        project.title === editedProject.title ? editedProject : project,
+        project.title === editedProject.title ? editedProject : project
       ),
     }));
     setEditingProject(null);
@@ -181,7 +160,7 @@ export default function Page() {
     setData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.filter(
-        (project) => project.title !== projectTitle,
+        (project) => project.title !== projectTitle
       ),
     }));
   };
@@ -194,7 +173,7 @@ export default function Page() {
     setIsPhoneEmailExpanded(!isPhoneEmailExpanded);
   };
   const handleFilePhotoChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setIsPhotoLoading(true);
     const file = event.target.files?.[0];
@@ -213,7 +192,7 @@ export default function Page() {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          },
+          }
         );
 
         if (response.status === 200) {
@@ -263,7 +242,7 @@ export default function Page() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        },
+        }
       );
       console.log(response.data.content);
       setData(response.data.content);
@@ -278,7 +257,7 @@ export default function Page() {
       setHackathonHeader(response.data.content.hackathonWebsiteHeader);
       setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle);
       setAvatarUrl(
-        `${response.data.content.avatarUrl}?t=${new Date().getTime()}`,
+        `${response.data.content.avatarUrl}?t=${new Date().getTime()}`
       );
       setUploadStatus("PDF processed successfully!");
     } catch (error) {
@@ -294,7 +273,7 @@ export default function Page() {
     axios
       .post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/save-website-details/`,
-        { data: DATA, userToken: userEmailToken },
+        { data: DATA, userToken: userEmailToken }
       )
       .then((response) => {
         if (subscriptionStatus != "active") {
@@ -371,7 +350,7 @@ export default function Page() {
             headers: {
               Authorization: `Bearer ${emailToken}`,
             },
-          },
+          }
         );
         console.log(response.data.content);
         setData(response.data.content);
@@ -386,7 +365,7 @@ export default function Page() {
         setHackathonHeader(response.data.content.hackathonWebsiteHeader);
         setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle);
         setAvatarUrl(
-          `${response.data.content.avatarUrl}?t=${new Date().getTime()}`,
+          `${response.data.content.avatarUrl}?t=${new Date().getTime()}`
         );
 
         setSubscriptionStatus(response.data.subscription_status);
@@ -434,7 +413,7 @@ export default function Page() {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/create-checkout-session/`,
         {
           stripe_customer_id: sessionStorage.getItem("stripe_customer_id"),
-        },
+        }
       );
 
       if (response.data.url) {
@@ -487,64 +466,61 @@ export default function Page() {
           <div className="pointer-events-none fixed inset-x-0 top-0 z-30 mx-auto mt-4 flex origin-top h-full max-h-14">
             <Dock className="z-50 pointer-events-auto relative mx-auto flex min-h-full h-full items-center px-1 bg-background [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] transform-gpu dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset] ">
               <DockIcon key={"Save"}>
-                    <Button
-                      // className="absolute top-4 right-4 px-4 py-2 rounded"
-                      variant="ghost"
-                      
-                      onClick={handleSave}
-                    >
-                      {isSaving ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <SaveIcon />
-                      )}
-                    </Button>
+                <Button
+                  // className="absolute top-4 right-4 px-4 py-2 rounded"
+                  variant="ghost"
+                  onClick={handleSave}
+                >
+                  {isSaving ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <SaveIcon />
+                  )}
+                </Button>
               </DockIcon>
 
               <DockIcon key={"Upload"}>
-                    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                      <DialogTrigger asChild>
-                        {!isLoading && DATA && Object.keys(DATA).length > 0 && (
-                          <Button
-                            // className="absolute top-4 left-4 px-4 py-2 rounded"
-                            variant="ghost"
-                          >
-                            <FileText />
-                          </Button>
-                        )}
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader></DialogHeader>
-                        <Card className="border-0 shadow-none">
-                          <CardHeader>
-                            <CardTitle className="text-center">
-                              Ready? 🚀
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            <input
-                              type="file"
-                              accept="application/pdf,.docx"
-                              onChange={handleFileChange}
-                              className="hidden"
-                              ref={fileInputRef}
-                            />
-                            <Button
-                              onClick={() => fileInputRef.current?.click()}
-                              variant="ghost"
-                              className="w-full"
-                            >
-                              <Upload className="mr-2 h-4 w-4" /> Upload
-                              CV/Resume (.pdf, .docx)
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      </DialogContent>
-                    </Dialog>
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger asChild>
+                    {!isLoading && DATA && Object.keys(DATA).length > 0 && (
+                      <Button
+                        // className="absolute top-4 left-4 px-4 py-2 rounded"
+                        variant="ghost"
+                      >
+                        <FileText />
+                      </Button>
+                    )}
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader></DialogHeader>
+                    <Card className="border-0 shadow-none">
+                      <CardHeader>
+                        <CardTitle className="text-center">Ready? 🚀</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <input
+                          type="file"
+                          accept="application/pdf,.docx"
+                          onChange={handleFileChange}
+                          className="hidden"
+                          ref={fileInputRef}
+                        />
+                        <Button
+                          onClick={() => fileInputRef.current?.click()}
+                          variant="ghost"
+                          className="w-full"
+                        >
+                          <Upload className="mr-2 h-4 w-4" /> Upload CV/Resume
+                          (.pdf, .docx)
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </DialogContent>
+                </Dialog>
               </DockIcon>
 
               <DockIcon key={"Manage"}>
-                      <PortfolioFormSelector data={DATA} setData={setData} />
+                <PortfolioFormSelector data={DATA} setData={setData} />
               </DockIcon>
             </Dock>
           </div>
@@ -787,7 +763,7 @@ export default function Page() {
                               setData((prevData) => ({
                                 ...prevData,
                                 skills: prevData.skills.filter(
-                                  (s) => s !== skill,
+                                  (s) => s !== skill
                                 ),
                               }));
                             }}
@@ -1114,7 +1090,7 @@ export default function Page() {
                             size="sm"
                             className={cn(
                               "relative z-10 flex items-center gap-2 transition-all duration-300 ease-in-out",
-                              isPhoneEmailExpanded ? "pr-3" : "pr-2 w-12",
+                              isPhoneEmailExpanded ? "pr-3" : "pr-2 w-12"
                             )}
                             aria-expanded={isPhoneEmailExpanded}
                             aria-label={`${name}: ${value}`}
@@ -1129,7 +1105,7 @@ export default function Page() {
                                 "transition-all duration-300 ease-in-out overflow-hidden",
                                 isPhoneEmailExpanded
                                   ? "w-auto opacity-100"
-                                  : "w-0 opacity-0",
+                                  : "w-0 opacity-0"
                               )}
                             >
                               {value}
@@ -1142,7 +1118,7 @@ export default function Page() {
                     .filter(
                       ([name, social]) =>
                         name.toLowerCase() !== "email" &&
-                        name.toLowerCase() !== "phone",
+                        name.toLowerCase() !== "phone"
                     )
                     .map(
                       ([name, social]) =>
@@ -1156,7 +1132,7 @@ export default function Page() {
                                   variant: "ghost",
                                   size: "icon",
                                 }),
-                                "size-12",
+                                "size-12"
                               )}
                             >
                               {/* Render the appropriate icon based on name */}
@@ -1179,7 +1155,7 @@ export default function Page() {
                               {/* Add more cases as needed */}
                             </Link>
                           </div>
-                        ),
+                        )
                     )}
                 </div>
               </BlurFade>

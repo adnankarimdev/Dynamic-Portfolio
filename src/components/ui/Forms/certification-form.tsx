@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Certification } from "@/components/types/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar } from "../calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Certification } from "@/components/types/types";
+import { useEffect, useState } from "react";
+import { Calendar } from "../calendar";
 
 interface CertificationFormProps {
   onSubmit: (data: Certification) => void;
@@ -32,7 +32,7 @@ export function CertificationForm({
       dateIssued: "",
       credentialId: "",
       url: "",
-    },
+    }
   );
 
   useEffect(() => {
@@ -100,7 +100,7 @@ export function CertificationForm({
               variant={"outline"}
               className={cn(
                 "w-full justify-start text-left font-normal",
-                !formData.dateIssued && "text-muted-foreground",
+                !formData.dateIssued && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />

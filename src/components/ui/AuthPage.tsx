@@ -1,16 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Card,
   CardContent,
@@ -18,11 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/cardshad";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, LucideProps } from "lucide-react";
-import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,7 +53,7 @@ export default function AuthPage() {
         sessionStorage.setItem("authToken", response.data.user.id);
         sessionStorage.setItem(
           "stripe_customer_id",
-          response.data.user.stripe_customer_id,
+          response.data.user.stripe_customer_id
         );
         toast({
           title: "Successfully Logged In",
@@ -108,7 +101,7 @@ export default function AuthPage() {
         sessionStorage.setItem("authToken", response.data.user.id);
         sessionStorage.setItem(
           "stripe_customer_id",
-          response.data.user.stripe_customer_id,
+          response.data.user.stripe_customer_id
         );
 
         // Navigate to home or onboarding page

@@ -1,56 +1,40 @@
 "use client";
+import { AwardsCard } from "@/components/award-card";
+import { CertificationCard } from "@/components/certification-card";
 import { HackathonCard } from "@/components/hackathon-card";
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
-import {
-  PlusCircle,
-  Check,
-  X,
-  Facebook,
-  Github,
-  Mail,
-  Phone,
-  Twitter,
-  Youtube,
-  Linkedin,
-} from "lucide-react";
-import { Input } from "@/components/ui/input";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
-import { ProjectCard } from "@/components/project-card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ResumeCard } from "@/components/resume-card";
-import { PaperCard } from "@/components/paper-card";
-import { usePathname } from "next/navigation";
-import axios from "axios";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { dummyData } from "../dummyData/dummydata";
-import { Badge } from "@/components/ui/badge";
-import { DATA } from "@/data/resume";
-import Link from "next/link";
-import Markdown from "react-markdown";
-import { PortfolioData } from "@/components/types/types";
-import RecordingLoader from "@/components/Skeleton/RecordingLoader";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { AwardsCard } from "@/components/award-card";
 import Navbar from "@/components/navbar";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-import { FaXTwitter } from "react-icons/fa6";
-import { CertificationCard } from "@/components/certification-card";
+import { PaperCard } from "@/components/paper-card";
+import { ProjectCard } from "@/components/project-card";
+import { ResumeCard } from "@/components/resume-card";
+import RecordingLoader from "@/components/Skeleton/RecordingLoader";
+import { PortfolioData } from "@/components/types/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import Marquee from "@/components/ui/marquee";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import axios from "axios";
+import {
+  Check,
+  Facebook,
+  Github,
+  Linkedin,
+  Mail,
+  Phone,
+  PlusCircle,
+  X,
+  Youtube,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { FaXTwitter } from "react-icons/fa6";
+import Markdown from "react-markdown";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -100,7 +84,7 @@ export default function Page() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        },
+        }
       );
       console.log(response.data.content);
       setData(response.data.content);
@@ -117,7 +101,7 @@ export default function Page() {
     axios
       .post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/save-website-details/`,
-        { data: DATA, userToken: userEmailToken },
+        { data: DATA, userToken: userEmailToken }
       )
       .then((response) => {
         toast({
@@ -142,7 +126,9 @@ export default function Page() {
       try {
         axios
           .get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details-by-url/${pathname.slice(1)}/`,
+            `${
+              process.env.NEXT_PUBLIC_API_BASE_URL
+            }/backend/get-website-details-by-url/${pathname.slice(1)}/`
           )
           .then((response) => {
             setData(response.data.content);
@@ -302,7 +288,7 @@ export default function Page() {
                             setData((prevData) => ({
                               ...prevData,
                               skills: prevData.skills.filter(
-                                (s) => s !== skill,
+                                (s) => s !== skill
                               ),
                             }));
                           }}
@@ -571,7 +557,7 @@ export default function Page() {
                             size="sm"
                             className={cn(
                               "relative z-10 flex items-center gap-2 transition-all duration-300 ease-in-out",
-                              isPhoneEmailExpanded ? "pr-3" : "pr-2 w-12",
+                              isPhoneEmailExpanded ? "pr-3" : "pr-2 w-12"
                             )}
                             aria-expanded={isPhoneEmailExpanded}
                             aria-label={`${name}: ${value}`}
@@ -586,7 +572,7 @@ export default function Page() {
                                 "transition-all duration-300 ease-in-out overflow-hidden",
                                 isPhoneEmailExpanded
                                   ? "w-auto opacity-100"
-                                  : "w-0 opacity-0",
+                                  : "w-0 opacity-0"
                               )}
                             >
                               {value}
@@ -599,7 +585,7 @@ export default function Page() {
                     .filter(
                       ([name, social]) =>
                         name.toLowerCase() !== "email" &&
-                        name.toLowerCase() !== "phone",
+                        name.toLowerCase() !== "phone"
                     )
                     .map(
                       ([name, social]) =>
@@ -613,7 +599,7 @@ export default function Page() {
                                   variant: "ghost",
                                   size: "icon",
                                 }),
-                                "size-12",
+                                "size-12"
                               )}
                             >
                               {/* Render the appropriate icon based on name */}
@@ -636,7 +622,7 @@ export default function Page() {
                               {/* Add more cases as needed */}
                             </Link>
                           </div>
-                        ),
+                        )
                     )}
                 </div>
               </BlurFade>

@@ -54,7 +54,7 @@ const VoiceCircleVisualization = forwardRef<
         0,
         centerX,
         centerY,
-        maxRadius,
+        maxRadius
       );
 
       // Use softer colors based on the type
@@ -81,13 +81,13 @@ const VoiceCircleVisualization = forwardRef<
         pulseRadius * 0.8,
         centerX,
         centerY,
-        glowRadius,
+        glowRadius
       );
       glowGradient.addColorStop(
         0,
         type === "client"
           ? "rgba(77, 147, 255, 0.2)"
-          : "rgba(255, 147, 77, 0.2)",
+          : "rgba(255, 147, 77, 0.2)"
       );
       glowGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
 

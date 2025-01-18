@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Contact } from "@/components/types/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Contact } from "@/components/types/types";
+import { useEffect, useState } from "react";
 
 interface ContactFormProps {
   onSubmit: (data: Contact) => void;
@@ -23,7 +23,7 @@ export function ContactForm({ onSubmit, editingItem }: ContactFormProps) {
         Youtube: { name: "Youtube", url: "", icon: "", navbar: false },
         email: { name: "email", url: "", icon: "", navbar: false },
       },
-    },
+    }
   );
 
   useEffect(() => {

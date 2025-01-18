@@ -1,17 +1,14 @@
-import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import {
-  Inter as FontSans,
-  Staatliches,
-  Space_Mono,
   DM_Sans,
+  Inter as FontSans,
+  Space_Mono,
+  Staatliches,
 } from "next/font/google";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
 import "../globals.css";
 
 const fontSans = FontSans({
@@ -82,7 +79,7 @@ export default function RootLayout({
         <main
           className={cn(
             "min-h-screen bg-background font-sans antialiased",
-            dmSans.className,
+            dmSans.className
           )}
         >
           {children}

@@ -1,7 +1,7 @@
 "use client";
 
-import AuthPage from "@/components/ui/AuthPage";
 import AnimatedLayout from "@/components/animations/AnimatedLayout";
+import AuthPage from "@/components/ui/AuthPage";
 
 export default function Dashboard() {
   return (

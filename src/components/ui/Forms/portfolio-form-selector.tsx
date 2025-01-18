@@ -24,6 +24,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
 import { BookPlus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Separator } from "../separator";
@@ -49,6 +50,7 @@ export function PortfolioFormSelector({
 }: PortfolioFormSelectorProps) {
   const [selectedForm, setSelectedForm] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<any | null>(null);
+  const { toast } = useToast();
 
   const formComponents: { [key: string]: React.ComponentType<any> } = {
     socialPlatform: SocialPlatformForm,
@@ -158,7 +160,11 @@ export function PortfolioFormSelector({
       }
       return newData;
     });
-    setEditingItem(null);
+    toast({
+      title: "Success",
+      duration: 1000,
+    });
+    setEditingItem((prev: any) => !prev);
   };
 
   const handleDelete = (type: string, item: any) => {
@@ -210,6 +216,10 @@ export function PortfolioFormSelector({
           break;
       }
       return newData;
+    });
+    toast({
+      title: "Success",
+      duration: 1000,
     });
   };
 
@@ -393,6 +403,15 @@ function ExistingItemCard({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const handleEdit = () => {
+    // Scroll to top of the ScrollArea
+    const scrollArea = document.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    );
+    scrollArea?.scrollTo({ top: 0, behavior: "smooth" });
+    onEdit();
+  };
+
   return (
     <Card className="mb-4">
       <CardHeader>
@@ -411,7 +430,7 @@ function ExistingItemCard({
         </p>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" onClick={onEdit}>
+        <Button variant="outline" onClick={handleEdit}>
           Edit
         </Button>
         <Button variant="destructive" onClick={onDelete}>

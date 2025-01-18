@@ -318,7 +318,7 @@ export default function Page() {
         console.log(error);
         toast({
           title: "Failed to update",
-          description: error.response.data.error,
+          description: error,
           duration: 3000,
         });
         setIsSaving(false);

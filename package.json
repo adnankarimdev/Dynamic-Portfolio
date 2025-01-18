@@ -12,6 +12,7 @@
     "format:unstaged": "git diff --cached --name-only --diff-filter=d | grep -E '\\.(js|jsx|ts|tsx|json|css|scss|md)$' | xargs npx prettier --write"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.1.0",
     "@openai/realtime-api-beta": "github:openai/openai-realtime-api-beta",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -28,7 +29,9 @@
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.2",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@supabase/supabase-js": "^2.47.16",
     "@types/mdx": "^2.0.13",
+    "ai": "^4.1.0",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -52,7 +55,8 @@
     "shiki": "^1.7.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "unified": "^11.0.4"
+    "unified": "^11.0.4",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.13",

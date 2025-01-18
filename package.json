@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start -p 5000",
     "lint": "next lint",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "lint:unstaged": "git diff --cached --name-only --diff-filter=d | grep -E '\\.(js|jsx|ts|tsx)$' | xargs npx eslint",
+    "format:unstaged": "git diff --cached --name-only --diff-filter=d | grep -E '\\.(js|jsx|ts|tsx|json|css|scss|md)$' | xargs npx prettier --write"
   },
   "dependencies": {
     "@openai/realtime-api-beta": "github:openai/openai-realtime-api-beta",

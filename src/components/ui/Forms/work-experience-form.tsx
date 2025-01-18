@@ -60,13 +60,12 @@ export function WorkExperienceForm({
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.log(formData);
     e.preventDefault();
     onSubmit(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="space-y-4">
       <div>
         <Label htmlFor="company">Company</Label>
         <Input
@@ -198,9 +197,9 @@ export function WorkExperienceForm({
           onChange={handleChange}
         />
       </div>
-      <Button type="submit">
+      <Button type="submit" onClick={handleSubmit}>
         {editingItem ? "Update Work Experience" : "Add Work Experience"}
       </Button>
-    </form>
+    </div>
   );
 }

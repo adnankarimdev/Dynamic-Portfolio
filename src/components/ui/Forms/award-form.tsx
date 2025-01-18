@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { Award } from "@/components/types/types";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Award } from "@/components/types/types";
+import { useState } from "react";
 
 interface AwardFormProps {
   onSubmit: (data: Award) => void;
@@ -30,7 +30,7 @@ export function AwardForm({ onSubmit }: AwardFormProps) {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -80,7 +80,7 @@ export function AwardForm({ onSubmit }: AwardFormProps) {
               variant={"outline"}
               className={cn(
                 "w-full justify-start text-left font-normal",
-                !formData.dateAwarded && "text-muted-foreground",
+                !formData.dateAwarded && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />

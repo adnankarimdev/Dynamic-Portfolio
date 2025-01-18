@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Project, ProjectLink } from "@/components/types/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Project, ProjectLink } from "@/components/types/types";
+import { Textarea } from "@/components/ui/textarea";
+import { useEffect, useState } from "react";
 
 interface ProjectFormProps {
   onSubmit: (data: Project) => void;
@@ -25,7 +25,7 @@ export function ProjectForm({ onSubmit, editingItem }: ProjectFormProps) {
       links: [],
       image: "",
       video: "",
-    },
+    }
   );
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function ProjectForm({ onSubmit, editingItem }: ProjectFormProps) {
   }, [editingItem]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

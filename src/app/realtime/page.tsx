@@ -1,15 +1,13 @@
 "use client";
 
-import AuthPage from "@/components/ui/AuthPage";
 import AnimatedLayout from "@/components/animations/AnimatedLayout";
-import { useRouter } from "next/navigation";
+import Navbar from "@/components/navbar";
+import { PortfolioData } from "@/components/types/types";
 import { ConsolePage } from "@/components/ui/real-time/ConsolePage";
-import { usePathname } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { PortfolioData } from "@/components/types/types";
-import Navbar from "@/components/navbar";
 
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +41,7 @@ export default function Dashboard() {
             headers: {
               Authorization: `Bearer ${emailToken}`,
             },
-          },
+          }
         );
 
         console.log("MY data", response.data.content);

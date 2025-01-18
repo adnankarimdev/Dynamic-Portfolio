@@ -11,33 +11,26 @@
 const LOCAL_RELAY_SERVER_URL: string =
   process.env.REACT_APP_LOCAL_RELAY_SERVER_URL || "";
 
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useToast } from "@/hooks/use-toast";
+import { WavRecorder, WavStreamPlayer } from "@/lib/wavtools/index.js";
+import { instructions } from "@/utils/conversation_config.js";
+import { WavRenderer } from "@/utils/wav_renderer";
 import { RealtimeClient } from "@openai/realtime-api-beta";
 import { ItemType } from "@openai/realtime-api-beta/dist/lib/client.js";
-import { WavRecorder, WavStreamPlayer } from "@/lib/wavtools/index.js";
-import { useToast } from "@/hooks/use-toast";
-import { instructions } from "@/utils/conversation_config.js";
 import { useRouter } from "next/navigation";
-import { WavRenderer } from "@/utils/wav_renderer";
-
-import { X, Edit, Zap, ArrowUp, ArrowDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 // import './ConsolePage.scss';
-import { isJsxOpeningLikeElement } from "typescript";
-import { strict } from "assert";
-import { Label } from "../label";
-import VoiceGridVisualization from "./VoiceGridVisualization";
-import { Switch } from "../switch";
-import { PortfolioData } from "@/components/types/types";
-import { Separator } from "../separator";
-import ColorPickerCard from "./ColorPickerCard";
 import AnimatedLayout from "@/components/animations/AnimatedLayout";
-import { RainbowButton } from "../rainbow-button";
-import { AnimatedList } from "../animated-list";
-import { ScrollArea } from "../scroll-area";
+import { PortfolioData } from "@/components/types/types";
+import { Label } from "../label";
 import Marquee from "../marquee";
+import { RainbowButton } from "../rainbow-button";
+import { Separator } from "../separator";
+import { Switch } from "../switch";
+import ColorPickerCard from "./ColorPickerCard";
+import VoiceGridVisualization from "./VoiceGridVisualization";
 
 /**
  * Type for result from get_weather() function call
@@ -83,12 +76,12 @@ export function ConsolePage(DATA: Props) {
    */
   const [isVAD, setIsVAD] = useState(false);
   const [clientFrequencies, setClientFrequencies] = useState<any>(
-    new Float32Array([0]),
+    new Float32Array([0])
   );
   const router = useRouter();
   const { toast } = useToast();
   const [serverFrequencies, setServerFrequencies] = useState<any>(
-    new Float32Array([0]),
+    new Float32Array([0])
   );
   const [cardData, setCardData] = useState<CardData>();
   const [summaryOfCards, setSummaryOfCards] = useState<CardData[]>([]);
@@ -119,10 +112,10 @@ export function ConsolePage(DATA: Props) {
    * - RealtimeClient (API client)
    */
   const wavRecorderRef = useRef<WavRecorder>(
-    new WavRecorder({ sampleRate: 24000 }),
+    new WavRecorder({ sampleRate: 24000 })
   );
   const wavStreamPlayerRef = useRef<WavStreamPlayer>(
-    new WavStreamPlayer({ sampleRate: 24000 }),
+    new WavStreamPlayer({ sampleRate: 24000 })
   );
   const clientRef = useRef<RealtimeClient>(
     new RealtimeClient(
@@ -131,8 +124,8 @@ export function ConsolePage(DATA: Props) {
         : {
             apiKey: apiKey,
             dangerouslyAllowAPIKeyInBrowser: true,
-          },
-    ),
+          }
+    )
   );
 
   /**
@@ -337,7 +330,7 @@ export function ConsolePage(DATA: Props) {
    */
   useEffect(() => {
     const conversationEls = [].slice.call(
-      document.body.querySelectorAll("[data-conversation-content]"),
+      document.body.querySelectorAll("[data-conversation-content]")
     );
     for (const el of conversationEls) {
       const conversationEl = el as HTMLDivElement;
@@ -423,7 +416,7 @@ export function ConsolePage(DATA: Props) {
               "#0099ff",
               10,
               0,
-              8,
+              8
             );
           }
         }
@@ -445,7 +438,7 @@ export function ConsolePage(DATA: Props) {
               "#009900",
               10,
               0,
-              8,
+              8
             );
           }
         }
@@ -557,7 +550,7 @@ export function ConsolePage(DATA: Props) {
             textColor: calculateTextColor(randomColor.hex),
           },
         };
-      },
+      }
     );
 
     client.addTool(
@@ -587,7 +580,7 @@ export function ConsolePage(DATA: Props) {
           return newKv;
         });
         return { ok: true };
-      },
+      }
     );
     // handle realtime events from client + server for event logging
     client.on("realtime.event", (realtimeEvent: RealtimeEvent) => {
@@ -619,7 +612,7 @@ export function ConsolePage(DATA: Props) {
         const wavFile = await WavRecorder.decode(
           item.formatted.audio,
           24000,
-          24000,
+          24000
         );
         item.formatted.file = wavFile;
       }

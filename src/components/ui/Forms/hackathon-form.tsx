@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Hackathon, HackathonLink } from "@/components/types/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Hackathon, HackathonLink } from "@/components/types/types";
+import { useState } from "react";
 
 interface HackathonFormProps {
   onSubmit: (data: Hackathon) => void;
@@ -24,7 +24,7 @@ export function HackathonForm({ onSubmit }: HackathonFormProps) {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Project } from "@/components/types/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 interface ProjectFormProps {
   project?: Project;
@@ -24,11 +24,11 @@ export function ProjectForm({ project, onSubmit }: ProjectFormProps) {
       links: [],
       image: "",
       video: "",
-    },
+    }
   );
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

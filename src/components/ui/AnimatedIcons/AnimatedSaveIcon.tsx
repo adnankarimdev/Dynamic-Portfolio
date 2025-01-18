@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { Save } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function AnimatedSaveIcon() {
   const [key, setKey] = useState(0);

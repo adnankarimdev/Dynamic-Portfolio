@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { PortfolioData } from "@/components/types/types";
 import { Button } from "@/components/ui/button";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -16,28 +17,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import SocialPlatformForm from "./social-platform-form";
-import { NavItemForm } from "./nav-item-form";
-import { ContactForm } from "./contact-form";
-import { WorkExperienceForm } from "./work-experience-form";
-import { EducationForm } from "./education-form";
-import { ProjectForm } from "./project-form";
-import { CertificationForm } from "./certification-form";
-import { HackathonForm } from "./hackathon-form";
-import { PaperForm } from "./paper-form";
-import { AwardForm } from "./award-form";
-import { PortfolioData } from "@/components/types/types";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { BookPlus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Separator } from "../separator";
-import { useEffect } from "react";
+import { AwardForm } from "./award-form";
+import { CertificationForm } from "./certification-form";
+import { ContactForm } from "./contact-form";
+import { EducationForm } from "./education-form";
+import { HackathonForm } from "./hackathon-form";
+import { NavItemForm } from "./nav-item-form";
+import { PaperForm } from "./paper-form";
+import { ProjectForm } from "./project-form";
+import SocialPlatformForm from "./social-platform-form";
+import { WorkExperienceForm } from "./work-experience-form";
 
 interface PortfolioFormSelectorProps {
   data: PortfolioData;
@@ -81,7 +80,7 @@ export function PortfolioFormSelector({
         case "navItem":
           if (editingItem) {
             newData.navbar = newData.navbar.map((item) =>
-              item.href === editingItem.href ? formData : item,
+              item.href === editingItem.href ? formData : item
             );
           } else {
             newData.navbar = [...newData.navbar, formData];
@@ -93,7 +92,7 @@ export function PortfolioFormSelector({
         case "workExperience":
           if (editingItem) {
             newData.work = newData.work.map((item) =>
-              item.id === editingItem.id ? { ...formData, id: item.id } : item,
+              item.id === editingItem.id ? { ...formData, id: item.id } : item
             );
           } else {
             newData.work = [
@@ -105,7 +104,7 @@ export function PortfolioFormSelector({
         case "education":
           if (editingItem) {
             newData.education = newData.education.map((item) =>
-              item.school === editingItem.school ? formData : item,
+              item.school === editingItem.school ? formData : item
             );
           } else {
             newData.education = [...newData.education, formData];
@@ -114,7 +113,7 @@ export function PortfolioFormSelector({
         case "project":
           if (editingItem) {
             newData.projects = newData.projects.map((item) =>
-              item.title === editingItem.title ? formData : item,
+              item.title === editingItem.title ? formData : item
             );
           } else {
             newData.projects = [...newData.projects, formData];
@@ -123,7 +122,7 @@ export function PortfolioFormSelector({
         case "certification":
           if (editingItem) {
             newData.certifications = newData.certifications.map((item) =>
-              item.title === editingItem.title ? formData : item,
+              item.title === editingItem.title ? formData : item
             );
           } else {
             newData.certifications = [...newData.certifications, formData];
@@ -132,7 +131,7 @@ export function PortfolioFormSelector({
         case "hackathon":
           if (editingItem) {
             newData.hackathons = newData.hackathons.map((item) =>
-              item.title === editingItem.title ? formData : item,
+              item.title === editingItem.title ? formData : item
             );
           } else {
             newData.hackathons = [...newData.hackathons, formData];
@@ -141,7 +140,7 @@ export function PortfolioFormSelector({
         case "paper":
           if (editingItem) {
             newData.papers = newData.papers.map((item) =>
-              item.title === editingItem.title ? formData : item,
+              item.title === editingItem.title ? formData : item
             );
           } else {
             newData.papers = [...newData.papers, formData];
@@ -150,7 +149,7 @@ export function PortfolioFormSelector({
         case "award":
           if (editingItem) {
             newData.awards = newData.awards.map((item) =>
-              item.title === editingItem.title ? formData : item,
+              item.title === editingItem.title ? formData : item
             );
           } else {
             newData.awards = [...newData.awards, formData];
@@ -173,7 +172,7 @@ export function PortfolioFormSelector({
           break;
         case "navItem":
           newData.navbar = newData.navbar.filter(
-            (navItem) => navItem.href !== item.href,
+            (navItem) => navItem.href !== item.href
           );
           break;
         case "workExperience":
@@ -181,32 +180,32 @@ export function PortfolioFormSelector({
           break;
         case "education":
           newData.education = newData.education.filter(
-            (edu) => edu.school !== item.school,
+            (edu) => edu.school !== item.school
           );
           break;
         case "project":
           newData.projects = newData.projects.filter(
-            (project) => project.title !== item.title,
+            (project) => project.title !== item.title
           );
           break;
         case "certification":
           newData.certifications = newData.certifications.filter(
-            (cert) => cert.title !== item.title,
+            (cert) => cert.title !== item.title
           );
           break;
         case "hackathon":
           newData.hackathons = newData.hackathons.filter(
-            (hackathon) => hackathon.title !== hackathon.title,
+            (hackathon) => hackathon.title !== hackathon.title
           );
           break;
         case "paper":
           newData.papers = newData.papers.filter(
-            (paper) => paper.title !== item.title,
+            (paper) => paper.title !== item.title
           );
           break;
         case "award":
           newData.awards = newData.awards.filter(
-            (award) => award.title !== item.title,
+            (award) => award.title !== item.title
           );
           break;
       }

@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { ChevronDown, ExternalLink, Edit2Icon, SaveIcon } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { motion } from "framer-motion";
+import { ChevronDown, Edit2Icon, ExternalLink, SaveIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 interface ResumeCardProps {
   logoUrl: string;
@@ -211,7 +211,9 @@ export const ResumeCard = ({
               className="ml-auto"
             >
               <ChevronDown
-                className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+                className={`w-4 h-4 transition-transform duration-300 ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
               />
               {isExpanded ? "Less" : "More"}
             </Button>

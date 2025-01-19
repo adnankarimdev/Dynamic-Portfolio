@@ -276,6 +276,9 @@ export default function Page() {
     // console.log(result);
     // return;
 
+    // TODO: Handle PDF extraction here
+    // Then deal with supabase
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/pdf-data/`,
@@ -484,22 +487,32 @@ export default function Page() {
 
   const handleStripePayment = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/create-checkout-session/`,
-        {
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           stripe_customer_id: sessionStorage.getItem("stripe_customer_id"),
-        }
-      );
+        }),
+      });
 
-      if (response.data.url) {
+      const data = await response.json();
+
+      if (data.url) {
         // Redirect to the Stripe Checkout page
-        window.location.href = response.data.url;
+        window.location.href = data.url;
       } else {
-        console.error("No URL found in the response");
+        throw new Error("No URL found in the response");
       }
     } catch (error) {
       console.error("Error creating checkout session:", error);
-      alert("Failed to initiate payment. Please try again later.");
+      toast({
+        title: "Payment Error",
+        description: "Failed to initiate payment. Please try again later.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 

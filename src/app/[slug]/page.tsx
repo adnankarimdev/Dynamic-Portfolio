@@ -17,8 +17,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Marquee from "@/components/ui/marquee";
 import { useToast } from "@/hooks/use-toast";
+import { useSupabase } from "@/hooks/useSupabase";
 import { cn } from "@/lib/utils";
-import axios from "axios";
 import {
   Check,
   Facebook,
@@ -44,6 +44,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const pathname = usePathname();
+  const { supabase } = useSupabase();
   console.log(pathname);
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -60,102 +61,39 @@ export default function Page() {
     setIsPhoneEmailExpanded(!isPhoneEmailExpanded);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files ? e.target.files[0] : null;
-    if (selectedFile) {
-      setFile(selectedFile);
-      handleSubmit(selectedFile);
-    }
-  };
-
-  const handleSubmit = async (file: File) => {
-    setIsLoading(true);
-    setIsOpen(false);
-    // setUploadStatus('Uploading...');
-
-    const formData = new FormData();
-    formData.append("pdf", file);
-
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/pdf-data/`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(response.data.content);
-      setData(response.data.content);
-      setUploadStatus("PDF processed successfully!");
-    } catch (error) {
-      setUploadStatus("Error processing PDF");
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSave = async () => {
-    axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/save-website-details/`,
-        { data: DATA, userToken: userEmailToken }
-      )
-      .then((response) => {
-        toast({
-          title: "Success",
-          description: "Website Saved.",
-          duration: 1000,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        toast({
-          title: "Failed to update",
-          description: error.response.data.error,
-          duration: 1000,
-        });
-      });
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        axios
-          .get(
-            `${
-              process.env.NEXT_PUBLIC_API_BASE_URL
-            }/backend/get-website-details-by-url/${pathname.slice(1)}/`
-          )
-          .then((response) => {
-            setData(response.data.content);
-            setIsUrlHidden(response.data.url_hidden);
-            setIsLoading(false);
-            // toast({
-            //   title: "Success",
-            //   description: "Settings Saved.",
-            //   duration: 1000,
-            // });
-          })
-          .catch((error) => {
-            setIsLoading(false);
-            console.log(error);
-            // toast({
-            //   title: "Failed to update",
-            //   description: error.response.data.error,
-            //   duration: 1000,
-            // });
-          });
-      } catch (err) {
-        console.error(err);
+        const userUrl = `http://localhost:5000/${pathname.slice(1)}`;
+
+        const { data, error } = await supabase
+          .from("user_data")
+          .select("data, url_hidden")
+          .eq("url", userUrl)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          setData(data.data);
+          setIsUrlHidden(data.url_hidden);
+        }
+      } catch (error: any) {
+        console.error(error);
+        // Optionally show error toast
+        toast({
+          title: "Failed to fetch",
+          description: error.message,
+          duration: 1000,
+        });
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [pathname]);
 
   return (
     <>
@@ -173,7 +111,6 @@ export default function Page() {
             <Button
               className="absolute top-4 right-4 px-4 py-2 rounded"
               variant="ghost"
-              onClick={handleSave}
             >
               {"Publish"}
             </Button>
@@ -602,10 +539,12 @@ export default function Page() {
                                 "size-12"
                               )}
                             >
-                              {/* Render the appropriate icon based on name */}
-                              {name.toLowerCase() === "youtube" && (
-                                <Youtube className="size-4" />
-                              )}
+                              {
+                                // Render the appropriate icon based on name
+                                name.toLowerCase() === "youtube" && (
+                                  <Youtube className="size-4" />
+                                )
+                              }
                               {(name.toLowerCase() === "twitter" ||
                                 name.toLowerCase() === "x") && (
                                 <FaXTwitter className="size-4" />
@@ -619,7 +558,7 @@ export default function Page() {
                               {name.toLowerCase() === "linkedin" && (
                                 <Linkedin className="size-4" />
                               )}
-                              {/* Add more cases as needed */}
+                              // Add more cases as needed
                             </Link>
                           </div>
                         )

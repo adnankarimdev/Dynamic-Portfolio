@@ -53,6 +53,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
     "shiki": "^1.7.0",
+    "stripe": "^17.5.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "unified": "^11.0.4",

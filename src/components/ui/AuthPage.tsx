@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useSupabase } from "@/hooks/useSupabase";
-import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -89,53 +88,81 @@ export default function AuthPage() {
     }
   };
 
-  // TO-DO: Need to convert this to use supabase directly here.
-  const handleSignUp = () => {
-    // Basic validation for email and password
-    if (!email || !password) {
+  const handleSignUp = async () => {
+    try {
+      // Basic validation
+      if (!email || !password) {
+        toast({
+          title: "Error",
+          description: "Please provide both email and password.",
+          duration: 1000,
+        });
+        return;
+      }
+
+      // Step 1: Sign up with Supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+
+      // Step 2: Create Stripe customer through Next.js API
+      const stripeResponse = await fetch("/api/stripe/create-customer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          userId: authData.user?.id,
+        }),
+      });
+
+      const stripeData = await stripeResponse.json();
+      if (!stripeData.success) throw new Error(stripeData.error);
+
+      // Step 3: Create initial user data in user_data table
+      const { data: userData, error: userError } = await supabase
+        .from("user_data")
+        .insert([
+          {
+            id: authData.user?.id,
+            email: email,
+            data: null,
+            url: null,
+            url_hidden: true,
+            stripe_customer_id: stripeData.customer.id,
+            subscription_status: "inactive",
+          },
+        ])
+        .select()
+        .single();
+
+      if (userError) throw userError;
+
+      // Store necessary data
+      sessionStorage.setItem("authToken", authData.user?.id || "");
+      sessionStorage.setItem("stripe_customer_id", stripeData.customer.id);
+
       toast({
-        title: "Error",
-        description: "Please provide both email and password.",
+        title: "Account Created",
+        description: "Welcome! 🎉",
         duration: 1000,
       });
-      return;
-    }
 
-    // Make the signup request to the Django backend
-    axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/sign-up/`, {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        toast({
-          title: "Account Created",
-          description: "Welcome! 🎉",
-          duration: 1000,
-        });
-
-        // Store the auth token (if returned)
-        sessionStorage.setItem("authToken", response.data.user.id);
-        sessionStorage.setItem(
-          "stripe_customer_id",
-          response.data.user.stripe_customer_id
-        );
-
-        // Navigate to home or onboarding page
-        setTimeout(() => {
-          router.push("/home");
-        }, 2000);
-      })
-      .catch((error) => {
-        console.error(error); // Log the error for debugging
-        toast({
-          title: "Signup Failed",
-          description:
-            error.response?.data?.message ||
-            "Something went wrong. Please try again.",
-          duration: 1000,
-        });
+      setTimeout(() => {
+        router.push("/home");
+      }, 2000);
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Signup Failed",
+        description: error.message || "Something went wrong. Please try again.",
+        duration: 1000,
       });
+    }
   };
 
   return (

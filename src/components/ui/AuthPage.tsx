@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import axios from "axios";
+import { useSupabase } from "@/hooks/useSupabase";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -20,6 +20,7 @@ import { useState } from "react";
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState("");
+  const { supabase } = useSupabase();
   const [password, setPassword] = useState("");
   const [buisnessName, setBuisnessName] = useState("");
   const [accountType, setAccountType] = useState("google-business");
@@ -42,83 +43,126 @@ export default function AuthPage() {
     }, 3000);
   }
 
-  const handleLogin = () => {
-    axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/login/`, {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        localStorage.setItem("userEmail", email);
-        sessionStorage.setItem("authToken", response.data.user.id);
-        sessionStorage.setItem(
-          "stripe_customer_id",
-          response.data.user.stripe_customer_id
-        );
-        toast({
-          title: "Successfully Logged In",
-          description: "Welcome back 👋",
-          duration: 1000,
+  const handleLogin = async () => {
+    try {
+      // Sign in with Supabase
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
         });
-        setTimeout(() => {
-          router.push("/home");
-        }, 2000);
-      })
-      .catch((error) => {
-        toast({
-          title: "Failed to login",
-          description: error.response.data.error,
-          duration: 1000,
-        });
-      });
-  };
 
-  const handleSignUp = () => {
-    // Basic validation for email and password
-    if (!email || !password) {
+      if (authError) throw authError;
+
+      // Get user's stripe customer id from user_data table
+      const { data: userData, error: userError } = await supabase
+        .from("user_data")
+        .select("*")
+        .eq("email", email)
+        .single();
+
+      if (userError) throw userError;
+
+      console.log(userData);
+
+      // Store necessary data
+      localStorage.setItem("userEmail", userData.email);
+      sessionStorage.setItem("authToken", userData.id);
+      sessionStorage.setItem("stripe_customer_id", userData.stripe_customer_id);
+
       toast({
-        title: "Error",
-        description: "Please provide both email and password.",
+        title: "Successfully Logged In",
+        description: "Welcome back 👋",
         duration: 1000,
       });
-      return;
-    }
 
-    // Make the signup request to the Django backend
-    axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/sign-up/`, {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        toast({
-          title: "Account Created",
-          description: "Welcome! 🎉",
-          duration: 1000,
-        });
-
-        // Store the auth token (if returned)
-        sessionStorage.setItem("authToken", response.data.user.id);
-        sessionStorage.setItem(
-          "stripe_customer_id",
-          response.data.user.stripe_customer_id
-        );
-
-        // Navigate to home or onboarding page
-        setTimeout(() => {
-          router.push("/home");
-        }, 2000);
-      })
-      .catch((error) => {
-        console.error(error); // Log the error for debugging
-        toast({
-          title: "Signup Failed",
-          description:
-            error.response?.data?.message ||
-            "Something went wrong. Please try again.",
-          duration: 1000,
-        });
+      setTimeout(() => {
+        router.push("/home");
+      }, 2000);
+    } catch (error: any) {
+      toast({
+        title: "Failed to login",
+        description: error.message,
+        duration: 1000,
       });
+    }
+  };
+
+  const handleSignUp = async () => {
+    try {
+      // Basic validation
+      if (!email || !password) {
+        toast({
+          title: "Error",
+          description: "Please provide both email and password.",
+          duration: 1000,
+        });
+        return;
+      }
+
+      // Step 1: Sign up with Supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+
+      // Step 2: Create Stripe customer through Next.js API
+      const stripeResponse = await fetch("/api/stripe/create-customer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          userId: authData.user?.id,
+        }),
+      });
+
+      const stripeData = await stripeResponse.json();
+      if (!stripeData.success) throw new Error(stripeData.error);
+
+      // Step 3: Create initial user data in user_data table
+      const { data: userData, error: userError } = await supabase
+        .from("user_data")
+        .insert([
+          {
+            id: authData.user?.id,
+            email: email,
+            data: null,
+            url: null,
+            url_hidden: true,
+            stripe_customer_id: stripeData.customer.id,
+            subscription_status: "inactive",
+          },
+        ])
+        .select()
+        .single();
+
+      if (userError) throw userError;
+
+      // Store necessary data
+      sessionStorage.setItem("authToken", authData.user?.id || "");
+      sessionStorage.setItem("stripe_customer_id", stripeData.customer.id);
+
+      toast({
+        title: "Account Created",
+        description: "Welcome! 🎉",
+        duration: 1000,
+      });
+
+      setTimeout(() => {
+        router.push("/home");
+      }, 2000);
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Signup Failed",
+        description: error.message || "Something went wrong. Please try again.",
+        duration: 1000,
+      });
+    }
   };
 
   return (

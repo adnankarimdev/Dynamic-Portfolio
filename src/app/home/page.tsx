@@ -41,6 +41,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
+import { useOpenAi } from "@/hooks/useOpenAi";
 import axios from "axios";
 import {
   Check,
@@ -72,14 +73,17 @@ import { PaperForm } from "@/components/ui/Papers/PapersForm";
 import { ProjectForm } from "@/components/ui/Projects/ProjectForms";
 import { Textarea } from "@/components/ui/textarea";
 import { ToastAction } from "@/components/ui/toast";
+import { useSupabase } from "@/hooks/useSupabase";
 import { cn } from "@/lib/utils";
 
 const BLUR_FADE_DELAY = 0.04;
 
 export default function Page() {
+  const { llmModel, generateObject } = useOpenAi();
   const [DATA, setData] = useState<PortfolioData>({} as PortfolioData);
   const [readOnly, setReadOnly] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { supabase } = useSupabase();
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
@@ -177,44 +181,69 @@ export default function Page() {
   ) => {
     setIsPhotoLoading(true);
     const file = event.target.files?.[0];
-    const email = DATA.contact.email; // Replace with the user's email (dynamic or static)
+    const email = DATA.contact.email;
 
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file); // Add the file to the form data
-      formData.append("email", email); // Add the email to the form data
+    if (!file) {
+      setIsPhotoLoading(false);
+      return;
+    }
 
-      try {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/upload-profile-picture/`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+    try {
+      const filePath = `public/${email}_avatar.png`;
 
-        if (response.status === 200) {
-          console.log("File uploaded successfully:", response.data);
-          setAvatarUrl(`${response.data.url}?t=${new Date().getTime()}`);
-          setData((prevData) => ({
-            ...prevData,
-            avatarUrl: response.data.url,
-          }));
-          setIsPhotoLoading(false);
-          // Handle success (e.g., update UI with new avatar URL)
-        }
-      } catch (error) {
-        console.error("Error uploading file:", error);
-        setIsPhotoLoading(false);
-        toast({
-          title: "Failed to upload profile picture.",
-          duration: 3000,
-        });
+      // First, check if file exists
+      const { data: existingFiles } = await supabase.storage
+        .from("test_bucket")
+        .list("public");
+
+      let uploadResponse;
+
+      // If file exists, update it, otherwise upload new file
+      if (existingFiles?.some((f) => f.name === `${email}_avatar.png`)) {
+        uploadResponse = await supabase.storage
+          .from("test_bucket")
+          .update(filePath, file, {
+            cacheControl: "3600",
+            upsert: true,
+          });
+      } else {
+        uploadResponse = await supabase.storage
+          .from("test_bucket")
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: true,
+          });
       }
-    } else {
-      setIsLoading(false);
+
+      if (uploadResponse.error) {
+        throw uploadResponse.error;
+      }
+
+      // Get the public URL
+      const { data: publicUrl } = supabase.storage
+        .from("test_bucket")
+        .getPublicUrl(filePath);
+
+      if (!publicUrl) {
+        throw new Error("Failed to get public URL");
+      }
+
+      console.log("File uploaded successfully:", publicUrl);
+      setAvatarUrl(`${publicUrl.publicUrl}?t=${new Date().getTime()}`);
+      setData((prevData) => ({
+        ...prevData,
+        avatarUrl: publicUrl.publicUrl,
+      }));
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast({
+        title: "Failed to upload profile picture.",
+        description:
+          error instanceof Error ? error.message : "Unknown error occurred",
+        duration: 3000,
+      });
+    } finally {
+      setIsPhotoLoading(false);
     }
   };
 
@@ -233,6 +262,22 @@ export default function Page() {
 
     const formData = new FormData();
     formData.append("pdf", file);
+
+    //need to get and feed the pdf data here.
+
+    // const result = await generateObject({
+    //   model: llmModel,
+    //   schemaName: "resume",
+    //   schemaDescription: "Resume Format",
+    //   schema: portfolioSchema,
+    //   prompt: RESUME_PROMPT,
+    // });
+
+    // console.log(result);
+    // return;
+
+    // TODO: Handle PDF extraction here
+    // Then deal with supabase
 
     try {
       const response = await axios.post(
@@ -270,59 +315,84 @@ export default function Page() {
 
   const handleSave = async () => {
     setIsSaving(true);
-    axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/save-website-details/`,
-        { data: DATA, userToken: userEmailToken }
-      )
-      .then((response) => {
-        if (subscriptionStatus != "active") {
-          toast({
-            title: "Subscribe to Publish",
-            variant: "destructive",
-            description:
-              "Your portfolio is saved, but won’t be public until you purchase a subscription.",
-            action: (
-              <ToastAction
-                altText="Subscribe User"
-                onClick={() => {
-                  handleStripePayment();
-                }}
-              >
-                {"Subscribe"}
-              </ToastAction>
-            ),
-            duration: 10000,
-          });
-          setIsSaving(false);
-          return;
-        }
 
+    try {
+      if (!userEmailToken) {
+        throw new Error("User token not found");
+      }
+
+      // Get user data to check if user exists
+      const { data: userData, error: userError } = await supabase
+        .from("user_data")
+        .select("*")
+        .eq("id", userEmailToken)
+        .single();
+
+      if (userError) throw userError;
+
+      // Generate URL from email
+      const emailUsername = userData.email.split("@")[0];
+      const userUrl = `http://localhost:5000/${emailUsername}`;
+
+      // Update user data with website details and URL
+      const { error: updateError } = await supabase
+        .from("user_data")
+        .update({
+          data: DATA,
+          url: userUrl,
+        })
+        .eq("id", userEmailToken);
+
+      if (updateError) throw updateError;
+
+      // Handle subscription status check
+      if (subscriptionStatus !== "active") {
         toast({
-          title: "Portfolio Published 🚀",
+          title: "Subscribe to Publish",
+          variant: "destructive",
+          description:
+            "Your portfolio is saved, but won't be public until you purchase a subscription.",
           action: (
             <ToastAction
-              altText="Success"
+              altText="Subscribe User"
               onClick={() => {
-                window.open(response.data.url, "_blank");
+                handleStripePayment();
               }}
             >
-              Open Portfolio
+              {"Subscribe"}
             </ToastAction>
           ),
-          duration: 3000,
+          duration: 10000,
         });
-        setIsSaving(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        toast({
-          title: "Failed to update",
-          description: error,
-          duration: 3000,
-        });
-        setIsSaving(false);
+        return;
+      }
+
+      // Success toast with portfolio link
+      toast({
+        title: "Portfolio Published 🚀",
+        action: (
+          <ToastAction
+            altText="Success"
+            onClick={() => {
+              window.open(userUrl, "_blank");
+            }}
+          >
+            Open Portfolio
+          </ToastAction>
+        ),
+        duration: 3000,
       });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Failed to update",
+        description:
+          error instanceof Error ? error.message : "Unknown error occurred",
+        duration: 3000,
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   useEffect(() => {
@@ -337,39 +407,47 @@ export default function Page() {
         });
         router.push("/login");
         console.error("Email not found in localStorage");
-        setIsLoading(false); // You should set isLoading false here as well
+        setIsLoading(false);
         return;
       } else {
         setUserEmailToken(emailToken);
       }
 
       try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details/`,
-          {
-            headers: {
-              Authorization: `Bearer ${emailToken}`,
-            },
-          }
-        );
-        console.log(response.data.content);
-        setData(response.data.content);
-        setText(response.data.content.name);
-        setSavedText(response.data.content.name);
-        setDescription(response.data.content.description);
-        setAbout(response.data.content.summary);
-        setPapersHeader(response.data.content.papersWebsiteHeader);
-        setPapersSubtitle(response.data.content.papersWebsiteSubtitle);
-        setProjectsHeader(response.data.content.projectsWebsiteHeader);
-        setProjectsSubtitle(response.data.content.projectsWebsiteSubtitle);
-        setHackathonHeader(response.data.content.hackathonWebsiteHeader);
-        setHackathonSubtitle(response.data.content.hackathonWebsiteSubtitle);
-        setAvatarUrl(
-          `${response.data.content.avatarUrl}?t=${new Date().getTime()}`
-        );
+        // Get user data directly from Supabase
+        const { data: userData, error: userError } = await supabase
+          .from("user_data")
+          .select("*")
+          .eq("id", emailToken)
+          .single();
 
-        setSubscriptionStatus(response.data.subscription_status);
-        console.log("avatar url ", response.data.content.avatarUrl);
+        if (userError) throw userError;
+
+        if (!userData.data) {
+          setData({} as PortfolioData);
+          setIsLoading(false);
+          return;
+        }
+
+        const content = userData.data;
+        console.log("User data:", content);
+
+        // Set all the state variables
+        setData(content);
+        setText(content.name);
+        setSavedText(content.name);
+        setDescription(content.description);
+        setAbout(content.summary);
+        setPapersHeader(content.papersWebsiteHeader);
+        setPapersSubtitle(content.papersWebsiteSubtitle);
+        setProjectsHeader(content.projectsWebsiteHeader);
+        setProjectsSubtitle(content.projectsWebsiteSubtitle);
+        setHackathonHeader(content.hackathonWebsiteHeader);
+        setHackathonSubtitle(content.hackathonWebsiteSubtitle);
+        setAvatarUrl(`${content.avatarUrl}?t=${new Date().getTime()}`);
+
+        setSubscriptionStatus(userData.subscription_status);
+        console.log("avatar url ", content.avatarUrl);
       } catch (error) {
         console.error(error);
       } finally {
@@ -409,22 +487,32 @@ export default function Page() {
 
   const handleStripePayment = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/create-checkout-session/`,
-        {
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           stripe_customer_id: sessionStorage.getItem("stripe_customer_id"),
-        }
-      );
+        }),
+      });
 
-      if (response.data.url) {
+      const data = await response.json();
+
+      if (data.url) {
         // Redirect to the Stripe Checkout page
-        window.location.href = response.data.url;
+        window.location.href = data.url;
       } else {
-        console.error("No URL found in the response");
+        throw new Error("No URL found in the response");
       }
     } catch (error) {
       console.error("Error creating checkout session:", error);
-      alert("Failed to initiate payment. Please try again later.");
+      toast({
+        title: "Payment Error",
+        description: "Failed to initiate payment. Please try again later.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 

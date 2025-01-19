@@ -5,14 +5,16 @@ import Navbar from "@/components/navbar";
 import { PortfolioData } from "@/components/types/types";
 import { ConsolePage } from "@/components/ui/real-time/ConsolePage";
 import { useToast } from "@/hooks/use-toast";
-import axios from "axios";
+import { useSupabase } from "@/hooks/useSupabase";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// TO-DO: ONce we introduce real-time, we need to test thorougly.
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [userEmailToken, setUserEmailToken] = useState("");
   const { toast } = useToast();
+  const { supabase } = useSupabase();
   const router = useRouter();
   const [DATA, setData] = useState<PortfolioData>({} as PortfolioData);
   const pathname = usePathname();
@@ -35,26 +37,39 @@ export default function Dashboard() {
       setUserEmailToken(emailToken);
 
       try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/backend/get-website-details/`,
-          {
-            headers: {
-              Authorization: `Bearer ${emailToken}`,
-            },
-          }
-        );
+        const { data: userData, error } = await supabase
+          .from("user_data")
+          .select("data, subscription_status")
+          .eq("id", emailToken)
+          .single();
 
-        console.log("MY data", response.data.content);
-        setData(response.data.content);
+        if (error) throw error;
+
+        // If data is null, return empty object as per backend behavior
+        if (!userData.data) {
+          setData({} as PortfolioData);
+        } else {
+          console.log("MY data", userData.data);
+          setData(userData.data);
+        }
+
+        // Optionally handle subscription status if needed
+        // setSubscriptionStatus(userData.subscription_status);
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast({
+          title: "Error",
+          description:
+            error instanceof Error ? error.message : "Failed to fetch data",
+          duration: 3000,
+        });
       } finally {
-        setIsLoading(false); // Always set loading to false
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [router, toast, supabase]);
 
   return (
     <AnimatedLayout>
